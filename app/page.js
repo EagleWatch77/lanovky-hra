@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
 import Nav from "../components/Nav";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import { KATEGORIE } from "../lib/katalog";
-import { cardStyle } from "../lib/styles";
+import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
 export default function PrehladPage() {
   const {
@@ -15,12 +16,43 @@ export default function PrehladPage() {
     loading,
     zisk,
     ukazVyjednavanie,
+    potrebujeNazov,
+    vytvorStanicu,
     vyjednatPlat,
     handleLogout,
     efektivitaBudovy,
   } = useGameState();
 
+  const [novyNazov, setNovyNazov] = useState("");
+
   if (!session) return <AuthForm />;
+
+  if (potrebujeNazov) {
+    return (
+      <main style={{ maxWidth: 400, margin: "80px auto", padding: 24 }}>
+        <h1 style={{ fontSize: 24, marginBottom: 4 }}>🚡 Vitaj!</h1>
+        <p style={{ color: "#9fb0bf", marginBottom: 16 }}>Ako sa bude volať tvoje stredisko?</p>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (novyNazov.trim()) vytvorStanicu(novyNazov.trim());
+          }}
+          style={{ display: "flex", flexDirection: "column", gap: 12 }}
+        >
+          <input
+            type="text"
+            placeholder="napr. Snežné sedlo"
+            value={novyNazov}
+            onChange={(e) => setNovyNazov(e.target.value)}
+            required
+            maxLength={40}
+            style={inputStyle}
+          />
+          <button type="submit" style={buttonStyle}>Založiť stredisko</button>
+        </form>
+      </main>
+    );
+  }
 
   const voVystavbe = budovy.filter((b) => b.stav === "vo_vystavbe");
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
