@@ -11,7 +11,7 @@ function vypocitajSezonu(datum) {
 
 function Stat({ label, value }) {
   return (
-    <div style={{ padding: "8px 14px", background: "#131c24", borderRadius: 8, border: "1px solid #223040", minWidth: 90, boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+    <div style={{ padding: "8px 14px", background: "rgba(19,28,36,0.85)", backdropFilter: "blur(6px)", borderRadius: 8, border: "1px solid #223040", minWidth: 90, boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
       <div style={{ fontSize: 11, color: "#657685" }}>{label}</div>
       <div style={{ fontSize: 15, fontWeight: 700 }}>{value}</div>
     </div>
@@ -22,6 +22,7 @@ export default function TopBar({ email, onLogout, stanica, budovy, efektivitaBud
   const teraz = new Date();
   const hotove = budovy.filter((b) => b.stav === "hotovo");
 
+  // Odhad turistov za deň — nie presné meranie, len výpočet z aktuálnych cien/kapacít
   let turistiDnesOdhad = 0;
   let sucetEfektivit = 0;
   for (const b of hotove) {
