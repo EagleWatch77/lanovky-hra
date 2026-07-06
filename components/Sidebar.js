@@ -19,11 +19,11 @@ const COSKORO = [
   { label: "Aliancia", icon: "🤝" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ notifikacie = [] }) {
   const pathname = usePathname();
 
   return (
-    <aside style={{ width: 220, minHeight: "100vh", background: "#0d141b", borderRight: "1px solid #1f2b36", padding: "20px 12px", flexShrink: 0 }}>
+    <aside style={{ width: 240, minHeight: "100vh", background: "#0d141b", borderRight: "1px solid #1f2b36", padding: "20px 12px", flexShrink: 0, display: "flex", flexDirection: "column" }}>
       <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 24, paddingLeft: 8 }}>🚡 Lanovky Hra</div>
 
       <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -61,6 +61,30 @@ export default function Sidebar() {
           </div>
         ))}
       </nav>
+
+      {notifikacie.length > 0 && (
+        <div style={{ marginTop: "auto", paddingTop: 20 }}>
+          <div style={{ color: "#4a5866", fontSize: 11, textTransform: "uppercase", paddingLeft: 12, marginBottom: 6 }}>
+            Notifikácie
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {notifikacie.map((n, i) => (
+              <div
+                key={i}
+                style={{
+                  fontSize: 12,
+                  color: n.typ === "varovanie" ? "#f2994a" : "#9fb0bf",
+                  background: "#131c24",
+                  borderRadius: 6,
+                  padding: "8px 10px",
+                }}
+              >
+                {n.typ === "varovanie" ? "⚠️ " : "ℹ️ "}{n.text}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
