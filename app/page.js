@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import {
-  LANOVKY_TYPY,
+  KATEGORIE,
   ZNACKY,
   vystavbaVRealnychDnoch,
-  cenaLanovky,
-  prestizLanovky,
+  cenaBudovy,
+  prestizBudovy,
   turistiZaHodinu,
   prijemZaHodinu,
 } from "../lib/katalog";
@@ -22,9 +22,11 @@ export default function Home() {
   const [budovy, setBudovy] = useState([]);
   const [loading, setLoading] = useState(false);
   const [zisk, setZisk] = useState(0);
+
+  const [ukazStavbu, setUkazStavbu] = useState(false);
+  const [vyberKategoria, setVyberKategoria] = useState("lanovka");
   const [vyberTyp, setVyberTyp] = useState("vlek");
   const [vyberZnacka, setVyberZnacka] = useState("montera");
-  const [ukazStavbu, setUkazStavbu] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -35,6 +37,12 @@ export default function Home() {
   useEffect(() => {
     if (session) nacitajVsetko();
   }, [session]);
+
+  // Keď zmeníš kategóriu vo formulári, nastav prvý typ z jej katalógu
+  useEffect(() => {
+    const prvyTyp = Object.keys(KATEGORIE[vyberKategoria].katalog)[0];
+    setVyberTyp(prvyTyp);
+  }, [vyberKategoria]);
 
   async function nacitajVsetko() {
     setLoading(true);
@@ -56,7 +64,6 @@ export default function Home() {
 
     const teraz = new Date();
 
-    // Skontrolujeme, či niektorá stavba medzičasom nedokončila
     const dokoncene = [];
     for (const b of budovyData) {
       if (b.stav === "vo_vystavbe" && new Date(b.koniec_vystavby) <= teraz) {
@@ -65,20 +72,17 @@ export default function Home() {
     }
     if (dokoncene.length > 0) {
       await supabase.from("budovy").update({ stav: "hotovo" }).in("id", dokoncene);
-      budovyData = budovyData.map((b) =>
-        dokoncene.includes(b.id) ? { ...b, stav: "hotovo" } : b
-      );
+      budovyData = budovyData.map((b) => (dokoncene.includes(b.id) ? { ...b, stav: "hotovo" } : b));
     }
 
-    // Dopočítame príjem od posledného prihlásenia z hotových budov
     const posledna = new Date(st.last_update);
     let hodin = (teraz - posledna) / (1000 * 60 * 60);
     hodin = Math.min(Math.max(hodin, 0), 72);
 
     let zarobene = 0;
     for (const b of budovyData) {
-      if (b.stav === "hotovo" && b.cena) {
-        zarobene += prijemZaHodinu(b.typ, b.cena) * hodin;
+      if (b.stav === "hotovo" && b.cena && KATEGORIE[b.kategoria].maCenu) {
+        zarobene += prijemZaHodinu(b.kategoria, b.typ, b.cena) * hodin;
       }
     }
     zarobene = Math.round(zarobene);
@@ -104,18 +108,19 @@ export default function Home() {
   function vypocitajPrestiz(budovyZoznam) {
     return budovyZoznam
       .filter((b) => b.stav === "hotovo")
-      .reduce((sucet, b) => sucet + prestizLanovky(b.typ, b.znacka), 0);
+      .reduce((sucet, b) => sucet + prestizBudovy(b.kategoria, b.typ, b.znacka), 0);
   }
 
-  async function postavitLanovku() {
-    const cena = cenaLanovky(vyberTyp, vyberZnacka);
+  async function postavitBudovu() {
+    const cena = cenaBudovy(vyberKategoria, vyberTyp, vyberZnacka);
     if (stanica.peniaze < cena) {
-      alert("Nemáš dosť peňazí na túto lanovku!");
+      alert("Nemáš dosť peňazí na túto stavbu!");
       return;
     }
     setLoading(true);
 
-    const dniVystavby = vystavbaVRealnychDnoch(LANOVKY_TYPY[vyberTyp].vystavbaHernychMesiacov);
+    const info = KATEGORIE[vyberKategoria].katalog[vyberTyp];
+    const dniVystavby = vystavbaVRealnychDnoch(info.vystavbaHernychMesiacov);
     const teraz = new Date();
     const koniec = new Date(teraz.getTime() + dniVystavby * 24 * 60 * 60 * 1000);
 
@@ -123,13 +128,13 @@ export default function Home() {
       .from("budovy")
       .insert({
         stanica_id: stanica.id,
-        kategoria: "lanovka",
+        kategoria: vyberKategoria,
         typ: vyberTyp,
-        znacka: vyberZnacka,
+        znacka: KATEGORIE[vyberKategoria].maZnacky ? vyberZnacka : null,
         stav: "vo_vystavbe",
         zaciatok_vystavby: teraz.toISOString(),
         koniec_vystavby: koniec.toISOString(),
-        cena: LANOVKY_TYPY[vyberTyp].referencnaCena,
+        cena: KATEGORIE[vyberKategoria].maCenu ? info.referencnaCena : null,
       })
       .select()
       .single();
@@ -204,6 +209,7 @@ export default function Home() {
   const prestiz = stanica ? vypocitajPrestiz(budovy) : 0;
   const voVystavbe = budovy.filter((b) => b.stav === "vo_vystavbe");
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
+  const aktualnyKatalog = KATEGORIE[vyberKategoria].katalog;
 
   return (
     <main style={{ maxWidth: 700, margin: "40px auto", padding: 24 }}>
@@ -236,7 +242,8 @@ export default function Home() {
                   <div key={b.id} style={rowCardStyle}>
                     <div>
                       <div style={{ fontWeight: 600 }}>
-                        🚧 {LANOVKY_TYPY[b.typ].nazov} <span style={{ color: "#9fb0bf", fontWeight: 400 }}>({ZNACKY[b.znacka].nazov})</span>
+                        🚧 {KATEGORIE[b.kategoria].katalog[b.typ].nazov}
+                        {b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> ({ZNACKY[b.znacka].nazov})</span>}
                       </div>
                       <div style={{ color: "#f2c94c", fontSize: 13, marginTop: 4 }}>{zostavaCasu(b.koniec_vystavby)}</div>
                     </div>
@@ -246,34 +253,42 @@ export default function Home() {
             </>
           )}
 
-          <h2 style={{ fontSize: 18, margin: "24px 0 12px" }}>Tvoje lanovky</h2>
+          <h2 style={{ fontSize: 18, margin: "24px 0 12px" }}>Tvoje budovy</h2>
           {hotoveBudovy.length === 0 && (
-            <p style={{ color: "#657685", fontSize: 14 }}>Zatiaľ žiadna hotová lanovka.</p>
+            <p style={{ color: "#657685", fontSize: 14 }}>Zatiaľ žiadna hotová budova.</p>
           )}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {hotoveBudovy.map((b) => {
-              const odhadTuristov = Math.round(turistiZaHodinu(b.typ, b.cena));
-              const odhadPrijem = Math.round(prijemZaHodinu(b.typ, b.cena));
-              const bPrestiz = prestizLanovky(b.typ, b.znacka);
+              const info = KATEGORIE[b.kategoria].katalog[b.typ];
+              const maCenu = KATEGORIE[b.kategoria].maCenu;
+              const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena)) : null;
+              const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena)) : null;
+              const bPrestiz = prestizBudovy(b.kategoria, b.typ, b.znacka);
               return (
                 <div key={b.id} style={rowCardStyle}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600 }}>
-                      {LANOVKY_TYPY[b.typ].nazov} <span style={{ color: "#9fb0bf", fontWeight: 400 }}>({ZNACKY[b.znacka].nazov})</span>
+                      {info.nazov}
+                      {b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> ({ZNACKY[b.znacka].nazov})</span>}
+                      <span style={{ color: "#657685", fontWeight: 400, fontSize: 12 }}> — {KATEGORIE[b.kategoria].nazov}</span>
                     </div>
                     <div style={{ color: "#9fb0bf", fontSize: 13, marginTop: 4 }}>
-                      Kapacita: {LANOVKY_TYPY[b.typ].kapacita}/hod &nbsp;|&nbsp; Odhad: {odhadTuristov} turistov/hod &nbsp;|&nbsp; ~{odhadPrijem} €/hod &nbsp;|&nbsp; ⭐ {bPrestiz}
+                      Kapacita: {info.kapacita}/hod
+                      {maCenu && <> &nbsp;|&nbsp; Odhad: {odhadTuristov} turistov/hod &nbsp;|&nbsp; ~{odhadPrijem} €/hod</>}
+                      &nbsp;|&nbsp; ⭐ {bPrestiz}
                     </div>
-                    <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
-                      <label style={{ fontSize: 13, color: "#9fb0bf" }}>Cena lístka (€):</label>
-                      <input
-                        type="number"
-                        min="1"
-                        defaultValue={b.cena}
-                        onBlur={(e) => zmenitCenu(b, Number(e.target.value))}
-                        style={{ ...inputStyle, width: 80, padding: "4px 8px" }}
-                      />
-                    </div>
+                    {maCenu && (
+                      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                        <label style={{ fontSize: 13, color: "#9fb0bf" }}>Cena (€):</label>
+                        <input
+                          type="number"
+                          min="1"
+                          defaultValue={b.cena}
+                          onBlur={(e) => zmenitCenu(b, Number(e.target.value))}
+                          style={{ ...inputStyle, width: 80, padding: "4px 8px" }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -282,33 +297,44 @@ export default function Home() {
 
           <div style={{ marginTop: 24 }}>
             {!ukazStavbu ? (
-              <button onClick={() => setUkazStavbu(true)} style={buttonStyle}>➕ Postaviť novú lanovku</button>
+              <button onClick={() => setUkazStavbu(true)} style={buttonStyle}>➕ Postaviť novú budovu</button>
             ) : (
               <div style={cardStyle}>
-                <h3 style={{ marginTop: 0 }}>Postaviť novú lanovku</h3>
+                <h3 style={{ marginTop: 0 }}>Postaviť novú budovu</h3>
+
+                <label style={{ fontSize: 13, color: "#9fb0bf" }}>Kategória:</label>
+                <select value={vyberKategoria} onChange={(e) => setVyberKategoria(e.target.value)} style={{ ...inputStyle, width: "100%", marginTop: 4, marginBottom: 12 }}>
+                  {Object.keys(KATEGORIE).map((kat) => (
+                    <option key={kat} value={kat}>{KATEGORIE[kat].nazov}</option>
+                  ))}
+                </select>
 
                 <label style={{ fontSize: 13, color: "#9fb0bf" }}>Typ:</label>
                 <select value={vyberTyp} onChange={(e) => setVyberTyp(e.target.value)} style={{ ...inputStyle, width: "100%", marginTop: 4, marginBottom: 12 }}>
-                  {Object.keys(LANOVKY_TYPY).map((typ) => (
-                    <option key={typ} value={typ}>{LANOVKY_TYPY[typ].nazov}</option>
+                  {Object.keys(aktualnyKatalog).map((typ) => (
+                    <option key={typ} value={typ}>{aktualnyKatalog[typ].nazov}</option>
                   ))}
                 </select>
 
-                <label style={{ fontSize: 13, color: "#9fb0bf" }}>Značka:</label>
-                <select value={vyberZnacka} onChange={(e) => setVyberZnacka(e.target.value)} style={{ ...inputStyle, width: "100%", marginTop: 4, marginBottom: 12 }}>
-                  {Object.keys(ZNACKY).map((zn) => (
-                    <option key={zn} value={zn}>{ZNACKY[zn].nazov} — {ZNACKY[zn].popis}</option>
-                  ))}
-                </select>
+                {KATEGORIE[vyberKategoria].maZnacky && (
+                  <>
+                    <label style={{ fontSize: 13, color: "#9fb0bf" }}>Značka:</label>
+                    <select value={vyberZnacka} onChange={(e) => setVyberZnacka(e.target.value)} style={{ ...inputStyle, width: "100%", marginTop: 4, marginBottom: 12 }}>
+                      {Object.keys(ZNACKY).map((zn) => (
+                        <option key={zn} value={zn}>{ZNACKY[zn].nazov} — {ZNACKY[zn].popis}</option>
+                      ))}
+                    </select>
+                  </>
+                )}
 
                 <div style={{ color: "#9fb0bf", fontSize: 13, marginBottom: 16 }}>
-                  Cena: <strong style={{ color: "#e8edf2" }}>{cenaLanovky(vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €</strong>
-                  &nbsp;|&nbsp; Výstavba: <strong style={{ color: "#e8edf2" }}>{Math.round(vystavbaVRealnychDnoch(LANOVKY_TYPY[vyberTyp].vystavbaHernychMesiacov))} dní</strong>
-                  &nbsp;|&nbsp; Prestíž: <strong style={{ color: "#f2c94c" }}>⭐ {prestizLanovky(vyberTyp, vyberZnacka)}</strong>
+                  Cena: <strong style={{ color: "#e8edf2" }}>{cenaBudovy(vyberKategoria, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €</strong>
+                  &nbsp;|&nbsp; Výstavba: <strong style={{ color: "#e8edf2" }}>{Math.round(vystavbaVRealnychDnoch(aktualnyKatalog[vyberTyp].vystavbaHernychMesiacov))} dní</strong>
+                  &nbsp;|&nbsp; Prestíž: <strong style={{ color: "#f2c94c" }}>⭐ {prestizBudovy(vyberKategoria, vyberTyp, vyberZnacka)}</strong>
                 </div>
 
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={postavitLanovku} style={buttonStyle} disabled={loading}>Postaviť</button>
+                  <button onClick={postavitBudovu} style={buttonStyle} disabled={loading}>Postaviť</button>
                   <button onClick={() => setUkazStavbu(false)} style={{ ...buttonStyle, background: "#3a4753" }}>Zrušiť</button>
                 </div>
               </div>
@@ -316,7 +342,7 @@ export default function Home() {
           </div>
 
           <p style={{ color: "#657685", fontSize: 12, marginTop: 24 }}>
-            💡 Tip: nižšia cena lístka priláka viac turistov, ale každý zaplatí menej. Skús nájsť rovnováhu. Stavba beží aj keď nie si online — po prihlásení uvidíš, čo sa medzitým dokončilo.
+            💡 Tip: nižšia cena priláka viac turistov, ale každý zaplatí menej. Pokladne zatiaľ negenerujú vlastný príjem, len podporujú prevádzku. Stavba beží aj keď nie si online.
           </p>
         </>
       )}
