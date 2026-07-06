@@ -34,6 +34,7 @@ export default function AkcieBar() {
             textDecoration: "none",
             fontSize: 12,
             minWidth: 80,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
           }}
         >
           <span style={{ fontSize: 20 }}>{a.icon}</span>
