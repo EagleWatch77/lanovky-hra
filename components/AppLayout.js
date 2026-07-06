@@ -2,11 +2,15 @@
 
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import AkcieBar from "./AkcieBar";
+import { vytvorNotifikacie } from "../lib/notifikacie";
 
 export default function AppLayout({ session, stanica, budovy, handleLogout, efektivitaBudovy, children }) {
+  const notifikacie = stanica ? vytvorNotifikacie(budovy, efektivitaBudovy, stanica) : [];
+
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
-      <Sidebar />
+      <Sidebar notifikacie={notifikacie} />
       <main style={{ flex: 1, padding: 24, maxWidth: 900 }}>
         {stanica && (
           <TopBar
@@ -18,6 +22,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
           />
         )}
         {children}
+        <AkcieBar />
       </main>
     </div>
   );
