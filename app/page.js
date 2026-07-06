@@ -6,6 +6,7 @@ import AuthForm from "../components/AuthForm";
 import AppLayout from "../components/AppLayout";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
+import LanovkyPanel from "../components/LanovkyPanel";
 import { KATEGORIE } from "../lib/katalog";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
@@ -98,7 +99,14 @@ export default function PrehladPage() {
             )}
           </div>
 
-          <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 280 }}>
+              <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+            </div>
+            <div style={{ flex: 1, minWidth: 280 }}>
+              <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+            </div>
+          </div>
         </>
       )}
     </AppLayout>
