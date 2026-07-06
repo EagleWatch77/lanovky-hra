@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
-import Nav from "../components/Nav";
+import AppLayout from "../components/AppLayout";
 import VyjednavanieModal from "../components/VyjednavanieModal";
+import PrestizRadar from "../components/PrestizRadar";
 import { KATEGORIE } from "../lib/katalog";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
@@ -14,7 +15,6 @@ export default function PrehladPage() {
     stanica,
     budovy,
     loading,
-    zisk,
     ukazVyjednavanie,
     potrebujeNazov,
     vytvorStanicu,
@@ -64,33 +64,15 @@ export default function PrehladPage() {
   }
 
   return (
-    <main style={{ maxWidth: 700, margin: "40px auto", padding: 24 }}>
-      <Nav email={session.user.email} onLogout={handleLogout} />
-
+    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy}>
       {loading && <p style={{ color: "#9fb0bf" }}>Načítavam...</p>}
 
       <VyjednavanieModal ukaz={!loading && ukazVyjednavanie} onVyjednat={vyjednatPlat} />
 
       {!loading && stanica && (
         <>
-          <div style={{ ...cardStyle, marginTop: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <div style={{ color: "#9fb0bf", fontSize: 13 }}>{stanica.nazov}</div>
-              <div style={{ fontSize: 32, fontWeight: 700 }}>💰 {Math.round(stanica.peniaze).toLocaleString("sk-SK")} €</div>
-              {zisk !== 0 && (
-                <div style={{ color: zisk > 0 ? "#4ade80" : "#f2994a", fontWeight: 600, fontSize: 14 }}>
-                  {zisk > 0 ? "+" : ""}{zisk.toLocaleString("sk-SK")} € od minula
-                </div>
-              )}
-            </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ color: "#9fb0bf", fontSize: 13 }}>Prestíž</div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: "#f2c94c" }}>⭐ {stanica.prestiz}</div>
-            </div>
-          </div>
-
           <div style={cardStyle}>
-            <h3 style={{ marginTop: 0, fontSize: 16 }}>Rýchly prehľad</h3>
+            <h3 style={{ marginTop: 0, fontSize: 16 }}>{stanica.nazov} — Rýchly prehľad</h3>
             <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
               <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
               <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
@@ -115,8 +97,10 @@ export default function PrehladPage() {
               </p>
             )}
           </div>
+
+          <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
         </>
       )}
-    </main>
+    </AppLayout>
   );
 }
