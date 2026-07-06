@@ -9,7 +9,7 @@ import {
   prestizBudovy,
   turistiZaHodinu,
   prijemZaHodinu,
-  potrebniZamestnanci,
+  zamestnanciPotrebni,
   efektivitaZamestnancov,
   PLAT_ZA_HODINU,
   CENA_NAJATIA,
@@ -77,14 +77,22 @@ export default function Home() {
     const teraz = new Date();
 
     const dokoncene = [];
+    let nakladyNaNajatie = 0;
     for (const b of budovyData) {
       if (b.stav === "vo_vystavbe" && new Date(b.koniec_vystavby) <= teraz) {
-        dokoncene.push(b.id);
+        dokoncene.push(b);
       }
     }
+    for (const b of dokoncene) {
+      const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
+      await supabase.from("budovy").update({ stav: "hotovo", zamestnanci_pridelenych: potrebnyB }).eq("id", b.id);
+      nakladyNaNajatie += potrebnyB * CENA_NAJATIA;
+    }
     if (dokoncene.length > 0) {
-      await supabase.from("budovy").update({ stav: "hotovo" }).in("id", dokoncene);
-      budovyData = budovyData.map((b) => (dokoncene.includes(b.id) ? { ...b, stav: "hotovo" } : b));
+      const dokonceneId = dokoncene.map((b) => b.id);
+      budovyData = budovyData.map((b) =>
+        dokonceneId.includes(b.id) ? { ...b, stav: "hotovo", zamestnanci_pridelenych: zamestnanciPotrebni(b.kategoria, b.typ) } : b
+      );
     }
 
     const posledna = new Date(st.last_update);
@@ -92,19 +100,22 @@ export default function Home() {
     hodin = Math.min(Math.max(hodin, 0), 72);
 
     const hotoveTeraz = budovyData.filter((b) => b.stav === "hotovo");
-    const potrebny = potrebniZamestnanci(hotoveTeraz);
-    const efektivitaObsadenia = efektivitaZamestnancov(st.zamestnanci, potrebny);
     const efektivnyBonus = new Date(st.efektivita_bonus_do) >= teraz ? (st.efektivita_bonus ?? 1) : 1;
-    const celkovaEfektivita = efektivitaObsadenia * efektivnyBonus;
 
     let zarobene = 0;
+    let sucetPrestiz = 0;
+    let sucetPlatov = 0;
     for (const b of hotoveTeraz) {
+      const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
+      const efektivitaB = efektivitaZamestnancov(b.zamestnanci_pridelenych || 0, potrebnyB) * efektivnyBonus;
+
       if (b.cena && KATEGORIE[b.kategoria].maCenu) {
-        zarobene += prijemZaHodinu(b.kategoria, b.typ, b.cena) * celkovaEfektivita * hodin;
+        zarobene += prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB * hodin;
       }
+      sucetPrestiz += prestizBudovy(b.kategoria, b.typ, b.znacka) * efektivitaB;
+      sucetPlatov += (b.zamestnanci_pridelenych || 0) * PLAT_ZA_HODINU * (st.plat_multiplikator ?? 1) * hodin;
     }
-    const platyNaklady = st.zamestnanci * PLAT_ZA_HODINU * (st.plat_multiplikator ?? 1) * hodin;
-    zarobene = Math.round(zarobene - platyNaklady);
+    zarobene = Math.round(zarobene - sucetPlatov - nakladyNaNajatie);
 
     // Vyjednávanie o plat prebieha 23.-31. december, pre plat platný od 1. januára
     const jeDecembrovyTyzden = teraz.getMonth() === 11 && teraz.getDate() >= 23;
@@ -113,7 +124,7 @@ export default function Home() {
       setUkazVyjednavanie(true);
     }
 
-    if (hodin > 0.01) {
+    if (hodin > 0.01 || nakladyNaNajatie > 0) {
       const { data: updatedSt } = await supabase
         .from("stanice")
         .update({ peniaze: st.peniaze + zarobene, last_update: teraz.toISOString() })
@@ -129,8 +140,7 @@ export default function Home() {
     setStanica(st);
     setBudovy(budovyData);
 
-    const zakladnaPrestiz = vypocitajPrestiz(budovyData);
-    const vypocitanaPrestiz = Math.round(zakladnaPrestiz * celkovaEfektivita);
+    const vypocitanaPrestiz = Math.round(sucetPrestiz);
     if (vypocitanaPrestiz !== st.prestiz) {
       await supabase.from("stanice").update({ prestiz: vypocitanaPrestiz }).eq("id", st.id);
       st = { ...st, prestiz: vypocitanaPrestiz };
@@ -138,12 +148,6 @@ export default function Home() {
     }
 
     setLoading(false);
-  }
-
-  function vypocitajPrestiz(budovyZoznam) {
-    return budovyZoznam
-      .filter((b) => b.stav === "hotovo")
-      .reduce((sucet, b) => sucet + prestizBudovy(b.kategoria, b.typ, b.znacka), 0);
   }
 
   async function postavitBudovu() {
@@ -228,29 +232,38 @@ export default function Home() {
     setUkazVyjednavanie(false);
   }
 
-  async function najatZamestnanca() {
+  async function najatPreBudovu(budova) {
+    const potrebnyB = zamestnanciPotrebni(budova.kategoria, budova.typ);
+    if ((budova.zamestnanci_pridelenych || 0) >= potrebnyB) return;
     if (stanica.peniaze < CENA_NAJATIA) {
       alert("Nemáš dosť peňazí na najatie ďalšieho zamestnanca!");
       return;
     }
+    const { data: updatedBud } = await supabase
+      .from("budovy")
+      .update({ zamestnanci_pridelenych: (budova.zamestnanci_pridelenych || 0) + 1 })
+      .eq("id", budova.id)
+      .select()
+      .single();
     const { data: updatedSt } = await supabase
       .from("stanice")
-      .update({ zamestnanci: stanica.zamestnanci + 1, peniaze: stanica.peniaze - CENA_NAJATIA })
+      .update({ peniaze: stanica.peniaze - CENA_NAJATIA })
       .eq("id", stanica.id)
       .select()
       .single();
     setStanica(updatedSt);
+    setBudovy(budovy.map((b) => (b.id === budova.id ? updatedBud : b)));
   }
 
-  async function prepustitZamestnanca() {
-    if (stanica.zamestnanci <= 0) return;
-    const { data: updatedSt } = await supabase
-      .from("stanice")
-      .update({ zamestnanci: stanica.zamestnanci - 1 })
-      .eq("id", stanica.id)
+  async function prepustitPreBudovu(budova) {
+    if ((budova.zamestnanci_pridelenych || 0) <= 0) return;
+    const { data: updatedBud } = await supabase
+      .from("budovy")
+      .update({ zamestnanci_pridelenych: budova.zamestnanci_pridelenych - 1 })
+      .eq("id", budova.id)
       .select()
       .single();
-    setStanica(updatedSt);
+    setBudovy(budovy.map((b) => (b.id === budova.id ? updatedBud : b)));
   }
 
   async function zmenitCenu(budova, novaCena) {
@@ -309,10 +322,11 @@ export default function Home() {
 
   const voVystavbe = budovy.filter((b) => b.stav === "vo_vystavbe");
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
-  const potrebny = potrebniZamestnanci(hotoveBudovy);
-  const efektivitaObsadenia = stanica ? efektivitaZamestnancov(stanica.zamestnanci, potrebny) : 1;
   const efektivnyBonusTeraz = stanica && new Date(stanica.efektivita_bonus_do) >= new Date() ? (stanica.efektivita_bonus ?? 1) : 1;
-  const celkovaEfektivita = stanica ? efektivitaObsadenia * efektivnyBonusTeraz : 1;
+  function efektivitaBudovy(b) {
+    const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
+    return efektivitaZamestnancov(b.zamestnanci_pridelenych || 0, potrebnyB) * efektivnyBonusTeraz;
+  }
   const prestiz = stanica ? stanica.prestiz : 0;
   const aktualnyKatalog = KATEGORIE[vyberKategoria].katalog;
 
@@ -390,25 +404,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <div style={{ color: "#9fb0bf", fontSize: 13 }}>👷 Zamestnanci</div>
-              <div style={{ fontSize: 20, fontWeight: 700 }}>
-                {stanica.zamestnanci} / {potrebny} potrebných
-              </div>
-              {celkovaEfektivita < 1 && (
-                <div style={{ color: "#f2994a", fontSize: 13, marginTop: 4 }}>
-                  ⚠️ Turisti si všímajú — budovy bežia na {Math.round(celkovaEfektivita * 100)} % výkonu (ovplyvňuje aj príjem, aj prestíž)
-                </div>
-              )}
-              <div style={{ color: "#657685", fontSize: 12, marginTop: 4 }}>Plat: {PLAT_ZA_HODINU} €/hod na osobu</div>
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={prepustitZamestnanca} style={{ ...buttonStyle, background: "#3a4753" }} disabled={stanica.zamestnanci <= 0}>−</button>
-              <button onClick={najatZamestnanca} style={buttonStyle}>+ Najať ({CENA_NAJATIA.toLocaleString("sk-SK")} €)</button>
-            </div>
-          </div>
-
           {voVystavbe.length > 0 && (
             <>
               <h2 style={{ fontSize: 18, margin: "24px 0 12px" }}>Vo výstavbe</h2>
@@ -436,9 +431,11 @@ export default function Home() {
             {hotoveBudovy.map((b) => {
               const info = KATEGORIE[b.kategoria].katalog[b.typ];
               const maCenu = KATEGORIE[b.kategoria].maCenu;
-              const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * celkovaEfektivita) : null;
-              const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * celkovaEfektivita) : null;
-              const bPrestiz = prestizBudovy(b.kategoria, b.typ, b.znacka);
+              const efektivitaB = efektivitaBudovy(b);
+              const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
+              const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB) : null;
+              const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB) : null;
+              const bPrestiz = Math.round(prestizBudovy(b.kategoria, b.typ, b.znacka) * efektivitaB);
               return (
                 <div key={b.id} style={rowCardStyle}>
                   <div style={{ flex: 1 }}>
@@ -451,6 +448,14 @@ export default function Home() {
                       Kapacita: {info.kapacita}/hod
                       {maCenu && <> &nbsp;|&nbsp; Odhad: {odhadTuristov} turistov/hod &nbsp;|&nbsp; ~{odhadPrijem} €/hod</>}
                       &nbsp;|&nbsp; ⭐ {bPrestiz}
+                    </div>
+                    <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 13, color: efektivitaB < 1 ? "#f2994a" : "#9fb0bf" }}>
+                        👷 {b.zamestnanci_pridelenych || 0} / {potrebnyB}
+                        {efektivitaB < 1 && ` — beží na ${Math.round(efektivitaB * 100)} %`}
+                      </span>
+                      <button onClick={() => prepustitPreBudovu(b)} style={{ ...buttonStyle, padding: "2px 10px", background: "#3a4753" }} disabled={(b.zamestnanci_pridelenych || 0) <= 0}>−</button>
+                      <button onClick={() => najatPreBudovu(b)} style={{ ...buttonStyle, padding: "2px 10px" }} disabled={(b.zamestnanci_pridelenych || 0) >= potrebnyB}>+ ({CENA_NAJATIA.toLocaleString("sk-SK")} €)</button>
                     </div>
                     {maCenu && (
                       <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
@@ -548,7 +553,7 @@ export default function Home() {
           </div>
 
           <p style={{ color: "#657685", fontSize: 12, marginTop: 24 }}>
-            💡 Tip: nižšia cena priláka viac turistov, ale každý zaplatí menej. Pokladne zatiaľ negenerujú vlastný príjem, len podporujú prevádzku. Stavba beží aj keď nie si online.
+            💡 Tip: pri dokončení stavby sa automaticky najme potrebný počet zamestnancov (zaplatíš za nich). Ak niektorých prepustíš, budova pobeží na nižšiu efektivitu — ovplyvní to aj príjem, aj prestíž.
           </p>
         </>
       )}
