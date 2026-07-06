@@ -23,6 +23,8 @@ export default function Home() {
   const [zisk, setZisk] = useState(0);
 
   const [ukazStavbu, setUkazStavbu] = useState(false);
+  const [ukazRebricek, setUkazRebricek] = useState(false);
+  const [rebricek, setRebricek] = useState([]);
   const [vyberKategoria, setVyberKategoria] = useState("lanovka");
   const [vyberTyp, setVyberTyp] = useState("vlek");
   const [vyberZnacka, setVyberZnacka] = useState("montera");
@@ -104,6 +106,12 @@ export default function Home() {
 
     setStanica(st);
     setBudovy(budovyData);
+
+    const vypocitanaPrestiz = vypocitajPrestiz(budovyData);
+    if (vypocitanaPrestiz !== st.prestiz) {
+      await supabase.from("stanice").update({ prestiz: vypocitanaPrestiz }).eq("id", st.id);
+    }
+
     setLoading(false);
   }
 
@@ -152,6 +160,12 @@ export default function Home() {
     setBudovy([...budovy, novaBudova]);
     setUkazStavbu(false);
     setLoading(false);
+  }
+
+  async function nacitajRebricek() {
+    const { data } = await supabase.from("rebricek").select("*").order("prestiz", { ascending: false });
+    setRebricek(data || []);
+    setUkazRebricek(true);
   }
 
   async function zmenitCenu(budova, novaCena) {
@@ -217,8 +231,39 @@ export default function Home() {
     <main style={{ maxWidth: 700, margin: "40px auto", padding: 24 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
         <h1 style={{ fontSize: 22 }}>🚡 {session.user.email}</h1>
-        <button onClick={handleLogout} style={linkStyle}>Odhlásiť sa</button>
+        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+          <button onClick={nacitajRebricek} style={linkStyle}>🏆 Rebríček</button>
+          <button onClick={handleLogout} style={linkStyle}>Odhlásiť sa</button>
+        </div>
       </div>
+
+      {ukazRebricek && (
+        <div style={cardStyle}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <h3 style={{ margin: 0 }}>🏆 Rebríček podľa prestíže</h3>
+            <button onClick={() => setUkazRebricek(false)} style={linkStyle}>✕ Zavrieť</button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {rebricek.map((r, i) => (
+              <div
+                key={r.id}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  background: stanica && r.id === stanica.id ? "#16241d" : "#0f1720",
+                  border: stanica && r.id === stanica.id ? "1px solid #2f9e6e" : "1px solid #2a3744",
+                }}
+              >
+                <span>#{i + 1} {r.nazov}{stanica && r.id === stanica.id && " (ty)"}</span>
+                <span style={{ color: "#f2c94c", fontWeight: 600 }}>⭐ {r.prestiz}</span>
+              </div>
+            ))}
+            {rebricek.length === 0 && <p style={{ color: "#657685" }}>Zatiaľ žiadni hráči v rebríčku.</p>}
+          </div>
+        </div>
+      )}
 
       {loading && <p style={{ color: "#9fb0bf" }}>Načítavam...</p>}
 
