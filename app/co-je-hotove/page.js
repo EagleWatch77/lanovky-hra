@@ -2,11 +2,11 @@
 
 import { useGameState } from "../../lib/useGameState";
 import AuthForm from "../../components/AuthForm";
-import Nav from "../../components/Nav";
+import AppLayout from "../../components/AppLayout";
 import { cardStyle } from "../../lib/styles";
 
 const HOTOVE = [
-  "Registrácia a prihlásenie hráčov",
+  "Registrácia a prihlásenie hráčov, vlastný názov strediska",
   "Peniaze a Prestíž (oddelené hodnoty)",
   "9 kategórií budov: lanovky, parkoviská, pokladne, hotely, ratraky, zasnežovanie, bary, servis/požičovňa, obchody",
   "Výrobné značky pri lanovkách (Alpinor/Montera/Nordtech) a ratrakoch (Snowtrac/Pistenwolf)",
@@ -15,7 +15,8 @@ const HOTOVE = [
   "Zamestnanci per budova — automaticky najatí pri dokončení stavby, dajú sa prepustiť/dohodnúť",
   "Ročné kalendárne vyjednávanie o plat (23.–31. december)",
   "Rebríček hráčov podľa prestíže",
-  "Rozdelenie appky na viac stránok (Prehľad / Budovy / Rebríček / Čo je hotové)",
+  "Nastavenia — zmena názvu, emailu, hesla, zmazanie dát",
+  "Bočné menu, horná lišta so štatistikami, radar graf prestíže",
 ];
 
 const PLANOVANE = [
@@ -25,18 +26,16 @@ const PLANOVANE = [
   "Konkurencia — sledovanie cien iných hráčov",
   "Ligový systém s postupom/zostupom",
   "Aliancie a spoločné projekty",
-  "Vylepšenie grafiky a celkového vzhľadu",
+  "Ďalšie vylepšenie grafiky (napr. mapa strediska)",
 ];
 
 export default function CoJeHotovePage() {
-  const { session, loading, handleLogout } = useGameState();
+  const { session, stanica, budovy, handleLogout, efektivitaBudovy } = useGameState();
 
   if (!session) return <AuthForm />;
 
   return (
-    <main style={{ maxWidth: 700, margin: "40px auto", padding: 24 }}>
-      <Nav email={session.user.email} onLogout={handleLogout} />
-
+    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy}>
       <div style={cardStyle}>
         <h3 style={{ marginTop: 0 }}>✅ Čo už funguje</h3>
         <ul style={{ color: "#e8edf2", fontSize: 14, lineHeight: 1.8, paddingLeft: 20 }}>
@@ -58,6 +57,6 @@ export default function CoJeHotovePage() {
       <p style={{ color: "#657685", fontSize: 12, marginTop: 16 }}>
         Kompletný herný dizajnový dokument (GDD.md) obsahuje všetky detaily a čísla — nájdeš ho v GitHub repozitári projektu.
       </p>
-    </main>
+    </AppLayout>
   );
 }
