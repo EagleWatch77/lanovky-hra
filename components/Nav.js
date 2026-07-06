@@ -9,6 +9,7 @@ const ODKAZY = [
   { href: "/budovy", label: "🏗️ Budovy" },
   { href: "/rebricek", label: "🏆 Rebríček" },
   { href: "/co-je-hotove", label: "📋 Čo je hotové" },
+  { href: "/nastavenia", label: "⚙️ Nastavenia" },
 ];
 
 export default function Nav({ email, onLogout }) {
