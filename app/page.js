@@ -38,11 +38,11 @@ export default function Home() {
     if (session) nacitajVsetko();
   }, [session]);
 
-  // Keď zmeníš kategóriu vo formulári, nastav prvý typ z jej katalógu
-  useEffect(() => {
-    const prvyTyp = Object.keys(KATEGORIE[vyberKategoria].katalog)[0];
+  function zmenitKategoriu(novaKategoria) {
+    const prvyTyp = Object.keys(KATEGORIE[novaKategoria].katalog)[0];
+    setVyberKategoria(novaKategoria);
     setVyberTyp(prvyTyp);
-  }, [vyberKategoria]);
+  }
 
   async function nacitajVsetko() {
     setLoading(true);
@@ -300,43 +300,71 @@ export default function Home() {
               <button onClick={() => setUkazStavbu(true)} style={buttonStyle}>➕ Postaviť novú budovu</button>
             ) : (
               <div style={cardStyle}>
-                <h3 style={{ marginTop: 0 }}>Postaviť novú budovu</h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                  <h3 style={{ margin: 0 }}>Postaviť novú budovu</h3>
+                  <button onClick={() => setUkazStavbu(false)} style={linkStyle}>✕ Zavrieť</button>
+                </div>
 
-                <label style={{ fontSize: 13, color: "#9fb0bf" }}>Kategória:</label>
-                <select value={vyberKategoria} onChange={(e) => setVyberKategoria(e.target.value)} style={{ ...inputStyle, width: "100%", marginTop: 4, marginBottom: 12 }}>
+                <div style={{ color: "#657685", fontSize: 12, marginBottom: 8 }}>1. Vyber kategóriu</div>
+                <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
                   {Object.keys(KATEGORIE).map((kat) => (
-                    <option key={kat} value={kat}>{KATEGORIE[kat].nazov}</option>
+                    <button
+                      key={kat}
+                      onClick={() => zmenitKategoriu(kat)}
+                      style={vyberKategoria === kat ? tileStyleActive : tileStyle}
+                    >
+                      <div style={{ fontSize: 28 }}>{KATEGORIE_IKONY[kat]}</div>
+                      <div style={{ fontSize: 13, marginTop: 4 }}>{KATEGORIE[kat].nazov}</div>
+                    </button>
                   ))}
-                </select>
+                </div>
 
-                <label style={{ fontSize: 13, color: "#9fb0bf" }}>Typ:</label>
-                <select value={vyberTyp} onChange={(e) => setVyberTyp(e.target.value)} style={{ ...inputStyle, width: "100%", marginTop: 4, marginBottom: 12 }}>
+                <div style={{ color: "#657685", fontSize: 12, marginBottom: 8 }}>2. Vyber typ</div>
+                <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
                   {Object.keys(aktualnyKatalog).map((typ) => (
-                    <option key={typ} value={typ}>{aktualnyKatalog[typ].nazov}</option>
+                    <button
+                      key={typ}
+                      onClick={() => setVyberTyp(typ)}
+                      style={vyberTyp === typ ? tileStyleActive : tileStyle}
+                    >
+                      <div style={{ fontSize: 13, fontWeight: 600 }}>{aktualnyKatalog[typ].nazov}</div>
+                      <div style={{ fontSize: 11, color: "#9fb0bf", marginTop: 4 }}>
+                        {cenaBudovy(vyberKategoria, typ, vyberZnacka).toLocaleString("sk-SK")} €
+                      </div>
+                    </button>
                   ))}
-                </select>
+                </div>
 
                 {KATEGORIE[vyberKategoria].maZnacky && (
                   <>
-                    <label style={{ fontSize: 13, color: "#9fb0bf" }}>Značka:</label>
-                    <select value={vyberZnacka} onChange={(e) => setVyberZnacka(e.target.value)} style={{ ...inputStyle, width: "100%", marginTop: 4, marginBottom: 12 }}>
+                    <div style={{ color: "#657685", fontSize: 12, marginBottom: 8 }}>3. Vyber značku</div>
+                    <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
                       {Object.keys(ZNACKY).map((zn) => (
-                        <option key={zn} value={zn}>{ZNACKY[zn].nazov} — {ZNACKY[zn].popis}</option>
+                        <button
+                          key={zn}
+                          onClick={() => setVyberZnacka(zn)}
+                          style={vyberZnacka === zn ? tileStyleActive : tileStyle}
+                        >
+                          <div style={{ fontSize: 13, fontWeight: 600 }}>{ZNACKY[zn].nazov}</div>
+                          <div style={{ fontSize: 11, color: "#9fb0bf", marginTop: 4, maxWidth: 110 }}>{ZNACKY[zn].popis}</div>
+                        </button>
                       ))}
-                    </select>
+                    </div>
                   </>
                 )}
 
-                <div style={{ color: "#9fb0bf", fontSize: 13, marginBottom: 16 }}>
-                  Cena: <strong style={{ color: "#e8edf2" }}>{cenaBudovy(vyberKategoria, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €</strong>
-                  &nbsp;|&nbsp; Výstavba: <strong style={{ color: "#e8edf2" }}>{Math.round(vystavbaVRealnychDnoch(aktualnyKatalog[vyberTyp].vystavbaHernychMesiacov))} dní</strong>
-                  &nbsp;|&nbsp; Prestíž: <strong style={{ color: "#f2c94c" }}>⭐ {prestizBudovy(vyberKategoria, vyberTyp, vyberZnacka)}</strong>
+                <div style={{ ...cardStyle, marginTop: 0, background: "#0f1720" }}>
+                  <div style={{ fontWeight: 600, marginBottom: 8 }}>{aktualnyKatalog[vyberTyp]?.nazov}</div>
+                  <div style={{ color: "#9fb0bf", fontSize: 13 }}>
+                    💰 Cena: <strong style={{ color: "#e8edf2" }}>{cenaBudovy(vyberKategoria, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €</strong><br />
+                    🕐 Výstavba: <strong style={{ color: "#e8edf2" }}>{Math.round(vystavbaVRealnychDnoch(aktualnyKatalog[vyberTyp].vystavbaHernychMesiacov))} dní</strong><br />
+                    ⭐ Prestíž: <strong style={{ color: "#f2c94c" }}>{prestizBudovy(vyberKategoria, vyberTyp, vyberZnacka)}</strong>
+                  </div>
                 </div>
 
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={postavitBudovu} style={buttonStyle} disabled={loading}>Postaviť</button>
-                  <button onClick={() => setUkazStavbu(false)} style={{ ...buttonStyle, background: "#3a4753" }}>Zrušiť</button>
-                </div>
+                <button onClick={postavitBudovu} style={{ ...buttonStyle, marginTop: 16, width: "100%" }} disabled={loading}>
+                  ✅ Postaviť za {cenaBudovy(vyberKategoria, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €
+                </button>
               </div>
             )}
           </div>
@@ -350,8 +378,16 @@ export default function Home() {
   );
 }
 
+const KATEGORIE_IKONY = {
+  lanovka: "🚡",
+  parkovisko: "🅿️",
+  pokladna: "🎫",
+};
+
 const inputStyle = { padding: "10px 12px", borderRadius: 8, border: "1px solid #2a3744", background: "#151e27", color: "#e8edf2", fontSize: 16 };
 const buttonStyle = { padding: "10px 16px", borderRadius: 8, border: "none", background: "#2f9e6e", color: "white", fontSize: 14, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap" };
 const linkStyle = { background: "none", border: "none", color: "#7fb8e0", cursor: "pointer", fontSize: 14, padding: 0 };
 const cardStyle = { marginTop: 16, padding: 20, borderRadius: 12, background: "#151e27", border: "1px solid #2a3744" };
 const rowCardStyle = { ...cardStyle, marginTop: 0, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 };
+const tileStyle = { padding: "12px 16px", borderRadius: 10, border: "1px solid #2a3744", background: "#0f1720", color: "#e8edf2", cursor: "pointer", textAlign: "center", minWidth: 90 };
+const tileStyleActive = { ...tileStyle, border: "2px solid #2f9e6e", background: "#16241d" };
