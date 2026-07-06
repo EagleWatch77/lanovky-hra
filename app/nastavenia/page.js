@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useGameState } from "../../lib/useGameState";
 import AuthForm from "../../components/AuthForm";
-import Nav from "../../components/Nav";
+import AppLayout from "../../components/AppLayout";
 import { cardStyle, buttonStyle, inputStyle } from "../../lib/styles";
 
 export default function NastaveniaPage() {
-  const { session, stanica, handleLogout, premenovatStanicu, zmenitEmail, zmenitHeslo, zmazatMojeData } = useGameState();
+  const { session, stanica, budovy, handleLogout, efektivitaBudovy, premenovatStanicu, zmenitEmail, zmenitHeslo, zmazatMojeData } = useGameState();
 
   const [nazov, setNazov] = useState("");
   const [spravaNazov, setSpravaNazov] = useState("");
@@ -53,9 +53,7 @@ export default function NastaveniaPage() {
   }
 
   return (
-    <main style={{ maxWidth: 600, margin: "40px auto", padding: 24 }}>
-      <Nav email={session.user.email} onLogout={handleLogout} />
-
+    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy}>
       <h2 style={{ fontSize: 20 }}>⚙️ Nastavenia</h2>
 
       {/* Všeobecné */}
@@ -135,6 +133,6 @@ export default function NastaveniaPage() {
           existovať v systéme — jeho úplné zmazanie zatiaľ vyžaduje manuálny krok cez Supabase, ak by si ho chcel.
         </p>
       </div>
-    </main>
+    </AppLayout>
   );
 }
