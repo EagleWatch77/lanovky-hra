@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { useGameState } from "../../lib/useGameState";
 import { supabase } from "../../lib/supabaseClient";
 import AuthForm from "../../components/AuthForm";
-import Nav from "../../components/Nav";
+import AppLayout from "../../components/AppLayout";
 import VyjednavanieModal from "../../components/VyjednavanieModal";
 import { cardStyle } from "../../lib/styles";
 
 export default function RebricekPage() {
-  const { session, stanica, loading, ukazVyjednavanie, vyjednatPlat, handleLogout } = useGameState();
+  const { session, stanica, budovy, loading, ukazVyjednavanie, vyjednatPlat, handleLogout, efektivitaBudovy } = useGameState();
   const [rebricek, setRebricek] = useState([]);
   const [nacitavaSa, setNacitavaSa] = useState(true);
 
@@ -27,9 +27,7 @@ export default function RebricekPage() {
   if (!session) return <AuthForm />;
 
   return (
-    <main style={{ maxWidth: 700, margin: "40px auto", padding: 24 }}>
-      <Nav email={session.user.email} onLogout={handleLogout} />
-
+    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy}>
       <VyjednavanieModal ukaz={!loading && ukazVyjednavanie} onVyjednat={vyjednatPlat} />
 
       <div style={{ ...cardStyle, marginTop: 0 }}>
@@ -57,6 +55,6 @@ export default function RebricekPage() {
           </div>
         )}
       </div>
-    </main>
+    </AppLayout>
   );
 }
