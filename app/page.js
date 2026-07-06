@@ -13,6 +13,9 @@ import {
   efektivitaZamestnancov,
   PLAT_ZA_HODINU,
   CENA_NAJATIA,
+  ZVYSENIE_PLATU_PERCENTO,
+  EFEKTIVITA_PRI_ODMIETNUTI,
+  EFEKTIVITA_PRI_CIASTOCNOM_PRIJATI,
 } from "../lib/katalog";
 
 export default function Home() {
@@ -29,6 +32,7 @@ export default function Home() {
   const [ukazStavbu, setUkazStavbu] = useState(false);
   const [ukazRebricek, setUkazRebricek] = useState(false);
   const [rebricek, setRebricek] = useState([]);
+  const [ukazVyjednavanie, setUkazVyjednavanie] = useState(false);
   const [vyberKategoria, setVyberKategoria] = useState("lanovka");
   const [vyberTyp, setVyberTyp] = useState("vlek");
   const [vyberZnacka, setVyberZnacka] = useState("montera");
@@ -89,16 +93,25 @@ export default function Home() {
 
     const hotoveTeraz = budovyData.filter((b) => b.stav === "hotovo");
     const potrebny = potrebniZamestnanci(hotoveTeraz);
-    const efektivita = efektivitaZamestnancov(st.zamestnanci, potrebny);
+    const efektivitaObsadenia = efektivitaZamestnancov(st.zamestnanci, potrebny);
+    const efektivnyBonus = new Date(st.efektivita_bonus_do) >= teraz ? (st.efektivita_bonus ?? 1) : 1;
+    const celkovaEfektivita = efektivitaObsadenia * efektivnyBonus;
 
     let zarobene = 0;
     for (const b of hotoveTeraz) {
       if (b.cena && KATEGORIE[b.kategoria].maCenu) {
-        zarobene += prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivita * hodin;
+        zarobene += prijemZaHodinu(b.kategoria, b.typ, b.cena) * celkovaEfektivita * hodin;
       }
     }
-    const platyNaklady = st.zamestnanci * PLAT_ZA_HODINU * hodin;
+    const platyNaklady = st.zamestnanci * PLAT_ZA_HODINU * (st.plat_multiplikator ?? 1) * hodin;
     zarobene = Math.round(zarobene - platyNaklady);
+
+    // Vyjednávanie o plat prebieha 23.-31. december, pre plat platný od 1. januára
+    const jeDecembrovyTyzden = teraz.getMonth() === 11 && teraz.getDate() >= 23;
+    const cielovyRok = jeDecembrovyTyzden ? teraz.getFullYear() + 1 : teraz.getFullYear();
+    if (jeDecembrovyTyzden && st.vyjednavany_rok < cielovyRok) {
+      setUkazVyjednavanie(true);
+    }
 
     if (hodin > 0.01) {
       const { data: updatedSt } = await supabase
@@ -116,9 +129,12 @@ export default function Home() {
     setStanica(st);
     setBudovy(budovyData);
 
-    const vypocitanaPrestiz = vypocitajPrestiz(budovyData);
+    const zakladnaPrestiz = vypocitajPrestiz(budovyData);
+    const vypocitanaPrestiz = Math.round(zakladnaPrestiz * celkovaEfektivita);
     if (vypocitanaPrestiz !== st.prestiz) {
       await supabase.from("stanice").update({ prestiz: vypocitanaPrestiz }).eq("id", st.id);
+      st = { ...st, prestiz: vypocitanaPrestiz };
+      setStanica(st);
     }
 
     setLoading(false);
@@ -175,6 +191,41 @@ export default function Home() {
     const { data } = await supabase.from("rebricek").select("*").order("prestiz", { ascending: false });
     setRebricek(data || []);
     setUkazRebricek(true);
+  }
+
+  async function vyjednatPlat(volba) {
+    let novyMultiplikator = stanica.plat_multiplikator ?? 1;
+    let novaEfektivitaBonus = 1;
+
+    if (volba === "prijat") {
+      novyMultiplikator = novyMultiplikator * (1 + ZVYSENIE_PLATU_PERCENTO / 100);
+      novaEfektivitaBonus = 1;
+    } else if (volba === "ciastocne") {
+      novyMultiplikator = novyMultiplikator * (1 + ZVYSENIE_PLATU_PERCENTO / 200);
+      novaEfektivitaBonus = EFEKTIVITA_PRI_CIASTOCNOM_PRIJATI;
+    } else {
+      novaEfektivitaBonus = EFEKTIVITA_PRI_ODMIETNUTI;
+    }
+
+    const teraz = new Date();
+    const cielovyRok = teraz.getMonth() === 11 ? teraz.getFullYear() + 1 : teraz.getFullYear();
+    // Trest platí do 31. januára cieľového roka (23:59:59)
+    const bonusDo = new Date(cielovyRok, 0, 31, 23, 59, 59);
+
+    const { data: updatedSt } = await supabase
+      .from("stanice")
+      .update({
+        plat_multiplikator: novyMultiplikator,
+        efektivita_bonus: novaEfektivitaBonus,
+        efektivita_bonus_do: bonusDo.toISOString(),
+        vyjednavany_rok: cielovyRok,
+      })
+      .eq("id", stanica.id)
+      .select()
+      .single();
+
+    setStanica(updatedSt);
+    setUkazVyjednavanie(false);
   }
 
   async function najatZamestnanca() {
@@ -256,11 +307,13 @@ export default function Home() {
     );
   }
 
-  const prestiz = stanica ? vypocitajPrestiz(budovy) : 0;
   const voVystavbe = budovy.filter((b) => b.stav === "vo_vystavbe");
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
   const potrebny = potrebniZamestnanci(hotoveBudovy);
-  const efektivita = stanica ? efektivitaZamestnancov(stanica.zamestnanci, potrebny) : 1;
+  const efektivitaObsadenia = stanica ? efektivitaZamestnancov(stanica.zamestnanci, potrebny) : 1;
+  const efektivnyBonusTeraz = stanica && new Date(stanica.efektivita_bonus_do) >= new Date() ? (stanica.efektivita_bonus ?? 1) : 1;
+  const celkovaEfektivita = stanica ? efektivitaObsadenia * efektivnyBonusTeraz : 1;
+  const prestiz = stanica ? stanica.prestiz : 0;
   const aktualnyKatalog = KATEGORIE[vyberKategoria].katalog;
 
   return (
@@ -303,6 +356,26 @@ export default function Home() {
 
       {loading && <p style={{ color: "#9fb0bf" }}>Načítavam...</p>}
 
+      {!loading && ukazVyjednavanie && (
+        <div style={{ ...cardStyle, border: "2px solid #f2994a", background: "#241c14" }}>
+          <h3 style={{ marginTop: 0 }}>👷 Zamestnanci žiadajú vyššiu mzdu</h3>
+          <p style={{ color: "#e8edf2" }}>
+            Je čas na ročné vyjednávanie. Zamestnanci chcú zvýšenie platu o <strong>{ZVYSENIE_PLATU_PERCENTO}%</strong>. Ako sa rozhodneš?
+          </p>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+            <button onClick={() => vyjednatPlat("prijat")} style={buttonStyle}>
+              ✅ Prijať celé (+{ZVYSENIE_PLATU_PERCENTO}% k platu, 100% výkon)
+            </button>
+            <button onClick={() => vyjednatPlat("ciastocne")} style={{ ...buttonStyle, background: "#c9822e" }}>
+              🤝 Ponúknuť polovicu ({Math.round(EFEKTIVITA_PRI_CIASTOCNOM_PRIJATI * 100)}% výkon)
+            </button>
+            <button onClick={() => vyjednatPlat("odmietnut")} style={{ ...buttonStyle, background: "#3a4753" }}>
+              ❌ Odmietnuť ({Math.round(EFEKTIVITA_PRI_ODMIETNUTI * 100)}% výkon)
+            </button>
+          </div>
+        </div>
+      )}
+
       {!loading && stanica && (
         <>
           <div style={{ ...cardStyle, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -323,9 +396,9 @@ export default function Home() {
               <div style={{ fontSize: 20, fontWeight: 700 }}>
                 {stanica.zamestnanci} / {potrebny} potrebných
               </div>
-              {efektivita < 1 && (
+              {celkovaEfektivita < 1 && (
                 <div style={{ color: "#f2994a", fontSize: 13, marginTop: 4 }}>
-                  ⚠️ Nedostatok ľudí — budovy bežia na {Math.round(efektivita * 100)} % výkonu
+                  ⚠️ Turisti si všímajú — budovy bežia na {Math.round(celkovaEfektivita * 100)} % výkonu (ovplyvňuje aj príjem, aj prestíž)
                 </div>
               )}
               <div style={{ color: "#657685", fontSize: 12, marginTop: 4 }}>Plat: {PLAT_ZA_HODINU} €/hod na osobu</div>
@@ -363,8 +436,8 @@ export default function Home() {
             {hotoveBudovy.map((b) => {
               const info = KATEGORIE[b.kategoria].katalog[b.typ];
               const maCenu = KATEGORIE[b.kategoria].maCenu;
-              const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * efektivita) : null;
-              const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivita) : null;
+              const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * celkovaEfektivita) : null;
+              const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * celkovaEfektivita) : null;
               const bPrestiz = prestizBudovy(b.kategoria, b.typ, b.znacka);
               return (
                 <div key={b.id} style={rowCardStyle}>
