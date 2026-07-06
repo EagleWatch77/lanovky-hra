@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import {
   KATEGORIE,
-  ZNACKY,
   vystavbaVRealnychDnoch,
   cenaBudovy,
   prestizBudovy,
@@ -40,8 +39,11 @@ export default function Home() {
 
   function zmenitKategoriu(novaKategoria) {
     const prvyTyp = Object.keys(KATEGORIE[novaKategoria].katalog)[0];
+    const znackyKatalog = KATEGORIE[novaKategoria].znackyKatalog;
+    const prvaZnacka = znackyKatalog ? Object.keys(znackyKatalog)[0] : null;
     setVyberKategoria(novaKategoria);
     setVyberTyp(prvyTyp);
+    setVyberZnacka(prvaZnacka);
   }
 
   async function nacitajVsetko() {
@@ -130,7 +132,7 @@ export default function Home() {
         stanica_id: stanica.id,
         kategoria: vyberKategoria,
         typ: vyberTyp,
-        znacka: KATEGORIE[vyberKategoria].maZnacky ? vyberZnacka : null,
+        znacka: KATEGORIE[vyberKategoria].znackyKatalog ? vyberZnacka : null,
         stav: "vo_vystavbe",
         zaciatok_vystavby: teraz.toISOString(),
         koniec_vystavby: koniec.toISOString(),
@@ -243,7 +245,7 @@ export default function Home() {
                     <div>
                       <div style={{ fontWeight: 600 }}>
                         🚧 {KATEGORIE[b.kategoria].katalog[b.typ].nazov}
-                        {b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> ({ZNACKY[b.znacka].nazov})</span>}
+                        {b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> ({KATEGORIE[b.kategoria].znackyKatalog[b.znacka].nazov})</span>}
                       </div>
                       <div style={{ color: "#f2c94c", fontSize: 13, marginTop: 4 }}>{zostavaCasu(b.koniec_vystavby)}</div>
                     </div>
@@ -269,7 +271,7 @@ export default function Home() {
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600 }}>
                       {info.nazov}
-                      {b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> ({ZNACKY[b.znacka].nazov})</span>}
+                      {b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> ({KATEGORIE[b.kategoria].znackyKatalog[b.znacka].nazov})</span>}
                       <span style={{ color: "#657685", fontWeight: 400, fontSize: 12 }}> — {KATEGORIE[b.kategoria].nazov}</span>
                     </div>
                     <div style={{ color: "#9fb0bf", fontSize: 13, marginTop: 4 }}>
@@ -313,7 +315,7 @@ export default function Home() {
                       onClick={() => zmenitKategoriu(kat)}
                       style={vyberKategoria === kat ? tileStyleActive : tileStyle}
                     >
-                      <div style={{ fontSize: 28 }}>{KATEGORIE_IKONY[kat]}</div>
+                      <div style={{ fontSize: 28 }}>{KATEGORIE[kat].ikona}</div>
                       <div style={{ fontSize: 13, marginTop: 4 }}>{KATEGORIE[kat].nazov}</div>
                     </button>
                   ))}
@@ -335,20 +337,23 @@ export default function Home() {
                   ))}
                 </div>
 
-                {KATEGORIE[vyberKategoria].maZnacky && (
+                {KATEGORIE[vyberKategoria].znackyKatalog && (
                   <>
                     <div style={{ color: "#657685", fontSize: 12, marginBottom: 8 }}>3. Vyber značku</div>
                     <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-                      {Object.keys(ZNACKY).map((zn) => (
-                        <button
-                          key={zn}
-                          onClick={() => setVyberZnacka(zn)}
-                          style={vyberZnacka === zn ? tileStyleActive : tileStyle}
-                        >
-                          <div style={{ fontSize: 13, fontWeight: 600 }}>{ZNACKY[zn].nazov}</div>
-                          <div style={{ fontSize: 11, color: "#9fb0bf", marginTop: 4, maxWidth: 110 }}>{ZNACKY[zn].popis}</div>
-                        </button>
-                      ))}
+                      {Object.keys(KATEGORIE[vyberKategoria].znackyKatalog).map((zn) => {
+                        const znackyKatalog = KATEGORIE[vyberKategoria].znackyKatalog;
+                        return (
+                          <button
+                            key={zn}
+                            onClick={() => setVyberZnacka(zn)}
+                            style={vyberZnacka === zn ? tileStyleActive : tileStyle}
+                          >
+                            <div style={{ fontSize: 13, fontWeight: 600 }}>{znackyKatalog[zn].nazov}</div>
+                            <div style={{ fontSize: 11, color: "#9fb0bf", marginTop: 4, maxWidth: 110 }}>{znackyKatalog[zn].popis}</div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </>
                 )}
