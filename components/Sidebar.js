@@ -23,7 +23,17 @@ export default function Sidebar({ notifikacie = [] }) {
   const pathname = usePathname();
 
   return (
-    <aside style={{ width: 240, minHeight: "100vh", background: "#0d141b", borderRight: "1px solid #1f2b36", padding: "20px 12px", flexShrink: 0, display: "flex", flexDirection: "column" }}>
+    <aside style={{
+      width: 240,
+      borderRadius: 16,
+      background: "#0d141b",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.45)",
+      padding: "20px 12px",
+      flexShrink: 0,
+      display: "flex",
+      flexDirection: "column",
+      alignSelf: "stretch",
+    }}>
       <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 24, paddingLeft: 8 }}>🚡 Lanovky Hra</div>
 
       <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
