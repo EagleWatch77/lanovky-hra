@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useGameState } from "../../lib/useGameState";
 import { supabase } from "../../lib/supabaseClient";
 import AuthForm from "../../components/AuthForm";
@@ -9,7 +10,7 @@ import VyjednavanieModal from "../../components/VyjednavanieModal";
 import { cardStyle } from "../../lib/styles";
 
 export default function RebricekPage() {
-  const { session, stanica, budovy, loading, ukazVyjednavanie, vyjednatPlat, handleLogout, efektivitaBudovy } = useGameState();
+  const { session, stanica, budovy, loading, ukazVyjednavanie, vyjednatPlat, handleLogout, efektivitaBudovy, pocetKonkurencie } = useGameState();
   const [rebricek, setRebricek] = useState([]);
   const [nacitavaSa, setNacitavaSa] = useState(true);
 
@@ -27,7 +28,7 @@ export default function RebricekPage() {
   if (!session) return <AuthForm />;
 
   return (
-    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy}>
+    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie}>
       <VyjednavanieModal ukaz={!loading && ukazVyjednavanie} onVyjednat={vyjednatPlat} />
 
       <div style={{ ...cardStyle, marginTop: 0 }}>
@@ -36,8 +37,9 @@ export default function RebricekPage() {
         {!nacitavaSa && (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {rebricek.map((r, i) => (
-              <div
+              <Link
                 key={r.id}
+                href={`/profil/${r.id}`}
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -45,11 +47,13 @@ export default function RebricekPage() {
                   borderRadius: 8,
                   background: stanica && r.id === stanica.id ? "#16241d" : "#0f1720",
                   border: stanica && r.id === stanica.id ? "1px solid #2f9e6e" : "1px solid #2a3744",
+                  textDecoration: "none",
+                  color: "#e8edf2",
                 }}
               >
                 <span>#{i + 1} {r.nazov}{stanica && r.id === stanica.id && " (ty)"}</span>
                 <span style={{ color: "#f2c94c", fontWeight: 600 }}>⭐ {r.prestiz}</span>
-              </div>
+              </Link>
             ))}
             {rebricek.length === 0 && <p style={{ color: "#657685" }}>Zatiaľ žiadni hráči v rebríčku.</p>}
           </div>
