@@ -24,12 +24,12 @@ export default function Sidebar({ notifikacie = [] }) {
 
   return (
     <aside style={{
-      width: 240,
+      width: 190,
       borderRadius: 16,
       background: "rgba(13,20,27,0.82)",
       backdropFilter: "blur(8px)",
       boxShadow: "0 8px 24px rgba(0,0,0,0.45)",
-      padding: "20px 12px",
+      padding: "18px 10px",
       flexShrink: 0,
       display: "flex",
       flexDirection: "column",
@@ -43,11 +43,11 @@ export default function Sidebar({ notifikacie = [] }) {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 10,
-              padding: "10px 12px",
+              gap: 8,
+              padding: "8px 10px",
               borderRadius: 8,
               textDecoration: "none",
-              fontSize: 14,
+              fontSize: 13,
               color: pathname === o.href ? "#e8edf2" : "#9fb0bf",
               background: pathname === o.href ? "#1c2833" : "transparent",
             }}
@@ -57,14 +57,14 @@ export default function Sidebar({ notifikacie = [] }) {
         ))}
       </nav>
 
-      <div style={{ marginTop: 24, color: "#4a5866", fontSize: 11, textTransform: "uppercase", paddingLeft: 12, marginBottom: 6 }}>
+      <div style={{ marginTop: 20, color: "#4a5866", fontSize: 10, textTransform: "uppercase", paddingLeft: 10, marginBottom: 6 }}>
         Čoskoro
       </div>
       <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {COSKORO.map((o) => (
           <div
             key={o.label}
-            style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 8, fontSize: 14, color: "#4a5866" }}
+            style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8, fontSize: 13, color: "#4a5866" }}
           >
             <span>{o.icon}</span>{o.label}
           </div>
