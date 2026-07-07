@@ -71,43 +71,41 @@ export default function PrehladPage() {
       <VyjednavanieModal ukaz={!loading && ukazVyjednavanie} onVyjednat={vyjednatPlat} />
 
       {!loading && stanica && (
-        <>
-          <div style={cardStyle}>
-            <h3 style={{ marginTop: 0, fontSize: 16 }}>{stanica.nazov} — Rýchly prehľad</h3>
-            <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-              <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
-              <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
-              {podpriemernaEfektivita > 0 && (
-                <span style={{ color: "#f2994a" }}>⚠️ {podpriemernaEfektivita} budov beží na zníženú efektivitu (chýbajú zamestnanci)</span>
+        <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
+          <div style={{ flex: "2 1 400px" }}>
+            <div style={cardStyle}>
+              <h3 style={{ marginTop: 0, fontSize: 16 }}>{stanica.nazov} — Rýchly prehľad</h3>
+              <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
+                <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
+                <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
+                {podpriemernaEfektivita > 0 && (
+                  <span style={{ color: "#f2994a" }}>⚠️ {podpriemernaEfektivita} budov beží na zníženú efektivitu (chýbajú zamestnanci)</span>
+                )}
+              </div>
+
+              {Object.keys(suhrnKategorii).length > 0 && (
+                <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  {Object.keys(suhrnKategorii).map((kat) => (
+                    <div key={kat} style={{ fontSize: 13, color: "#9fb0bf" }}>
+                      {KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}: <strong style={{ color: "#e8edf2" }}>{suhrnKategorii[kat]}</strong>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
+                <p style={{ color: "#657685", fontSize: 14, marginTop: 8 }}>
+                  Zatiaľ nemáš žiadnu budovu. Choď na stránku <strong>🏗️ Budovy</strong> a postav prvú.
+                </p>
               )}
             </div>
-
-            {Object.keys(suhrnKategorii).length > 0 && (
-              <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
-                {Object.keys(suhrnKategorii).map((kat) => (
-                  <div key={kat} style={{ fontSize: 13, color: "#9fb0bf" }}>
-                    {KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}: <strong style={{ color: "#e8edf2" }}>{suhrnKategorii[kat]}</strong>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
-              <p style={{ color: "#657685", fontSize: 14, marginTop: 8 }}>
-                Zatiaľ nemáš žiadnu budovu. Choď na stránku <strong>🏗️ Budovy</strong> a postav prvú.
-              </p>
-            )}
           </div>
 
-          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-            <div style={{ flex: 1, minWidth: 280 }}>
-              <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
-            </div>
-            <div style={{ flex: 1, minWidth: 280 }}>
-              <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
-            </div>
+          <div style={{ flex: "1 1 280px", display: "flex", flexDirection: "column" }}>
+            <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+            <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
           </div>
-        </>
+        </div>
       )}
     </AppLayout>
   );
