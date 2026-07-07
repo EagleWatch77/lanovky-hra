@@ -19,10 +19,17 @@ export default function PocasiePanel() {
             <div style={{ fontSize: 32, margin: "6px 0" }}>{p.ikona}</div>
             <div style={{ fontSize: 13, color: "#9fb0bf" }}>{p.nazov}</div>
             <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>{p.teplota}°C</div>
-            <div style={{ fontSize: 11, color: "#657685", marginTop: 2 }}>💨 {p.vietor} km/h</div>
+            <div style={{ fontSize: 11, color: p.lanovkyZatvorene ? "#f2994a" : "#657685", marginTop: 2 }}>
+              💨 {p.vietor} m/s{p.lanovkyZatvorene && " ⚠️"}
+            </div>
           </div>
         ))}
       </div>
+      {pocasie.some((p) => p.lanovkyZatvorene) && (
+        <p style={{ color: "#f2994a", fontSize: 12, marginTop: 10, marginBottom: 0 }}>
+          ⚠️ Pri takomto vetre lanovky nepremávajú — dnes to ovplyvní tvoj príjem z lanoviek.
+        </p>
+      )}
     </div>
   );
 }
