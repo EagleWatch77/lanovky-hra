@@ -5,21 +5,48 @@ import { useGameState } from "../../lib/useGameState";
 import { supabase } from "../../lib/supabaseClient";
 import AuthForm from "../../components/AuthForm";
 import AppLayout from "../../components/AppLayout";
-import { zaciatokAktualnejSezony } from "../../lib/katalog";
+import { KATEGORIE, zaciatokAktualnejSezony } from "../../lib/katalog";
 import { cardStyle } from "../../lib/styles";
 
-function sucetOd(transakcie, odDatumu) {
-  return transakcie.filter((t) => new Date(t.created_at) >= odDatumu).reduce((s, t) => s + Number(t.suma), 0);
+const VYDAVKOVE_TYPY = ["stavba", "naklady_platy", "naklady_najatie", "zamestnanec"];
+
+function sucet(transakcie, kategoria, typy, odDatumu) {
+  return transakcie
+    .filter((t) => t.kategoria === kategoria && typy.includes(t.typ) && new Date(t.created_at) >= odDatumu)
+    .reduce((s, t) => s + Number(t.suma), 0);
 }
 
-function Riadok({ label, hodnota }) {
-  const farba = hodnota > 0 ? "#4ade80" : hodnota < 0 ? "#f2994a" : "#9fb0bf";
+function Tabulka({ nadpis, riadky, obdobia, transakcie, typy, farba }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #223040" }}>
-      <span style={{ color: "#9fb0bf" }}>{label}</span>
-      <span style={{ color: farba, fontWeight: 700 }}>
-        {hodnota > 0 ? "+" : ""}{Math.round(hodnota).toLocaleString("sk-SK")} €
-      </span>
+    <div style={cardStyle}>
+      <h3 style={{ marginTop: 0, fontSize: 15 }}>{nadpis}</h3>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid #223040" }}>
+              <th style={{ textAlign: "left", padding: "6px 8px", color: "#9fb0bf" }}>Kategória</th>
+              {obdobia.map((o) => (
+                <th key={o.label} style={{ textAlign: "right", padding: "6px 8px", color: "#9fb0bf" }}>{o.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {riadky.map((kat) => (
+              <tr key={kat} style={{ borderBottom: "1px solid #1a2632" }}>
+                <td style={{ padding: "6px 8px" }}>{KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}</td>
+                {obdobia.map((o) => {
+                  const hodnota = Math.abs(Math.round(sucet(transakcie, kat, typy, o.od)));
+                  return (
+                    <td key={o.label} style={{ textAlign: "right", padding: "6px 8px", color: hodnota > 0 ? farba : "#4a5866" }}>
+                      {hodnota.toLocaleString("sk-SK")} €
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -40,7 +67,7 @@ export default function FinanciePage() {
       .select("*")
       .eq("stanica_id", stanica.id)
       .order("created_at", { ascending: false })
-      .limit(2000);
+      .limit(5000);
     setTransakcie(data || []);
     setNacitavaSa(false);
   }
@@ -48,10 +75,16 @@ export default function FinanciePage() {
   if (!session) return <AuthForm />;
 
   const teraz = new Date();
-  const zaciatokDna = new Date(teraz.getFullYear(), teraz.getMonth(), teraz.getDate());
-  const zaciatokTyzdna = new Date(teraz.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const zaciatokMesiaca = new Date(teraz.getFullYear(), teraz.getMonth(), 1);
-  const zaciatokSezony = stanica ? zaciatokAktualnejSezony(teraz) : teraz;
+  const obdobia = [
+    { label: "Dnes", od: new Date(teraz.getFullYear(), teraz.getMonth(), teraz.getDate()) },
+    { label: "Týždeň", od: new Date(teraz.getTime() - 7 * 24 * 60 * 60 * 1000) },
+    { label: "Mesiac", od: new Date(teraz.getFullYear(), teraz.getMonth(), 1) },
+    { label: "Sezóna", od: stanica ? zaciatokAktualnejSezony(teraz) : teraz },
+    { label: "Rok", od: new Date(teraz.getFullYear(), 0, 1) },
+  ];
+
+  const prijmoveKategorie = Object.keys(KATEGORIE).filter((k) => KATEGORIE[k].maCenu);
+  const vsetkyKategorie = Object.keys(KATEGORIE);
 
   return (
     <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie}>
@@ -61,30 +94,25 @@ export default function FinanciePage() {
 
       {!nacitavaSa && stanica && (
         <>
-          <div style={cardStyle}>
-            <h3 style={{ marginTop: 0, fontSize: 15 }}>Prehľad zárobku/výdavkov</h3>
-            <Riadok label="Dnes" hodnota={sucetOd(transakcie, zaciatokDna)} />
-            <Riadok label="Posledných 7 dní" hodnota={sucetOd(transakcie, zaciatokTyzdna)} />
-            <Riadok label="Tento mesiac" hodnota={sucetOd(transakcie, zaciatokMesiaca)} />
-            <Riadok label="Táto sezóna" hodnota={sucetOd(transakcie, zaciatokSezony)} />
-          </div>
-
-          <div style={cardStyle}>
-            <h3 style={{ marginTop: 0, fontSize: 15 }}>Posledné transakcie</h3>
-            {transakcie.length === 0 && <p style={{ color: "#4a5866", fontSize: 13 }}>Zatiaľ žiadne transakcie.</p>}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {transakcie.slice(0, 20).map((t) => (
-                <div key={t.id} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid #1a2632", fontSize: 13 }}>
-                  <span style={{ color: "#657685" }}>
-                    {new Date(t.created_at).toLocaleString("sk-SK")} — {t.typ === "prevadzka" ? "Prevádzka" : t.typ === "stavba" ? "Stavba" : "Zamestnanec"}
-                  </span>
-                  <span style={{ color: t.suma >= 0 ? "#4ade80" : "#f2994a" }}>
-                    {t.suma >= 0 ? "+" : ""}{Math.round(t.suma).toLocaleString("sk-SK")} €
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Tabulka
+            nadpis="📈 Príjmy podľa kategórie"
+            riadky={prijmoveKategorie}
+            obdobia={obdobia}
+            transakcie={transakcie}
+            typy={["prijem"]}
+            farba="#4ade80"
+          />
+          <Tabulka
+            nadpis="📉 Výdavky podľa kategórie"
+            riadky={vsetkyKategorie}
+            obdobia={obdobia}
+            transakcie={transakcie}
+            typy={VYDAVKOVE_TYPY}
+            farba="#f2994a"
+          />
+          <p style={{ color: "#657685", fontSize: 11, marginTop: -8 }}>
+            Výdavky zahŕňajú stavbu, náklady na najatie zamestnancov aj ich priebežný plat.
+          </p>
         </>
       )}
     </AppLayout>
