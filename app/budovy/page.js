@@ -14,6 +14,7 @@ import {
   prijemZaHodinu,
   zamestnanciPotrebni,
   CENA_NAJATIA,
+  konkurencnyMultiplikator,
 } from "../../lib/katalog";
 import { inputStyle, buttonStyle, linkStyle, cardStyle, rowCardStyle, tileStyle, tileStyleActive } from "../../lib/styles";
 
@@ -101,9 +102,10 @@ export default function BudovyPage() {
               const info = KATEGORIE[b.kategoria].katalog[b.typ];
               const maCenu = KATEGORIE[b.kategoria].maCenu;
               const efektivitaB = efektivitaBudovy(b);
+              const konkurenciaMult = konkurencnyMultiplikator(b.kategoria, stanica);
               const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
-              const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB) : null;
-              const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB) : null;
+              const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB * konkurenciaMult) : null;
+              const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB * konkurenciaMult) : null;
               const bPrestiz = Math.round(prestizBudovy(b.kategoria, b.typ, b.znacka) * efektivitaB);
               return (
                 <div key={b.id} style={rowCardStyle}>
@@ -117,6 +119,7 @@ export default function BudovyPage() {
                       Kapacita: {info.kapacita}/hod
                       {maCenu && <> &nbsp;|&nbsp; Odhad: {odhadTuristov} turistov/hod &nbsp;|&nbsp; ~{odhadPrijem} €/hod</>}
                       &nbsp;|&nbsp; ⭐ {bPrestiz}
+                      {konkurenciaMult < 1 && <span style={{ color: "#f2994a" }}> &nbsp;|&nbsp; ⚠️ Konkurencia (-10% dopytu)</span>}
                     </div>
                     <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 13, color: efektivitaB < 1 ? "#f2994a" : "#9fb0bf" }}>
