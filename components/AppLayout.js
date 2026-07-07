@@ -6,7 +6,7 @@ import AkcieBar from "./AkcieBar";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle } from "../lib/styles";
 
-export default function AppLayout({ session, stanica, budovy, handleLogout, efektivitaBudovy, children }) {
+export default function AppLayout({ session, stanica, budovy, handleLogout, efektivitaBudovy, pocetKonkurencie, children }) {
   const notifikacie = stanica ? vytvorNotifikacie(budovy, efektivitaBudovy, stanica) : [];
 
   return (
@@ -26,7 +26,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
     >
       {stanica && (
         <div style={{ ...cardStyle, marginTop: 0, padding: "14px 20px" }}>
-          <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+          <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie} />
         </div>
       )}
 
