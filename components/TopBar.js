@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { turistiZaHodinu, konkurencnyMultiplikator } from "../lib/katalog";
+import { hernyDatum } from "../lib/hernyCas";
 
 function vypocitajSezonu(datum) {
   const mesiac = datum.getMonth(); // 0 = január
@@ -37,7 +38,7 @@ function IconBtn({ children, href, onClick, disabled }) {
   return <div style={style} onClick={!disabled ? onClick : undefined}>{children}</div>;
 }
 
-export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy }) {
+export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy, pocetKonkurencie }) {
   const teraz = new Date();
   const hotove = budovy.filter((b) => b.stav === "hotovo");
 
@@ -46,10 +47,11 @@ export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy }) 
   for (const b of hotove) {
     const ef = efektivitaBudovy(b);
     sucetEfektivit += ef;
-    if (b.cena) turistiDnesOdhad += turistiZaHodinu(b.kategoria, b.typ, b.cena) * ef * konkurencnyMultiplikator(b.kategoria, stanica) * 24;
+    if (b.cena) turistiDnesOdhad += turistiZaHodinu(b.kategoria, b.typ, b.cena) * ef * konkurencnyMultiplikator(b.kategoria, pocetKonkurencie) * 24;
   }
   const priemernaEfektivita = hotove.length > 0 ? Math.round((sucetEfektivit / hotove.length) * 100) : 100;
-  const sezona = vypocitajSezonu(teraz);
+  const hDatum = hernyDatum(teraz);
+  const sezona = vypocitajSezonu(hDatum);
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
@@ -66,7 +68,7 @@ export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy }) 
         <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} />
         <Stat label="🧑‍🤝‍🧑 Turisti (odhad/deň)" value={Math.round(turistiDnesOdhad).toLocaleString("sk-SK")} />
         <Stat label="😊 Efektivita" value={priemernaEfektivita + " %"} />
-        <Stat label="📅 Dátum" value={teraz.toLocaleDateString("sk-SK")} />
+        <Stat label="📅 Herný dátum" value={hDatum.toLocaleDateString("sk-SK")} />
         <Stat label={sezona === "ZIMA" ? "❄️ Sezóna" : "☀️ Sezóna"} value={sezona} />
       </div>
 
