@@ -72,13 +72,13 @@ export default function PrehladPage() {
 
       {!loading && stanica && (
         <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
-          <div style={{ flex: "2 1 400px" }}>
+          <div style={{ flex: "3 1 400px" }}>
             <div style={{ ...cardStyle, minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <p style={{ color: "#4a5866", fontSize: 14 }}>🏔️ Mapa strediska — čoskoro</p>
             </div>
           </div>
 
-          <div style={{ flex: "1 1 280px", display: "flex", flexDirection: "column" }}>
+          <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column" }}>
             <div style={{ ...cardStyle, textAlign: "center" }}>
               <h3 style={{ marginTop: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600 }}>{stanica.nazov} — Rýchly prehľad</h3>
               <div style={{ color: "#9fb0bf", fontSize: 15, display: "flex", flexDirection: "column", gap: 8 }}>
