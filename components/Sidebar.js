@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Building2, Trophy, ClipboardList, Settings, Users, TrendingUp, FlaskConical, PartyPopper, Handshake } from "lucide-react";
+import { Home, Building2, Trophy, ClipboardList, Settings, Users, TrendingUp, FlaskConical, PartyPopper, Handshake, ShieldAlert, Wallet } from "lucide-react";
 
 const AKTIVNE = [
   { href: "/", label: "Prehľad", Icon: Home },
   { href: "/budovy", label: "Budovy", Icon: Building2 },
+  { href: "/konkurencia", label: "Konkurencia", Icon: ShieldAlert },
+  { href: "/financie", label: "Financie", Icon: Wallet },
   { href: "/rebricek", label: "Rebríček", Icon: Trophy },
   { href: "/co-je-hotove", label: "Čo je hotové", Icon: ClipboardList },
   { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
@@ -14,7 +16,6 @@ const AKTIVNE = [
 
 const COSKORO = [
   { label: "Turisti", Icon: Users },
-  { label: "Ekonomika", Icon: TrendingUp },
   { label: "Výskum", Icon: FlaskConical },
   { label: "Eventy", Icon: PartyPopper },
   { label: "Aliancia", Icon: Handshake },
