@@ -10,7 +10,7 @@ export default function LanovkyPanel({ budovy, efektivitaBudovy }) {
 
   return (
     <div style={cardStyle}>
-      <h3 style={{ marginTop: 0, fontSize: 16 }}>🚡 Lanovky</h3>
+      <h3 style={{ marginTop: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600 }}>🚡 Lanovky</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {lanovky.map((b) => {
           const info = KATEGORIE.lanovka.katalog[b.typ];
