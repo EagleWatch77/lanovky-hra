@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { vypocitajDenoePocasie } from "../lib/pocasie";
+import { hernyDatum } from "../lib/hernyCas";
 import { cardStyle, linkStyle } from "../lib/styles";
 
 const MAX_DNI = 7;
@@ -9,7 +10,7 @@ const MAX_DNI = 7;
 export default function PocasiePanel() {
   const [offsetDni, setOffsetDni] = useState(0);
 
-  const zobrazovanyDatum = new Date();
+  const zobrazovanyDatum = hernyDatum(new Date());
   zobrazovanyDatum.setDate(zobrazovanyDatum.getDate() + offsetDni);
   const pocasie = vypocitajDenoePocasie(zobrazovanyDatum);
 
