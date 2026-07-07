@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { turistiZaHodinu, konkurencnyMultiplikator } from "../lib/katalog";
 import { hernyDatum } from "../lib/hernyCas";
+import { lanovkovyMultiplikatorDna, parkoviskovyMultiplikatorDna } from "../lib/pocasie";
 
 function vypocitajSezonu(datum) {
   const mesiac = datum.getMonth(); // 0 = január
@@ -42,15 +43,19 @@ export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy, po
   const teraz = new Date();
   const hotove = budovy.filter((b) => b.stav === "hotovo");
 
+  const hDatum = hernyDatum(teraz);
+  const lanovkovyMult = lanovkovyMultiplikatorDna(hDatum);
+  const parkoviskovyMult = parkoviskovyMultiplikatorDna(hDatum);
+
   let turistiDnesOdhad = 0;
   let sucetEfektivit = 0;
   for (const b of hotove) {
     const ef = efektivitaBudovy(b);
     sucetEfektivit += ef;
-    if (b.cena) turistiDnesOdhad += turistiZaHodinu(b.kategoria, b.typ, b.cena) * ef * konkurencnyMultiplikator(b.kategoria, pocetKonkurencie) * 24;
+    const pocasieMult = b.kategoria === "lanovka" ? lanovkovyMult : b.kategoria === "parkovisko" ? parkoviskovyMult : 1;
+    if (b.cena) turistiDnesOdhad += turistiZaHodinu(b.kategoria, b.typ, b.cena) * ef * konkurencnyMultiplikator(b.kategoria, pocetKonkurencie) * pocasieMult * 24;
   }
   const priemernaEfektivita = hotove.length > 0 ? Math.round((sucetEfektivit / hotove.length) * 100) : 100;
-  const hDatum = hernyDatum(teraz);
   const sezona = vypocitajSezonu(hDatum);
 
   return (
