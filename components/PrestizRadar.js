@@ -39,7 +39,7 @@ export default function PrestizRadar({ budovy, efektivitaBudovy }) {
 
   return (
     <div style={cardStyle}>
-      <h3 style={{ marginTop: 0, fontSize: 16 }}>⭐ Rozklad prestíže</h3>
+      <h3 style={{ marginTop: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600 }}>⭐ Rozklad prestíže</h3>
       <div style={{ width: "100%", height: 260 }}>
         <ResponsiveContainer>
           <RadarChart data={data}>
