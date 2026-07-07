@@ -23,7 +23,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
       }}
     >
       <Sidebar notifikacie={notifikacie} />
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, minWidth: 0, maxWidth: 1000 }}>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
         {stanica && (
           <TopBar
             email={session.user.email}
