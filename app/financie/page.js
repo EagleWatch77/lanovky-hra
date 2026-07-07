@@ -6,6 +6,7 @@ import { supabase } from "../../lib/supabaseClient";
 import AuthForm from "../../components/AuthForm";
 import AppLayout from "../../components/AppLayout";
 import { KATEGORIE, zaciatokAktualnejSezony } from "../../lib/katalog";
+import { hernyDatum, realDatumZHerneho } from "../../lib/hernyCas";
 import { cardStyle } from "../../lib/styles";
 
 const VYDAVKOVE_TYPY = ["stavba", "naklady_platy", "naklady_najatie", "zamestnanec"];
@@ -20,6 +21,26 @@ function sucetVsetkychTypov(transakcie, typy, odDatumu) {
   return transakcie
     .filter((t) => typy.includes(t.typ) && new Date(t.created_at) >= odDatumu)
     .reduce((s, t) => s + Number(t.suma), 0);
+}
+
+// Súčet v konkrétnom rozsahu (od-doPred) — použité na oddelenie zimnej a letnej sezóny v rámci ročníka
+function sucetVRozsahu(transakcie, typy, od, doPred) {
+  return transakcie
+    .filter((t) => {
+      const cas = new Date(t.created_at);
+      return typy.includes(t.typ) && cas >= od && (!doPred || cas < doPred);
+    })
+    .reduce((s, t) => s + Number(t.suma), 0);
+}
+
+// Nájde herný začiatok zimy a leta aktuálneho ročníka (zima vždy 1.11, leto 1.5. nasledujúceho roka)
+function zaciatokRocnikaHerny(hDatum) {
+  const mesiac = hDatum.getMonth();
+  const rok = hDatum.getFullYear();
+  const zimaRok = mesiac < 10 ? rok - 1 : rok; // Jan-Okt patrí k zime, čo začala minulý november
+  const zimaZaciatok = new Date(zimaRok, 10, 1);
+  const letoZaciatok = new Date(zimaRok + 1, 4, 1);
+  return { zimaZaciatok, letoZaciatok };
 }
 
 function Tabulka({ nadpis, riadky, obdobia, transakcie, typy, farba }) {
@@ -100,6 +121,43 @@ function CistyVysledok({ obdobia, transakcie }) {
   );
 }
 
+function RocnikKarta({ transakcie, hDatum }) {
+  const { zimaZaciatok, letoZaciatok } = zaciatokRocnikaHerny(hDatum);
+  const zimaOd = realDatumZHerneho(zimaZaciatok);
+  const letoOd = realDatumZHerneho(letoZaciatok);
+
+  const vsetkyTypy = ["prijem", ...VYDAVKOVE_TYPY];
+  const zimnaSuma = Math.round(sucetVRozsahu(transakcie, vsetkyTypy, zimaOd, letoOd));
+  const letnaSuma = Math.round(sucetVRozsahu(transakcie, vsetkyTypy, letoOd, null));
+  const spolu = zimnaSuma + letnaSuma;
+
+  const riadky = [
+    { label: "❄️ Zimná sezóna", hodnota: zimnaSuma },
+    { label: "☀️ Letná sezóna", hodnota: letnaSuma },
+    { label: "Spolu za ročník", hodnota: spolu, tucne: true },
+  ];
+
+  return (
+    <div style={cardStyle}>
+      <h3 style={{ marginTop: 0, fontSize: 15 }}>📅 Ročník (zima + leto)</h3>
+      {riadky.map((r) => {
+        const farba = r.hodnota > 0 ? "#4ade80" : r.hodnota < 0 ? "#f2994a" : "#9fb0bf";
+        return (
+          <div key={r.label} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #223040" }}>
+            <span style={{ color: "#9fb0bf", fontWeight: r.tucne ? 700 : 400 }}>{r.label}</span>
+            <span style={{ color: farba, fontWeight: 700 }}>
+              {r.hodnota > 0 ? "+" : ""}{r.hodnota.toLocaleString("sk-SK")} €
+            </span>
+          </div>
+        );
+      })}
+      <p style={{ color: "#657685", fontSize: 11, marginTop: 8, marginBottom: 0 }}>
+        Ročník = jedna zimná + jedna letná sezóna dokopy (herný kalendár, spolu 6 reálnych mesiacov).
+      </p>
+    </div>
+  );
+}
+
 export default function FinanciePage() {
   const { session, stanica, budovy, handleLogout, efektivitaBudovy, pocetKonkurencie } = useGameState();
   const [transakcie, setTransakcie] = useState([]);
@@ -124,12 +182,15 @@ export default function FinanciePage() {
   if (!session) return <AuthForm />;
 
   const teraz = new Date();
+  const hDatum = hernyDatum(teraz);
+  const zaciatokSezonyHerny = zaciatokAktualnejSezony(hDatum);
+  const zaciatokSezonyRealny = realDatumZHerneho(zaciatokSezonyHerny);
+
   const obdobia = [
     { label: "Dnes", od: new Date(teraz.getFullYear(), teraz.getMonth(), teraz.getDate()) },
     { label: "Týždeň", od: new Date(teraz.getTime() - 7 * 24 * 60 * 60 * 1000) },
     { label: "Mesiac", od: new Date(teraz.getFullYear(), teraz.getMonth(), 1) },
-    { label: "Sezóna", od: stanica ? zaciatokAktualnejSezony(teraz) : teraz },
-    { label: "Rok", od: new Date(teraz.getFullYear(), 0, 1) },
+    { label: "Sezóna", od: zaciatokSezonyRealny },
   ];
 
   const prijmoveKategorie = Object.keys(KATEGORIE).filter((k) => KATEGORIE[k].maCenu);
@@ -144,6 +205,7 @@ export default function FinanciePage() {
       {!nacitavaSa && stanica && (
         <>
           <CistyVysledok obdobia={obdobia} transakcie={transakcie} />
+          <RocnikKarta transakcie={transakcie} hDatum={hDatum} />
           <Tabulka
             nadpis="📈 Príjmy podľa kategórie"
             riadky={prijmoveKategorie}
@@ -161,7 +223,7 @@ export default function FinanciePage() {
             farba="#f2994a"
           />
           <p style={{ color: "#657685", fontSize: 11, marginTop: -8 }}>
-            Výdavky zahŕňajú stavbu, náklady na najatie zamestnancov aj ich priebežný plat.
+            Výdavky zahŕňajú stavbu, náklady na najatie zamestnancov aj ich priebežný plat. "Sezóna" je počítaná podľa herného kalendára (3 reálne mesiace).
           </p>
         </>
       )}
