@@ -80,7 +80,7 @@ export default function PrehladPage() {
 
           <div style={{ flex: "1 1 280px", display: "flex", flexDirection: "column" }}>
             <div style={{ ...cardStyle, textAlign: "center" }}>
-              <h3 style={{ marginTop: 0, fontSize: 18 }}>{stanica.nazov} — Rýchly prehľad</h3>
+              <h3 style={{ marginTop: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600 }}>{stanica.nazov} — Rýchly prehľad</h3>
               <div style={{ color: "#9fb0bf", fontSize: 15, display: "flex", flexDirection: "column", gap: 8 }}>
                 <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
                 <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
