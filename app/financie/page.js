@@ -16,6 +16,12 @@ function sucet(transakcie, kategoria, typy, odDatumu) {
     .reduce((s, t) => s + Number(t.suma), 0);
 }
 
+function sucetVsetkychTypov(transakcie, typy, odDatumu) {
+  return transakcie
+    .filter((t) => typy.includes(t.typ) && new Date(t.created_at) >= odDatumu)
+    .reduce((s, t) => s + Number(t.suma), 0);
+}
+
 function Tabulka({ nadpis, riadky, obdobia, transakcie, typy, farba }) {
   return (
     <div style={cardStyle}>
@@ -44,6 +50,49 @@ function Tabulka({ nadpis, riadky, obdobia, transakcie, typy, farba }) {
                 })}
               </tr>
             ))}
+            <tr>
+              <td style={{ padding: "8px", fontWeight: 700 }}>Spolu</td>
+              {obdobia.map((o) => {
+                const hodnota = Math.abs(Math.round(sucetVsetkychTypov(transakcie, typy, o.od)));
+                return (
+                  <td key={o.label} style={{ textAlign: "right", padding: "8px", fontWeight: 700, color: farba }}>
+                    {hodnota.toLocaleString("sk-SK")} €
+                  </td>
+                );
+              })}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function CistyVysledok({ obdobia, transakcie }) {
+  return (
+    <div style={cardStyle}>
+      <h3 style={{ marginTop: 0, fontSize: 15 }}>⚖️ Čistý výsledok (príjmy − výdavky)</h3>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "1px solid #223040" }}>
+              {obdobia.map((o) => (
+                <th key={o.label} style={{ textAlign: "right", padding: "6px 8px", color: "#9fb0bf" }}>{o.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {obdobia.map((o) => {
+                const hodnota = Math.round(sucetVsetkychTypov(transakcie, ["prijem", ...VYDAVKOVE_TYPY], o.od));
+                const farba = hodnota > 0 ? "#4ade80" : hodnota < 0 ? "#f2994a" : "#9fb0bf";
+                return (
+                  <td key={o.label} style={{ textAlign: "right", padding: "8px", fontWeight: 700, color: farba }}>
+                    {hodnota > 0 ? "+" : ""}{hodnota.toLocaleString("sk-SK")} €
+                  </td>
+                );
+              })}
+            </tr>
           </tbody>
         </table>
       </div>
@@ -94,6 +143,7 @@ export default function FinanciePage() {
 
       {!nacitavaSa && stanica && (
         <>
+          <CistyVysledok obdobia={obdobia} transakcie={transakcie} />
           <Tabulka
             nadpis="📈 Príjmy podľa kategórie"
             riadky={prijmoveKategorie}
