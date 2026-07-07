@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { turistiZaHodinu } from "../lib/katalog";
+import { turistiZaHodinu, konkurencnyMultiplikator } from "../lib/katalog";
 
 function vypocitajSezonu(datum) {
   const mesiac = datum.getMonth(); // 0 = január
@@ -46,7 +46,7 @@ export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy }) 
   for (const b of hotove) {
     const ef = efektivitaBudovy(b);
     sucetEfektivit += ef;
-    if (b.cena) turistiDnesOdhad += turistiZaHodinu(b.kategoria, b.typ, b.cena) * ef * 24;
+    if (b.cena) turistiDnesOdhad += turistiZaHodinu(b.kategoria, b.typ, b.cena) * ef * konkurencnyMultiplikator(b.kategoria, stanica) * 24;
   }
   const priemernaEfektivita = hotove.length > 0 ? Math.round((sucetEfektivit / hotove.length) * 100) : 100;
   const sezona = vypocitajSezonu(teraz);
