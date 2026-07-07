@@ -7,6 +7,7 @@ import AppLayout from "../components/AppLayout";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
+import PocasiePanel from "../components/PocasiePanel";
 import { KATEGORIE } from "../lib/katalog";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
@@ -22,6 +23,7 @@ export default function PrehladPage() {
     vyjednatPlat,
     handleLogout,
     efektivitaBudovy,
+    pocetKonkurencie,
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
@@ -65,7 +67,7 @@ export default function PrehladPage() {
   }
 
   return (
-    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy}>
+    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie}>
       {loading && <p style={{ color: "#9fb0bf" }}>Načítavam...</p>}
 
       <VyjednavanieModal ukaz={!loading && ukazVyjednavanie} onVyjednat={vyjednatPlat} />
@@ -79,9 +81,11 @@ export default function PrehladPage() {
           </div>
 
           <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column" }}>
+            <PocasiePanel />
+
             <div style={{ ...cardStyle, textAlign: "center" }}>
-              <h3 style={{ marginTop: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600 }}>{stanica.nazov} — Rýchly prehľad</h3>
-              <div style={{ color: "#9fb0bf", fontSize: 15, display: "flex", flexDirection: "column", gap: 8 }}>
+              <div style={{ color: "#9fb0bf", fontSize: 13, marginBottom: 4 }}>{stanica.nazov}</div>
+              <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
                 <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
                 <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
                 {podpriemernaEfektivita > 0 && (
