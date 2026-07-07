@@ -73,20 +73,26 @@ export default function PrehladPage() {
       {!loading && stanica && (
         <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
           <div style={{ flex: "2 1 400px" }}>
-            <div style={cardStyle}>
-              <h3 style={{ marginTop: 0, fontSize: 16 }}>{stanica.nazov} — Rýchly prehľad</h3>
-              <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ ...cardStyle, minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <p style={{ color: "#4a5866", fontSize: 14 }}>🏔️ Mapa strediska — čoskoro</p>
+            </div>
+          </div>
+
+          <div style={{ flex: "1 1 280px", display: "flex", flexDirection: "column" }}>
+            <div style={{ ...cardStyle, textAlign: "center" }}>
+              <h3 style={{ marginTop: 0, fontSize: 18 }}>{stanica.nazov} — Rýchly prehľad</h3>
+              <div style={{ color: "#9fb0bf", fontSize: 15, display: "flex", flexDirection: "column", gap: 8 }}>
                 <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
                 <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
                 {podpriemernaEfektivita > 0 && (
-                  <span style={{ color: "#f2994a" }}>⚠️ {podpriemernaEfektivita} budov beží na zníženú efektivitu (chýbajú zamestnanci)</span>
+                  <span style={{ color: "#f2994a" }}>⚠️ {podpriemernaEfektivita} budov beží na zníženú efektivitu</span>
                 )}
               </div>
 
               {Object.keys(suhrnKategorii).length > 0 && (
-                <div style={{ marginTop: 12, display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <div style={{ marginTop: 14, display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
                   {Object.keys(suhrnKategorii).map((kat) => (
-                    <div key={kat} style={{ fontSize: 13, color: "#9fb0bf" }}>
+                    <div key={kat} style={{ fontSize: 14, color: "#9fb0bf" }}>
                       {KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}: <strong style={{ color: "#e8edf2" }}>{suhrnKategorii[kat]}</strong>
                     </div>
                   ))}
@@ -94,14 +100,12 @@ export default function PrehladPage() {
               )}
 
               {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
-                <p style={{ color: "#657685", fontSize: 14, marginTop: 8 }}>
+                <p style={{ color: "#657685", fontSize: 15, marginTop: 8 }}>
                   Zatiaľ nemáš žiadnu budovu. Choď na stránku <strong>🏗️ Budovy</strong> a postav prvú.
                 </p>
               )}
             </div>
-          </div>
 
-          <div style={{ flex: "1 1 280px", display: "flex", flexDirection: "column" }}>
             <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
             <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
           </div>
