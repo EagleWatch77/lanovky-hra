@@ -50,9 +50,11 @@ export default function PocasiePanel() {
           </div>
         ))}
       </div>
-      {pocasie.some((p) => p.lanovkyZatvorene) && (
+      {(pocasie[0]?.jeBurka || pocasie[0]?.jeSilnyVietor) && (
         <p style={{ color: "#f2994a", fontSize: 12, marginTop: 10, marginBottom: 0 }}>
-          ⚠️ Pri takomto vetre lanovky nepremávajú{offsetDni === 0 ? " — dnes to ovplyvní tvoj príjem z lanoviek." : "."}
+          {pocasie[0].jeBurka
+            ? "⛈️ Búrka — lanovky dnes zarobia o 25 % menej."
+            : "💨 Silný vietor — lanovky dnes zarobia o 66 % menej."}
         </p>
       )}
       {offsetDni !== 0 && (
