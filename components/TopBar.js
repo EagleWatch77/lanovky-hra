@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { turistiZaHodinu } from "../lib/katalog";
-import { linkStyle } from "../lib/styles";
 
 function vypocitajSezonu(datum) {
   const mesiac = datum.getMonth(); // 0 = január
@@ -11,18 +11,36 @@ function vypocitajSezonu(datum) {
 
 function Stat({ label, value }) {
   return (
-    <div style={{ padding: "8px 14px", background: "rgba(19,28,36,0.85)", backdropFilter: "blur(6px)", borderRadius: 8, border: "1px solid #223040", minWidth: 90, boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>
+    <div style={{ padding: "8px 14px", background: "rgba(255,255,255,0.05)", borderRadius: 8, border: "1px solid #223040", minWidth: 90 }}>
       <div style={{ fontSize: 11, color: "#657685" }}>{label}</div>
       <div style={{ fontSize: 15, fontWeight: 700 }}>{value}</div>
     </div>
   );
 }
 
-export default function TopBar({ email, onLogout, stanica, budovy, efektivitaBudovy }) {
+function IconBtn({ children, href, onClick, disabled }) {
+  const style = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    background: disabled ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.05)",
+    border: "1px solid #223040",
+    color: disabled ? "#3a4753" : "#e8edf2",
+    fontSize: 16,
+    cursor: disabled ? "default" : "pointer",
+    textDecoration: "none",
+  };
+  if (href && !disabled) return <Link href={href} style={style}>{children}</Link>;
+  return <div style={style} onClick={!disabled ? onClick : undefined}>{children}</div>;
+}
+
+export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy }) {
   const teraz = new Date();
   const hotove = budovy.filter((b) => b.stav === "hotovo");
 
-  // Odhad turistov za deň — nie presné meranie, len výpočet z aktuálnych cien/kapacít
   let turistiDnesOdhad = 0;
   let sucetEfektivit = 0;
   for (const b of hotove) {
@@ -34,7 +52,15 @@ export default function TopBar({ email, onLogout, stanica, budovy, efektivitaBud
   const sezona = vypocitajSezonu(teraz);
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ fontSize: 26 }}>🏔️</span>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: 1 }}>SNOWPEAK</div>
+          <div style={{ fontSize: 9, color: "#9fb0bf", letterSpacing: 2 }}>RESORT</div>
+        </div>
+      </div>
+
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <Stat label="⭐ Prestíž" value={stanica.prestiz.toLocaleString("sk-SK")} />
         <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} />
@@ -43,9 +69,13 @@ export default function TopBar({ email, onLogout, stanica, budovy, efektivitaBud
         <Stat label="📅 Dátum" value={teraz.toLocaleDateString("sk-SK")} />
         <Stat label={sezona === "ZIMA" ? "❄️ Sezóna" : "☀️ Sezóna"} value={sezona} />
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ color: "#9fb0bf", fontSize: 13 }}>{email}</span>
-        <button onClick={onLogout} style={linkStyle}>Odhlásiť sa</button>
+
+      <div style={{ display: "flex", gap: 8 }}>
+        <IconBtn disabled>✉️</IconBtn>
+        <IconBtn href="/rebricek">🏆</IconBtn>
+        <IconBtn disabled>👥</IconBtn>
+        <IconBtn href="/nastavenia">⚙️</IconBtn>
+        <IconBtn onClick={onLogout}>🚪</IconBtn>
       </div>
     </div>
   );
