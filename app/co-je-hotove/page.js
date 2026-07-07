@@ -14,7 +14,10 @@ const HOTOVE = [
   "Nastaviteľné ceny pri budovách s vlastným príjmom, dopyt reaguje na cenu",
   "Zamestnanci per budova — automaticky najatí pri dokončení stavby, dajú sa prepustiť/dohodnúť",
   "Ročné kalendárne vyjednávanie o plat (23.–31. december)",
+  "Konkurencia — objavuje sa po 90 dňoch, stavia rovnako dlho ako ty, znižuje dopyt, zvyšuje prestíž strediska",
+  "Úpadok prestíže pri dlhodobo nízkych peniazoch (pod 50 000 € dlhšie ako 3 týždne)",
   "Rebríček hráčov podľa prestíže",
+  "Financie — denný/týždenný/mesačný/sezónny prehľad zárobkov a výdavkov",
   "Nastavenia — zmena názvu, emailu, hesla, zmazanie dát",
   "Bočné menu, horná lišta so štatistikami, radar graf prestíže",
 ];
@@ -23,19 +26,18 @@ const PLANOVANE = [
   "Vzdialenostná mechanika — parkovisko/pokladňa blízko vs ďaleko od lanovky",
   "Počasie ovplyvňujúce denný dopyt",
   "Náhodné incidenty (poruchy, sťažnosti)",
-  "Konkurencia — sledovanie cien iných hráčov",
   "Ligový systém s postupom/zostupom",
   "Aliancie a spoločné projekty",
   "Ďalšie vylepšenie grafiky (napr. mapa strediska)",
 ];
 
 export default function CoJeHotovePage() {
-  const { session, stanica, budovy, handleLogout, efektivitaBudovy } = useGameState();
+  const { session, stanica, budovy, handleLogout, efektivitaBudovy, pocetKonkurencie } = useGameState();
 
   if (!session) return <AuthForm />;
 
   return (
-    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy}>
+    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie}>
       <div style={cardStyle}>
         <h3 style={{ marginTop: 0 }}>✅ Čo už funguje</h3>
         <ul style={{ color: "#e8edf2", fontSize: 14, lineHeight: 1.8, paddingLeft: 20 }}>
