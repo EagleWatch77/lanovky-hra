@@ -2,21 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Home, Building2, Trophy, ClipboardList, Settings, Users, TrendingUp, FlaskConical, PartyPopper, Handshake } from "lucide-react";
 
 const AKTIVNE = [
-  { href: "/", label: "Prehľad", icon: "🏠" },
-  { href: "/budovy", label: "Budovy", icon: "🏗️" },
-  { href: "/rebricek", label: "Rebríček", icon: "🏆" },
-  { href: "/co-je-hotove", label: "Čo je hotové", icon: "📋" },
-  { href: "/nastavenia", label: "Nastavenia", icon: "⚙️" },
+  { href: "/", label: "Prehľad", Icon: Home },
+  { href: "/budovy", label: "Budovy", Icon: Building2 },
+  { href: "/rebricek", label: "Rebríček", Icon: Trophy },
+  { href: "/co-je-hotove", label: "Čo je hotové", Icon: ClipboardList },
+  { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
 ];
 
 const COSKORO = [
-  { label: "Turisti", icon: "🧑‍🤝‍🧑" },
-  { label: "Ekonomika", icon: "📈" },
-  { label: "Výskum", icon: "🔬" },
-  { label: "Eventy", icon: "🎉" },
-  { label: "Aliancia", icon: "🤝" },
+  { label: "Turisti", Icon: Users },
+  { label: "Ekonomika", Icon: TrendingUp },
+  { label: "Výskum", Icon: FlaskConical },
+  { label: "Eventy", Icon: PartyPopper },
+  { label: "Aliancia", Icon: Handshake },
 ];
 
 export default function Sidebar({ notifikacie = [] }) {
@@ -24,7 +25,7 @@ export default function Sidebar({ notifikacie = [] }) {
 
   return (
     <aside style={{
-      width: 190,
+      width: 210,
       borderRadius: 16,
       background: "rgba(13,20,27,0.82)",
       backdropFilter: "blur(8px)",
@@ -35,7 +36,7 @@ export default function Sidebar({ notifikacie = [] }) {
       flexDirection: "column",
       alignSelf: "stretch",
     }}>
-      <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <nav style={{ display: "flex", flexDirection: "column", gap: 3 }}>
         {AKTIVNE.map((o) => (
           <Link
             key={o.href}
@@ -43,30 +44,32 @@ export default function Sidebar({ notifikacie = [] }) {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              padding: "8px 10px",
+              gap: 10,
+              padding: "10px 12px",
               borderRadius: 8,
               textDecoration: "none",
-              fontSize: 13,
+              fontSize: 15,
               color: pathname === o.href ? "#e8edf2" : "#9fb0bf",
               background: pathname === o.href ? "#1c2833" : "transparent",
             }}
           >
-            <span>{o.icon}</span>{o.label}
+            <o.Icon size={18} strokeWidth={1.8} />
+            {o.label}
           </Link>
         ))}
       </nav>
 
-      <div style={{ marginTop: 20, color: "#4a5866", fontSize: 10, textTransform: "uppercase", paddingLeft: 10, marginBottom: 6 }}>
+      <div style={{ marginTop: 20, color: "#4a5866", fontSize: 11, textTransform: "uppercase", paddingLeft: 12, marginBottom: 6 }}>
         Čoskoro
       </div>
-      <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <nav style={{ display: "flex", flexDirection: "column", gap: 3 }}>
         {COSKORO.map((o) => (
           <div
             key={o.label}
-            style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 8, fontSize: 13, color: "#4a5866" }}
+            style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 8, fontSize: 15, color: "#4a5866" }}
           >
-            <span>{o.icon}</span>{o.label}
+            <o.Icon size={18} strokeWidth={1.8} />
+            {o.label}
           </div>
         ))}
       </nav>
@@ -81,7 +84,7 @@ export default function Sidebar({ notifikacie = [] }) {
               <div
                 key={i}
                 style={{
-                  fontSize: 12,
+                  fontSize: 13,
                   color: n.typ === "varovanie" ? "#f2994a" : "#9fb0bf",
                   background: "#131c24",
                   borderRadius: 6,
