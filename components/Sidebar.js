@@ -35,12 +35,6 @@ export default function Sidebar({ notifikacie = [] }) {
       flexDirection: "column",
       alignSelf: "stretch",
     }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 2, marginBottom: 24, paddingLeft: 8 }}>
-        <div style={{ fontSize: 28, lineHeight: 1 }}>🏔️</div>
-        <div style={{ fontWeight: 800, fontSize: 16, letterSpacing: 1, marginTop: 4 }}>SNOWPEAK</div>
-        <div style={{ fontSize: 10, color: "#9fb0bf", letterSpacing: 2 }}>RESORT</div>
-      </div>
-
       <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {AKTIVNE.map((o) => (
           <Link
