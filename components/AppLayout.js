@@ -18,7 +18,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
         flexDirection: "column",
         gap: 16,
         boxSizing: "border-box",
-        backgroundImage: `url("/pozadie-hory.png")`,
+        backgroundImage: `url("/mapa-strediska.png")`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
