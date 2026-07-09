@@ -19,9 +19,10 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
         gap: 16,
         boxSizing: "border-box",
         backgroundImage: `url("/mapa-strediska.png")`,
-        backgroundSize: "cover",
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        backgroundAttachment: "fixed",
+        backgroundColor: "#05090d",
       }}
     >
       {stanica && (
