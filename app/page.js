@@ -75,8 +75,8 @@ export default function PrehladPage() {
       {!loading && stanica && (
         <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
           <div style={{ flex: "3 1 400px" }}>
-            <div style={{ ...cardStyle, minHeight: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <p style={{ color: "#4a5866", fontSize: 14 }}>🏔️ Mapa strediska — čoskoro</p>
+            <div style={{ ...cardStyle, minHeight: 200, padding: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <img src="/mapa-strediska.png" alt="Mapa strediska" style={{ width: "100%", height: "auto", borderRadius: 8, display: "block" }} />
             </div>
           </div>
 
