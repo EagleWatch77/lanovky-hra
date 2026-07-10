@@ -5,9 +5,13 @@ import TopBar from "./TopBar";
 import AkcieBar from "./AkcieBar";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle } from "../lib/styles";
+import { jeZimnyMesiac } from "../lib/katalog";
+import { hernyDatum } from "../lib/hernyCas";
 
 export default function AppLayout({ session, stanica, budovy, handleLogout, efektivitaBudovy, pocetKonkurencie, children }) {
   const notifikacie = stanica ? vytvorNotifikacie(budovy, efektivitaBudovy, stanica) : [];
+  const jeZima = jeZimnyMesiac(hernyDatum(new Date()).getMonth());
+  const mapaObrazok = jeZima ? "/mapa-cistazima.png" : "/mapa-cistaleto.png";
 
   return (
     <div
@@ -18,7 +22,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
         flexDirection: "column",
         gap: 16,
         boxSizing: "border-box",
-        backgroundImage: `url("/mapa-strediska.png")`,
+        backgroundImage: `url("${mapaObrazok}")`,
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
