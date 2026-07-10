@@ -17,7 +17,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
     <div
       style={{
         minHeight: "100vh",
-        padding: 16,
+        padding: "16px 16px 16px 8px",
         display: "flex",
         flexDirection: "column",
         gap: 16,
