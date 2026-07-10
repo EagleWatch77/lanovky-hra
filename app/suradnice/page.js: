@@ -1,0 +1,57 @@
+"use client";
+
+import { useState } from "react";
+
+export default function SuradnicePage() {
+  const [body, setBody] = useState([]);
+
+  function klik(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setBody((b) => [...b, { x: x.toFixed(1), y: y.toFixed(1) }]);
+  }
+
+  return (
+    <div style={{ background: "#05090d", minHeight: "100vh", padding: 16 }}>
+      <p style={{ color: "#e8edf2", marginBottom: 12 }}>
+        Klikni na mapu presne tam, kde má byť slot. Súradnice sa zobrazia dole (zoznam všetkých kliknutí).
+      </p>
+      <div
+        onClick={klik}
+        style={{
+          position: "relative",
+          width: "100%",
+          maxWidth: 1400,
+          cursor: "crosshair",
+          border: "2px solid #2f9e6e",
+        }}
+      >
+        <img src="/mapa-cistaleto.png" alt="Mapa" style={{ width: "100%", display: "block" }} />
+        {body.map((b, i) => (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              left: `${b.x}%`,
+              top: `${b.y}%`,
+              width: 16,
+              height: 16,
+              marginLeft: -8,
+              marginTop: -8,
+              borderRadius: "50%",
+              background: "red",
+              border: "2px solid white",
+            }}
+          />
+        ))}
+      </div>
+      <div style={{ marginTop: 16, color: "#e8edf2", fontFamily: "monospace" }}>
+        {body.map((b, i) => (
+          <div key={i}>Bod {i + 1}: left: "{b.x}%", top: "{b.y}%"</div>
+        ))}
+      </div>
+      <button onClick={() => setBody([])} style={{ marginTop: 12, padding: "8px 16px" }}>Vymazať body</button>
+    </div>
+  );
+}
