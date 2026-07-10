@@ -27,7 +27,7 @@ export default function SuradnicePage() {
           border: "2px solid #2f9e6e",
         }}
       >
-        <img src="/mapa-cistaleto.png" alt="Mapa" style={{ width: "100%", display: "block" }} />
+        <img src="/mapa-cistazima.png" alt="Mapa" style={{ width: "100%", display: "block" }} />
         {body.map((b, i) => (
           <div
             key={i}
