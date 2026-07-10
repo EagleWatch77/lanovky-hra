@@ -8,7 +8,10 @@ import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PocasiePanel from "../components/PocasiePanel";
-import { KATEGORIE } from "../lib/katalog";
+import Link from "next/link";
+import { KATEGORIE, ZONY } from "../lib/katalog";
+import { hernyDatum } from "../lib/hernyCas";
+import { jeZimnyMesiac } from "../lib/katalog";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
 export default function PrehladPage() {
@@ -75,7 +78,39 @@ export default function PrehladPage() {
       {!loading && stanica && (
         <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
           <div style={{ flex: "3 1 400px" }}>
-            <div style={{ minHeight: 400 }} />
+            <div style={{ position: "relative", width: "100%", borderRadius: 12, overflow: "hidden" }}>
+              <img
+                src={jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png"}
+                alt="Mapa strediska"
+                style={{ width: "100%", display: "block" }}
+              />
+
+              {/* Prvý testovací bod — Vlek v Lúke */}
+              <Link
+                href="/budovy"
+                title="Postaviť vlek v Lúke"
+                style={{
+                  position: "absolute",
+                  left: "56.4%",
+                  top: "89.3%",
+                  width: 32,
+                  height: 32,
+                  marginLeft: -16,
+                  marginTop: -16,
+                  borderRadius: "50%",
+                  background: "rgba(47,158,110,0.85)",
+                  border: "2px solid white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 16,
+                  textDecoration: "none",
+                  boxShadow: "0 0 12px rgba(47,158,110,0.8)",
+                }}
+              >
+                🚡
+              </Link>
+            </div>
           </div>
 
           <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column" }}>
