@@ -86,26 +86,53 @@ export default function BudovyPage() {
 
   function otvorStavbu(zonaKluc) {
     const prvaKategoria = Object.keys(ZONY[zonaKluc].limity)[0];
-    zmenitKategoriu(prvaKategoria);
+    zmenitKategoriu(prvaKategoria, zonaKluc);
     setUkazStavbuVZone(zonaKluc);
   }
 
-  function zmenitKategoriu(novaKategoria) {
-    const prvyTyp = Object.keys(KATEGORIE[novaKategoria].katalog)[0];
-    const znackyKatalog = KATEGORIE[novaKategoria].znackyKatalog;
+  function zmenitKategoriu(novaKategoria, zonaKluc) {
+    const katalogNaVyber = katalogProVyber(zonaKluc, novaKategoria);
+    const prvyTyp = Object.keys(katalogNaVyber)[0];
+    const realna = realnaKategoria(novaKategoria);
+    const znackyKatalog = KATEGORIE[realna].znackyKatalog;
     const prvaZnacka = znackyKatalog ? Object.keys(znackyKatalog)[0] : null;
     setVyberKategoria(novaKategoria);
     setVyberTyp(prvyTyp);
     setVyberZnacka(prvaZnacka);
   }
 
-  function pocetVZone(zonaKluc, kategoria) {
-    return budovy.filter((b) => b.zona === zonaKluc && b.kategoria === kategoria && b.stav !== "zrusene").length;
+  function pocetVZone(zonaKluc, kat) {
+    if (zonaKluc === "luka" && kat === "vlek") {
+      return budovy.filter((b) => b.zona === "luka" && b.kategoria === "lanovka" && b.typ === "vlek" && b.stav !== "zrusene").length;
+    }
+    if (zonaKluc === "luka" && kat === "lanovka") {
+      return budovy.filter((b) => b.zona === "luka" && b.kategoria === "lanovka" && b.typ !== "vlek" && b.stav !== "zrusene").length;
+    }
+    return budovy.filter((b) => b.zona === zonaKluc && b.kategoria === kat && b.stav !== "zrusene").length;
+  }
+
+  function realnaKategoria(kat) {
+    return kat === "vlek" ? "lanovka" : kat;
+  }
+
+  function nazovKategorieVZone(zona, kat) {
+    return zona.popisky?.[kat] || KATEGORIE[realnaKategoria(kat)].nazov;
+  }
+
+  function katalogProVyber(zonaKluc, kat) {
+    const plny = KATEGORIE[realnaKategoria(kat)].katalog;
+    if (zonaKluc === "luka" && kat === "vlek") {
+      return Object.fromEntries(Object.entries(plny).filter(([t]) => t === "vlek"));
+    }
+    if (zonaKluc === "luka" && kat === "lanovka") {
+      return Object.fromEntries(Object.entries(plny).filter(([t]) => t !== "vlek"));
+    }
+    return plny;
   }
 
   const podmUdolie = podmienkyOdomknutiaUdolia();
   const podmHory = podmienkyOdomknutiaHor();
-  const aktualnyKatalog = vyberKategoria ? KATEGORIE[vyberKategoria].katalog : null;
+  const aktualnyKatalog = vyberKategoria && ukazStavbuVZone ? katalogProVyber(ukazStavbuVZone, vyberKategoria) : null;
 
   return (
     <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie}>
@@ -153,9 +180,11 @@ export default function BudovyPage() {
                   {Object.keys(zona.limity).map((kat) => {
                     const obsadene = pocetVZone(zonaKluc, kat);
                     const limit = zona.limity[kat];
+                    const zamknutySlot = zonaKluc === "luka" && kat === "lanovka" && !stanica.hory_odomknute;
                     return (
                       <span key={kat} style={{ fontSize: 12, color: obsadene >= limit ? "#657685" : "#9fb0bf" }}>
-                        {KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}: {obsadene}/{limit}
+                        {KATEGORIE[realnaKategoria(kat)].ikona} {nazovKategorieVZone(zona, kat)}: {obsadene}/{limit}
+                        {zamknutySlot && " 🔒"}
                       </span>
                     );
                   })}
@@ -243,16 +272,20 @@ export default function BudovyPage() {
                     <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
                       {Object.keys(zona.limity).map((kat) => {
                         const plne = pocetVZone(zonaKluc, kat) >= zona.limity[kat];
+                        const zamknuty = zonaKluc === "luka" && kat === "lanovka" && !stanica.hory_odomknute;
+                        const nedostupne = plne || zamknuty;
                         return (
                           <button
                             key={kat}
-                            onClick={() => !plne && zmenitKategoriu(kat)}
-                            disabled={plne}
-                            style={{ ...(vyberKategoria === kat ? tileStyleActive : tileStyle), opacity: plne ? 0.4 : 1 }}
+                            onClick={() => !nedostupne && zmenitKategoriu(kat, zonaKluc)}
+                            disabled={nedostupne}
+                            style={{ ...(vyberKategoria === kat ? tileStyleActive : tileStyle), opacity: nedostupne ? 0.4 : 1 }}
                           >
-                            <div style={{ fontSize: 28 }}>{KATEGORIE[kat].ikona}</div>
-                            <div style={{ fontSize: 13, marginTop: 4 }}>{KATEGORIE[kat].nazov}</div>
-                            <div style={{ fontSize: 11, color: "#657685" }}>{pocetVZone(zonaKluc, kat)}/{zona.limity[kat]}</div>
+                            <div style={{ fontSize: 28 }}>{zamknuty ? "🔒" : KATEGORIE[realnaKategoria(kat)].ikona}</div>
+                            <div style={{ fontSize: 13, marginTop: 4 }}>{nazovKategorieVZone(zona, kat)}</div>
+                            <div style={{ fontSize: 11, color: "#657685" }}>
+                              {zamknuty ? "s Horami" : `${pocetVZone(zonaKluc, kat)}/${zona.limity[kat]}`}
+                            </div>
                           </button>
                         );
                       })}
@@ -270,18 +303,18 @@ export default function BudovyPage() {
                             >
                               <div style={{ fontSize: 13, fontWeight: 600 }}>{aktualnyKatalog[typ].nazov}</div>
                               <div style={{ fontSize: 11, color: "#9fb0bf", marginTop: 4 }}>
-                                {cenaBudovy(vyberKategoria, typ, vyberZnacka).toLocaleString("sk-SK")} €
+                                {cenaBudovy(realnaKategoria(vyberKategoria), typ, vyberZnacka).toLocaleString("sk-SK")} €
                               </div>
                             </button>
                           ))}
                         </div>
 
-                        {KATEGORIE[vyberKategoria].znackyKatalog && (
+                        {KATEGORIE[realnaKategoria(vyberKategoria)].znackyKatalog && (
                           <>
                             <div style={{ color: "#657685", fontSize: 12, marginBottom: 8 }}>3. Vyber značku</div>
                             <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-                              {Object.keys(KATEGORIE[vyberKategoria].znackyKatalog).map((zn) => {
-                                const znackyKatalog = KATEGORIE[vyberKategoria].znackyKatalog;
+                              {Object.keys(KATEGORIE[realnaKategoria(vyberKategoria)].znackyKatalog).map((zn) => {
+                                const znackyKatalog = KATEGORIE[realnaKategoria(vyberKategoria)].znackyKatalog;
                                 return (
                                   <button
                                     key={zn}
@@ -300,22 +333,22 @@ export default function BudovyPage() {
                         <div style={{ ...cardStyle, marginTop: 0, background: "#131c24" }}>
                           <div style={{ fontWeight: 600, marginBottom: 8 }}>{aktualnyKatalog[vyberTyp]?.nazov}</div>
                           <div style={{ color: "#9fb0bf", fontSize: 13 }}>
-                            💰 Cena: <strong style={{ color: "#e8edf2" }}>{cenaBudovy(vyberKategoria, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €</strong><br />
+                            💰 Cena: <strong style={{ color: "#e8edf2" }}>{cenaBudovy(realnaKategoria(vyberKategoria), vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €</strong><br />
                             🕐 Výstavba: <strong style={{ color: "#e8edf2" }}>{Math.round(vystavbaVRealnychDnoch(aktualnyKatalog[vyberTyp].vystavbaHernychMesiacov))} dní</strong><br />
-                            ⭐ Prestíž: <strong style={{ color: "#f2c94c" }}>{prestizBudovy(vyberKategoria, vyberTyp, vyberZnacka)}</strong><br />
-                            👷 Zamestnanci po dokončení: <strong style={{ color: "#e8edf2" }}>{zamestnanciPotrebni(vyberKategoria, vyberTyp)}</strong> (automaticky najatí)
+                            ⭐ Prestíž: <strong style={{ color: "#f2c94c" }}>{prestizBudovy(realnaKategoria(vyberKategoria), vyberTyp, vyberZnacka)}</strong><br />
+                            👷 Zamestnanci po dokončení: <strong style={{ color: "#e8edf2" }}>{zamestnanciPotrebni(realnaKategoria(vyberKategoria), vyberTyp)}</strong> (automaticky najatí)
                           </div>
                         </div>
 
                         <button
                           onClick={() => {
-                            postavitBudovu(vyberKategoria, vyberTyp, vyberZnacka, zonaKluc);
+                            postavitBudovu(realnaKategoria(vyberKategoria), vyberTyp, vyberZnacka, zonaKluc);
                             setUkazStavbuVZone(null);
                           }}
                           style={{ ...buttonStyle, marginTop: 16, width: "100%" }}
                           disabled={loading}
                         >
-                          ✅ Postaviť za {cenaBudovy(vyberKategoria, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €
+                          ✅ Postaviť za {cenaBudovy(realnaKategoria(vyberKategoria), vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €
                         </button>
                       </>
                     )}
