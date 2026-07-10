@@ -28,8 +28,8 @@ export default function Sidebar({ notifikacie = [] }) {
     <aside style={{
       width: 68,
       borderRadius: 16,
-      background: "rgba(13,20,27,0.82)",
-      backdropFilter: "blur(8px)",
+      background: "rgba(13,20,27,0.45)",
+      backdropFilter: "blur(6px)",
       boxShadow: "0 8px 24px rgba(0,0,0,0.45)",
       padding: "14px 6px",
       flexShrink: 0,
