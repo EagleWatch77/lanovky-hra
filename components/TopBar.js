@@ -24,7 +24,6 @@ function Stat({ label, value }) {
 
 const NAV = [
   { href: "/", label: "Prehľad", Icon: Home },
-  { href: "/budovy", label: "Budovy", Icon: Building2 },
   { href: "/konkurencia", label: "Konkurencia", Icon: ShieldAlert },
   { href: "/financie", label: "Financie", Icon: Wallet },
   { href: "/rebricek", label: "Rebríček", Icon: Trophy },
