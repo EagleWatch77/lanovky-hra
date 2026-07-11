@@ -113,7 +113,7 @@ export default function PrehladPage() {
             </div>
           </div>
 
-          <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column" }}>
+          <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column", maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
             <PocasiePanel />
 
             <div style={{ ...cardStyle, textAlign: "center" }}>
