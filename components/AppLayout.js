@@ -3,13 +3,9 @@
 import TopBar from "./TopBar";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle } from "../lib/styles";
-import { jeZimnyMesiac } from "../lib/katalog";
-import { hernyDatum } from "../lib/hernyCas";
 
 export default function AppLayout({ session, stanica, budovy, handleLogout, efektivitaBudovy, pocetKonkurencie, children }) {
   const notifikacie = stanica ? vytvorNotifikacie(budovy, efektivitaBudovy, stanica) : [];
-  const jeZima = jeZimnyMesiac(hernyDatum(new Date()).getMonth());
-  const mapaObrazok = jeZima ? "/mapa-cistazima.png" : "/mapa-cistaleto.png";
 
   return (
     <div
@@ -20,11 +16,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
         flexDirection: "column",
         gap: 16,
         boxSizing: "border-box",
-        backgroundImage: `url("${mapaObrazok}")`,
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundColor: "#05090d",
+        background: "#05090d",
       }}
     >
       {stanica && (
