@@ -5,10 +5,10 @@ import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
 import TopBar from "../components/TopBar";
 import VyjednavanieModal from "../components/VyjednavanieModal";
+import SlotModal from "../components/SlotModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PocasiePanel from "../components/PocasiePanel";
-import Link from "next/link";
 import { KATEGORIE } from "../lib/katalog";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac } from "../lib/katalog";
@@ -28,10 +28,15 @@ export default function PrehladPage() {
     handleLogout,
     efektivitaBudovy,
     pocetKonkurencie,
+    postavitBudovu,
+    najatPreBudovu,
+    prepustitPreBudovu,
+    zmenitCenu,
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
   const [panelOtvoreny, setPanelOtvoreny] = useState(true);
+  const [otvorenySlot, setOtvorenySlot] = useState(null);
 
   if (!session) return <AuthForm />;
 
@@ -78,9 +83,33 @@ export default function PrehladPage() {
   const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
   const mapaObrazok = jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png";
 
+  // Nájde existujúcu budovu pre daný slot (zóna + kategória + prípadný filter typu)
+  function najdiBudovuProSlot(zona, kategoria, typFilter) {
+    return budovy.find((b) => b.zona === zona && b.kategoria === kategoria && (!typFilter || typFilter.includes(b.typ)));
+  }
+
+  const vlekSlot = { zona: "luka", kategoria: "lanovka", typFilter: ["vlek"] };
+  const vlekBudova = najdiBudovuProSlot(vlekSlot.zona, vlekSlot.kategoria, vlekSlot.typFilter);
+
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
       <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
+
+      {otvorenySlot && (
+        <SlotModal
+          zona={otvorenySlot.zona}
+          kategoria={otvorenySlot.kategoria}
+          typFilter={otvorenySlot.typFilter}
+          existujucaBudova={najdiBudovuProSlot(otvorenySlot.zona, otvorenySlot.kategoria, otvorenySlot.typFilter)}
+          postavitBudovu={postavitBudovu}
+          najatPreBudovu={najatPreBudovu}
+          prepustitPreBudovu={prepustitPreBudovu}
+          zmenitCenu={zmenitCenu}
+          efektivitaBudovy={efektivitaBudovy}
+          pocetKonkurencie={pocetKonkurencie}
+          onClose={() => setOtvorenySlot(null)}
+        />
+      )}
 
       {/* Mapa na celú obrazovku */}
       <img
@@ -90,9 +119,9 @@ export default function PrehladPage() {
       />
 
       {/* Testovací bod — Vlek v Lúke */}
-      <Link
-        href="/budovy"
-        title="Postaviť vlek v Lúke"
+      <button
+        onClick={() => setOtvorenySlot(vlekSlot)}
+        title="Vlek v Lúke"
         style={{
           position: "absolute",
           left: "56.4%",
@@ -102,19 +131,20 @@ export default function PrehladPage() {
           marginLeft: -18,
           marginTop: -18,
           borderRadius: "50%",
-          background: "rgba(47,158,110,0.85)",
+          background: vlekBudova ? "rgba(47,158,110,0.85)" : "rgba(255,255,255,0.25)",
           border: "2px solid white",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: 18,
-          textDecoration: "none",
-          boxShadow: "0 0 12px rgba(47,158,110,0.8)",
+          boxShadow: "0 0 12px rgba(47,158,110,0.6)",
           zIndex: 2,
+          cursor: "pointer",
+          padding: 0,
         }}
       >
-        🚡
-      </Link>
+        {vlekBudova ? "🚡" : "+"}
+      </button>
 
       {/* Plávajúca horná lišta */}
       <div style={{ position: "absolute", top: 12, left: 12, right: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 12px" }}>
@@ -128,7 +158,7 @@ export default function PrehladPage() {
         style={{
           position: "absolute",
           top: 66,
-          right: panelOtvoreny ? 312 : 12,
+          right: panelOtvoreny ? 272 : 12,
           zIndex: 4,
           width: 30,
           height: 30,
@@ -145,7 +175,7 @@ export default function PrehladPage() {
 
       {/* Plávajúci info panel */}
       {panelOtvoreny && (
-        <div style={{ position: "absolute", top: 66, right: 12, width: 290, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ position: "absolute", top: 66, right: 12, width: 250, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
           <PocasiePanel />
 
           <div style={{ ...cardStyle, textAlign: "center" }}>
@@ -170,7 +200,7 @@ export default function PrehladPage() {
 
             {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
               <p style={{ color: "#657685", fontSize: 15, marginTop: 8 }}>
-                Zatiaľ nemáš žiadnu budovu. Choď na stránku <strong>🏗️ Budovy</strong> a postav prvú.
+                Zatiaľ nemáš žiadnu budovu. Klikni na 🚡 na mape a postav prvú.
               </p>
             )}
           </div>
