@@ -15,9 +15,9 @@ function vypocitajSezonu(datum) {
 
 function Stat({ label, value }) {
   return (
-    <div style={{ padding: "6px 10px", background: "rgba(255,255,255,0.05)", borderRadius: 8, border: "1px solid #223040", minWidth: 76 }}>
-      <div style={{ fontSize: 10, color: "#657685" }}>{label}</div>
-      <div style={{ fontSize: 13, fontWeight: 700 }}>{value}</div>
+    <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13, whiteSpace: "nowrap" }}>
+      <span style={{ opacity: 0.8 }}>{label.split(" ")[0]}</span>
+      <span style={{ fontWeight: 700 }}>{value}</span>
     </div>
   );
 }
@@ -41,16 +41,15 @@ function NavIkona({ href, label, Icon, aktivny }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: 36,
-        height: 36,
-        borderRadius: 9,
-        background: aktivny ? "#1c2833" : "rgba(255,255,255,0.04)",
-        border: "1px solid #223040",
-        color: aktivny ? "#e8edf2" : "#9fb0bf",
+        width: 32,
+        height: 32,
+        borderRadius: 8,
+        background: aktivny ? "rgba(255,255,255,0.14)" : "transparent",
+        color: aktivny ? "#e8edf2" : "rgba(232,237,242,0.65)",
         textDecoration: "none",
       }}
     >
-      <Icon size={17} strokeWidth={1.8} />
+      <Icon size={16} strokeWidth={1.8} />
     </Link>
   );
 }
@@ -116,11 +115,11 @@ export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy, po
           onClick={onLogout}
           title="Odhlásiť sa"
           style={{
-            display: "flex", alignItems: "center", justifyContent: "center", width: 36, height: 36,
-            borderRadius: 9, background: "rgba(255,255,255,0.04)", border: "1px solid #223040", color: "#e8edf2", cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32,
+            borderRadius: 8, color: "rgba(232,237,242,0.65)", cursor: "pointer",
           }}
         >
-          <LogOut size={17} strokeWidth={1.8} />
+          <LogOut size={16} strokeWidth={1.8} />
         </div>
       </div>
     </div>
