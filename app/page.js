@@ -77,12 +77,12 @@ export default function PrehladPage() {
 
       {!loading && stanica && (
         <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
-          <div style={{ flex: "3 1 400px", textAlign: "center" }}>
-            <div style={{ position: "relative", display: "inline-block", borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ flex: "3 1 400px" }}>
+            <div style={{ position: "relative", width: "100%", borderRadius: 12, overflow: "hidden" }}>
               <img
                 src={jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png"}
                 alt="Mapa strediska"
-                style={{ height: "calc(100vh - 200px)", maxWidth: "100%", width: "auto", display: "block" }}
+                style={{ width: "100%", display: "block" }}
               />
 
               {/* Prvý testovací bod — Vlek v Lúke */}
