@@ -86,7 +86,7 @@ export default function PrehladPage() {
       <img
         src={mapaObrazok}
         alt="Mapa strediska"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
       />
 
       {/* Testovací bod — Vlek v Lúke */}
@@ -117,7 +117,7 @@ export default function PrehladPage() {
       </Link>
 
       {/* Plávajúca horná lišta */}
-      <div style={{ position: "absolute", top: 16, left: 16, right: 16, zIndex: 3, ...cardStyle, marginTop: 0, padding: "10px 16px" }}>
+      <div style={{ position: "absolute", top: 12, left: 12, right: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 12px" }}>
         <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie} notifikacie={notifikacie} />
       </div>
 
@@ -127,17 +127,17 @@ export default function PrehladPage() {
         title={panelOtvoreny ? "Skryť panel" : "Zobraziť panel"}
         style={{
           position: "absolute",
-          top: 90,
-          right: panelOtvoreny ? 336 : 16,
+          top: 66,
+          right: panelOtvoreny ? 312 : 12,
           zIndex: 4,
-          width: 32,
-          height: 32,
+          width: 30,
+          height: 30,
           borderRadius: 8,
-          background: "rgba(13,20,27,0.85)",
-          border: "1px solid #223040",
+          background: "rgba(13,20,27,0.7)",
+          border: "1px solid rgba(255,255,255,0.1)",
           color: "#e8edf2",
           cursor: "pointer",
-          fontSize: 16,
+          fontSize: 15,
         }}
       >
         {panelOtvoreny ? "›" : "‹"}
@@ -145,7 +145,7 @@ export default function PrehladPage() {
 
       {/* Plávajúci info panel */}
       {panelOtvoreny && (
-        <div style={{ position: "absolute", top: 90, right: 16, width: 300, maxHeight: "calc(100vh - 110px)", overflowY: "auto", zIndex: 3 }}>
+        <div style={{ position: "absolute", top: 66, right: 12, width: 290, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 10 }}>
           <PocasiePanel />
 
           <div style={{ ...cardStyle, textAlign: "center" }}>
