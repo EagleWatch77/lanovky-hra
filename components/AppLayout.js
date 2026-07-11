@@ -1,8 +1,6 @@
 "use client";
 
-import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
-import AkcieBar from "./AkcieBar";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle } from "../lib/styles";
 import { jeZimnyMesiac } from "../lib/katalog";
@@ -17,7 +15,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
     <div
       style={{
         minHeight: "100vh",
-        padding: "16px 16px 16px 8px",
+        padding: 16,
         display: "flex",
         flexDirection: "column",
         gap: 16,
@@ -30,18 +28,14 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
       }}
     >
       {stanica && (
-        <div style={{ ...cardStyle, marginTop: 0, padding: "14px 20px" }}>
-          <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie} />
+        <div style={{ ...cardStyle, marginTop: 0, padding: "10px 16px" }}>
+          <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie} notifikacie={notifikacie} />
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 16, flex: 1 }}>
-        <Sidebar notifikacie={notifikacie} />
-        <main style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
-          {children}
-          <AkcieBar />
-        </main>
-      </div>
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
+        {children}
+      </main>
     </div>
   );
 }
