@@ -78,7 +78,12 @@ export default function PrehladPage() {
       {!loading && stanica && (
         <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
           <div style={{ flex: "3 1 400px" }}>
-            <div style={{ position: "relative", width: "100%", borderRadius: 12, overflow: "hidden" }}>
+           <div style={{ position: "relative", maxHeight: "calc(100vh - 200px)", width: "fit-content", margin: "0 auto", borderRadius: 12, overflow: "hidden" }}>
+              <img
+                src={jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png"}
+                alt="Mapa strediska"
+                style={{ maxHeight: "calc(100vh - 200px)", width: "auto", display: "block" }}
+              />
               <img
                 src={jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png"}
                 alt="Mapa strediska"
