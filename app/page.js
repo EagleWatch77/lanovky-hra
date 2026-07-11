@@ -3,15 +3,16 @@
 import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
-import AppLayout from "../components/AppLayout";
+import TopBar from "../components/TopBar";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PocasiePanel from "../components/PocasiePanel";
 import Link from "next/link";
-import { KATEGORIE, ZONY } from "../lib/katalog";
+import { KATEGORIE } from "../lib/katalog";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac } from "../lib/katalog";
+import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
 export default function PrehladPage() {
@@ -30,6 +31,7 @@ export default function PrehladPage() {
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
+  const [panelOtvoreny, setPanelOtvoreny] = useState(true);
 
   if (!session) return <AuthForm />;
 
@@ -60,6 +62,10 @@ export default function PrehladPage() {
     );
   }
 
+  if (loading || !stanica) {
+    return <p style={{ color: "#9fb0bf", padding: 24 }}>Načítavam...</p>;
+  }
+
   const voVystavbe = budovy.filter((b) => b.stav === "vo_vystavbe");
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
   const podpriemernaEfektivita = hotoveBudovy.filter((b) => efektivitaBudovy(b) < 1).length;
@@ -69,85 +75,110 @@ export default function PrehladPage() {
     suhrnKategorii[b.kategoria] = (suhrnKategorii[b.kategoria] || 0) + 1;
   }
 
+  const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
+  const mapaObrazok = jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png";
+
   return (
-    <AppLayout session={session} stanica={stanica} budovy={budovy} handleLogout={handleLogout} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie}>
-      {loading && <p style={{ color: "#9fb0bf" }}>Načítavam...</p>}
+    <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
+      <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
 
-      <VyjednavanieModal ukaz={!loading && ukazVyjednavanie} onVyjednat={vyjednatPlat} />
+      {/* Mapa na celú obrazovku */}
+      <img
+        src={mapaObrazok}
+        alt="Mapa strediska"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+      />
 
-      {!loading && stanica && (
-        <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
-          <div style={{ flex: "3 1 400px" }}>
-            <div style={{ position: "relative", width: "100%", borderRadius: 12, overflow: "hidden" }}>
-              <img
-                src={jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png"}
-                alt="Mapa strediska"
-                style={{ width: "100%", display: "block" }}
-              />
+      {/* Testovací bod — Vlek v Lúke */}
+      <Link
+        href="/budovy"
+        title="Postaviť vlek v Lúke"
+        style={{
+          position: "absolute",
+          left: "56.4%",
+          top: "89.3%",
+          width: 36,
+          height: 36,
+          marginLeft: -18,
+          marginTop: -18,
+          borderRadius: "50%",
+          background: "rgba(47,158,110,0.85)",
+          border: "2px solid white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 18,
+          textDecoration: "none",
+          boxShadow: "0 0 12px rgba(47,158,110,0.8)",
+          zIndex: 2,
+        }}
+      >
+        🚡
+      </Link>
 
-              {/* Prvý testovací bod — Vlek v Lúke */}
-              <Link
-                href="/budovy"
-                title="Postaviť vlek v Lúke"
-                style={{
-                  position: "absolute",
-                  left: "56.4%",
-                  top: "89.3%",
-                  width: 32,
-                  height: 32,
-                  marginLeft: -16,
-                  marginTop: -16,
-                  borderRadius: "50%",
-                  background: "rgba(47,158,110,0.85)",
-                  border: "2px solid white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 16,
-                  textDecoration: "none",
-                  boxShadow: "0 0 12px rgba(47,158,110,0.8)",
-                }}
-              >
-                🚡
-              </Link>
+      {/* Plávajúca horná lišta */}
+      <div style={{ position: "absolute", top: 16, left: 16, right: 16, zIndex: 3, ...cardStyle, marginTop: 0, padding: "10px 16px" }}>
+        <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie} notifikacie={notifikacie} />
+      </div>
+
+      {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
+      <button
+        onClick={() => setPanelOtvoreny((o) => !o)}
+        title={panelOtvoreny ? "Skryť panel" : "Zobraziť panel"}
+        style={{
+          position: "absolute",
+          top: 90,
+          right: panelOtvoreny ? 336 : 16,
+          zIndex: 4,
+          width: 32,
+          height: 32,
+          borderRadius: 8,
+          background: "rgba(13,20,27,0.85)",
+          border: "1px solid #223040",
+          color: "#e8edf2",
+          cursor: "pointer",
+          fontSize: 16,
+        }}
+      >
+        {panelOtvoreny ? "›" : "‹"}
+      </button>
+
+      {/* Plávajúci info panel */}
+      {panelOtvoreny && (
+        <div style={{ position: "absolute", top: 90, right: 16, width: 300, maxHeight: "calc(100vh - 110px)", overflowY: "auto", zIndex: 3 }}>
+          <PocasiePanel />
+
+          <div style={{ ...cardStyle, textAlign: "center" }}>
+            <div style={{ color: "#9fb0bf", fontSize: 13, marginBottom: 4 }}>{stanica.nazov}</div>
+            <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
+              <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
+              <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
+              {podpriemernaEfektivita > 0 && (
+                <span style={{ color: "#f2994a" }}>⚠️ {podpriemernaEfektivita} budov beží na zníženú efektivitu</span>
+              )}
             </div>
-          </div>
 
-          <div style={{ flex: "1 1 240px", maxWidth: 320, display: "flex", flexDirection: "column", maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
-            <PocasiePanel />
-
-            <div style={{ ...cardStyle, textAlign: "center" }}>
-              <div style={{ color: "#9fb0bf", fontSize: 13, marginBottom: 4 }}>{stanica.nazov}</div>
-              <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-                <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
-                <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
-                {podpriemernaEfektivita > 0 && (
-                  <span style={{ color: "#f2994a" }}>⚠️ {podpriemernaEfektivita} budov beží na zníženú efektivitu</span>
-                )}
+            {Object.keys(suhrnKategorii).length > 0 && (
+              <div style={{ marginTop: 14, display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+                {Object.keys(suhrnKategorii).map((kat) => (
+                  <div key={kat} style={{ fontSize: 14, color: "#9fb0bf" }}>
+                    {KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}: <strong style={{ color: "#e8edf2" }}>{suhrnKategorii[kat]}</strong>
+                  </div>
+                ))}
               </div>
+            )}
 
-              {Object.keys(suhrnKategorii).length > 0 && (
-                <div style={{ marginTop: 14, display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-                  {Object.keys(suhrnKategorii).map((kat) => (
-                    <div key={kat} style={{ fontSize: 14, color: "#9fb0bf" }}>
-                      {KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}: <strong style={{ color: "#e8edf2" }}>{suhrnKategorii[kat]}</strong>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
-                <p style={{ color: "#657685", fontSize: 15, marginTop: 8 }}>
-                  Zatiaľ nemáš žiadnu budovu. Choď na stránku <strong>🏗️ Budovy</strong> a postav prvú.
-                </p>
-              )}
-            </div>
-
-            <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
-            <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+            {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
+              <p style={{ color: "#657685", fontSize: 15, marginTop: 8 }}>
+                Zatiaľ nemáš žiadnu budovu. Choď na stránku <strong>🏗️ Budovy</strong> a postav prvú.
+              </p>
+            )}
           </div>
+
+          <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+          <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
         </div>
       )}
-    </AppLayout>
+    </div>
   );
 }
