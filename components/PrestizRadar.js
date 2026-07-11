@@ -40,7 +40,7 @@ export default function PrestizRadar({ budovy, efektivitaBudovy }) {
   return (
     <div style={cardStyle}>
       <h3 style={{ marginTop: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600 }}>⭐ Rozklad prestíže</h3>
-      <div style={{ width: "100%", height: 190 }}>
+      <div style={{ width: "100%", height: 150 }}>
         <ResponsiveContainer>
           <RadarChart data={data}>
             <PolarGrid stroke="#2a3744" />
@@ -50,7 +50,7 @@ export default function PrestizRadar({ budovy, efektivitaBudovy }) {
           </RadarChart>
         </ResponsiveContainer>
       </div>
-      <p style={{ color: "#657685", fontSize: 10, marginTop: 6 }}>
+      <p style={{ color: "#657685", fontSize: 9, marginTop: 4, marginBottom: 0 }}>
         Odhad na základe tvojich postavených budov, efektivity a nastavených cien — nie presné meranie spokojnosti turistov (to pridáme neskôr).
       </p>
     </div>
