@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
 import TopBar from "../components/TopBar";
+import NavSide from "../components/NavSide";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import SlotModal from "../components/SlotModal";
 import PrestizRadar from "../components/PrestizRadar";
@@ -94,6 +95,7 @@ export default function PrehladPage() {
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
       <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
+      <NavSide />
 
       {otvorenySlot && (
         <SlotModal
