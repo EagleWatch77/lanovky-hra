@@ -24,7 +24,7 @@ export default function SlotModal({
   const [vyberZnacka, setVyberZnacka] = useState(znackyKatalog ? Object.keys(znackyKatalog)[0] : null);
 
   const overlayStyle = { position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 };
-  const modalStyle = { ...cardStyle, width: 380, maxWidth: "100%", maxHeight: "85vh", overflowY: "auto", background: "rgba(15,23,32,0.97)", marginTop: 0 };
+  const modalStyle = { ...cardStyle, width: 480, maxWidth: "100%", maxHeight: "85vh", overflowY: "auto", background: "rgba(15,23,32,0.97)", marginTop: 0 };
 
   if (existujucaBudova && existujucaBudova.stav === "vo_vystavbe") {
     const zostava = Math.max(0, Math.ceil((new Date(existujucaBudova.koniec_vystavby) - new Date()) / (1000 * 60 * 60 * 24)));
@@ -53,7 +53,7 @@ export default function SlotModal({
       <div style={overlayStyle} onClick={onClose}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3 style={{ margin: 0 }}>{info.nazov}{b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> ({KATEGORIE[kategoria].znackyKatalog[b.znacka].nazov})</span>}</h3>
+            <h3 style={{ margin: 0 }}>{info.nazov}{b.znacka && <span style={{ color: "#9fb0bf", fontWeight: 400 }}> {KATEGORIE[kategoria].znackyKatalog[b.znacka].ikona} {KATEGORIE[kategoria].znackyKatalog[b.znacka].nazov}</span>}</h3>
             <button onClick={onClose} style={linkStyle}>✕</button>
           </div>
           <p style={{ color: "#9fb0bf", fontSize: 13, marginTop: 8 }}>
@@ -100,9 +100,10 @@ export default function SlotModal({
         {znackyKatalog && (
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
             {Object.keys(znackyKatalog).map((zn) => (
-              <button key={zn} onClick={() => setVyberZnacka(zn)} style={vyberZnacka === zn ? tileStyleActive : tileStyle}>
-                <div style={{ fontSize: 13, fontWeight: 600 }}>{znackyKatalog[zn].nazov}</div>
-                <div style={{ fontSize: 11, color: "#9fb0bf", marginTop: 4, maxWidth: 110 }}>{znackyKatalog[zn].popis}</div>
+              <button key={zn} onClick={() => setVyberZnacka(zn)} style={{ ...(vyberZnacka === zn ? tileStyleActive : tileStyle), flex: "1 1 130px" }}>
+                <div style={{ fontSize: 22 }}>{znackyKatalog[zn].ikona}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, marginTop: 4 }}>{znackyKatalog[zn].nazov}</div>
+                <div style={{ fontSize: 11, color: "#9fb0bf", marginTop: 2 }}>{znackyKatalog[zn].popis}</div>
               </button>
             ))}
           </div>
