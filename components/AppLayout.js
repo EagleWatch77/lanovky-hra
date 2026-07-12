@@ -1,6 +1,7 @@
 "use client";
 
 import TopBar from "./TopBar";
+import NavSide from "./NavSide";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle } from "../lib/styles";
 
@@ -19,6 +20,7 @@ export default function AppLayout({ session, stanica, budovy, handleLogout, efek
         background: "#05090d",
       }}
     >
+      <NavSide />
       {stanica && (
         <div style={{ ...cardStyle, marginTop: 0, padding: "10px 16px" }}>
           <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie} notifikacie={notifikacie} />
