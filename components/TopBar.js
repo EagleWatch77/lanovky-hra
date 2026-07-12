@@ -1,11 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { turistiZaHodinu, konkurencnyMultiplikator } from "../lib/katalog";
 import { hernyDatum } from "../lib/hernyCas";
 import { lanovkovyMultiplikatorDna, parkoviskovyMultiplikatorDna } from "../lib/pocasie";
-import { Home, Building2, ShieldAlert, Wallet, Trophy, ClipboardList, Settings, LogOut, Bell } from "lucide-react";
+import { LogOut, Bell } from "lucide-react";
 
 function vypocitajSezonu(datum) {
   const mesiac = datum.getMonth(); // 0 = január
@@ -22,39 +20,7 @@ function Stat({ label, value }) {
   );
 }
 
-const NAV = [
-  { href: "/", label: "Prehľad", Icon: Home },
-  { href: "/konkurencia", label: "Konkurencia", Icon: ShieldAlert },
-  { href: "/financie", label: "Financie", Icon: Wallet },
-  { href: "/rebricek", label: "Rebríček", Icon: Trophy },
-  { href: "/co-je-hotove", label: "Info", Icon: ClipboardList },
-  { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
-];
-
-function NavIkona({ href, label, Icon, aktivny }) {
-  return (
-    <Link
-      href={href}
-      title={label}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 32,
-        height: 32,
-        borderRadius: 8,
-        background: aktivny ? "rgba(255,255,255,0.14)" : "transparent",
-        color: aktivny ? "#e8edf2" : "rgba(232,237,242,0.65)",
-        textDecoration: "none",
-      }}
-    >
-      <Icon size={16} strokeWidth={1.8} />
-    </Link>
-  );
-}
-
 export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy, pocetKonkurencie, notifikacie = [] }) {
-  const pathname = usePathname();
   const teraz = new Date();
   const hotove = budovy.filter((b) => b.stav === "hotovo");
 
@@ -81,12 +47,6 @@ export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy, po
           <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: 1 }}>SNOWPEAK</div>
           <div style={{ fontSize: 8, color: "#9fb0bf", letterSpacing: 2 }}>RESORT</div>
         </div>
-      </div>
-
-      <div style={{ display: "flex", gap: 5 }}>
-        {NAV.map((n) => (
-          <NavIkona key={n.href} href={n.href} label={n.label} Icon={n.Icon} aktivny={pathname === n.href} />
-        ))}
       </div>
 
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
