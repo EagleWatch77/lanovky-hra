@@ -147,35 +147,6 @@ export default function PrehladPage() {
         const budovaVSlote = najdiBudovuProSlot("luka", slot.kategoria, slot.typFilter, slot.poradie);
         const zamknuty = slot.zamykaHory && !stanica.hory_odomknute && !budovaVSlote;
         const voVystavbeTuto = budovaVSlote?.stav === "vo_vystavbe";
-        const jeZima = jeZimnyMesiac(hernyDatum(new Date()).getMonth());
-        const obrazokBudovy = budovaVSlote?.stav === "hotovo" ? (jeZima ? KATEGORIE[slot.kategoria].obrazokZima : KATEGORIE[slot.kategoria].obrazokLeto) : null;
-
-        if (obrazokBudovy) {
-          return (
-            <button
-              key={slot.id}
-              onClick={() => setOtvorenySlot(slot)}
-              title={KATEGORIE[slot.kategoria].nazov}
-              style={{
-                position: "absolute",
-                left: slot.left,
-                top: slot.top,
-                width: 90,
-                height: 150,
-                marginLeft: -45,
-                marginTop: -60,
-                background: "transparent",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                zIndex: 2,
-                filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.5))",
-              }}
-            >
-              <img src={obrazokBudovy} alt={KATEGORIE[slot.kategoria].nazov} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-            </button>
-          );
-        }
 
         return (
           <button
