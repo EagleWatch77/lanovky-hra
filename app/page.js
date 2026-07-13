@@ -161,7 +161,7 @@ export default function PrehladPage() {
                 left: slot.left,
                 top: slot.top,
                 width: 90,
-                height: 95,
+                height: 90,
                 marginLeft: -45,
                 marginTop: -60,
                 background: "transparent",
