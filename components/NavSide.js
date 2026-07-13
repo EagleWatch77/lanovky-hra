@@ -14,7 +14,7 @@ const NAV = [
   { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
 ];
 
-export default function NavSide() {
+export default function NavSide({ onOtvorBudovy }) {
   const pathname = usePathname();
 
   return (
@@ -37,6 +37,29 @@ export default function NavSide() {
     >
       {NAV.map((n) => {
         const aktivny = pathname === n.href;
+        if (n.href === "/budovy" && onOtvorBudovy) {
+          return (
+            <button
+              key={n.href}
+              onClick={onOtvorBudovy}
+              title={n.label}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 34,
+                height: 34,
+                borderRadius: 9,
+                background: "transparent",
+                border: "none",
+                color: "rgba(232,237,242,0.65)",
+                cursor: "pointer",
+              }}
+            >
+              <n.Icon size={17} strokeWidth={1.8} />
+            </button>
+          );
+        }
         return (
           <Link
             key={n.href}
