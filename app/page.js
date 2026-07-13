@@ -27,7 +27,7 @@ const SLOTY_LUKA = [
   { id: "bufet", kategoria: "bar", typFilter: null, poradie: 0, left: "35.0%", top: "77.2%" },
   { id: "penzion1", kategoria: "hotel", typFilter: null, poradie: 0, left: "80.4%", top: "94.3%" },
   { id: "penzion2", kategoria: "hotel", typFilter: null, poradie: 1, left: "74.7%", top: "92.1%" },
-  { id: "pokladna", kategoria: "pokladna", typFilter: null, poradie: 0, left: "58.2%", top: "93.8%" },
+  { id: "pokladna", kategoria: "pokladna", typFilter: null, poradie: 0, left: "59.8%", top: "94.8%" },
 ];
 
 // Vizuálne body konkurencie (nie klikacie) v zóne Lúka
