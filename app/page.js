@@ -10,11 +10,33 @@ import SlotModal from "../components/SlotModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PocasiePanel from "../components/PocasiePanel";
-import { KATEGORIE } from "../lib/katalog";
+import { KATEGORIE, LANOVKY_TYPY } from "../lib/katalog";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
+
+const NELANOVKOVE_TYPY = Object.keys(LANOVKY_TYPY).filter((t) => t !== "vlek");
+
+// Klikacie sloty (moje budovy) v zóne Lúka
+const SLOTY_LUKA = [
+  { id: "vlek1", kategoria: "lanovka", typFilter: ["vlek"], poradie: 0, left: "56.4%", top: "89.3%" },
+  { id: "vlek2", kategoria: "lanovka", typFilter: ["vlek"], poradie: 1, left: "59.8%", top: "89.3%" },
+  { id: "lanovka", kategoria: "lanovka", typFilter: NELANOVKOVE_TYPY, poradie: 0, left: "43.5%", top: "86.0%", zamykaHory: true },
+  { id: "parkovisko", kategoria: "parkovisko", typFilter: null, poradie: 0, left: "15.7%", top: "92.8%" },
+  { id: "bufet", kategoria: "bar", typFilter: null, poradie: 0, left: "35.0%", top: "77.2%" },
+  { id: "penzion1", kategoria: "hotel", typFilter: null, poradie: 0, left: "80.4%", top: "94.3%" },
+  { id: "penzion2", kategoria: "hotel", typFilter: null, poradie: 1, left: "74.7%", top: "92.1%" },
+  { id: "pokladna", kategoria: "pokladna", typFilter: null, poradie: 0, left: "58.2%", top: "93.8%" },
+];
+
+// Vizuálne body konkurencie (nie klikacie) v zóne Lúka
+const KONKURENCIA_MARKERY_LUKA = [
+  { kat: "bar", poradie: 0, left: "24.8%", top: "77.6%" },
+  { kat: "hotel", poradie: 0, left: "77.6%", top: "85.5%" },
+  { kat: "hotel", poradie: 1, left: "86.9%", top: "90.9%" },
+  { kat: "parkovisko", poradie: 0, left: "68.9%", top: "96.5%" },
+];
 
 export default function PrehladPage() {
   const {
@@ -84,13 +106,13 @@ export default function PrehladPage() {
   const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
   const mapaObrazok = jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-cistazima.png" : "/mapa-cistaleto.png";
 
-  // Nájde existujúcu budovu pre daný slot (zóna + kategória + prípadný filter typu)
-  function najdiBudovuProSlot(zona, kategoria, typFilter) {
-    return budovy.find((b) => b.zona === zona && b.kategoria === kategoria && (!typFilter || typFilter.includes(b.typ)));
+  // Nájde N-tú (podľa poradia postavenia) budovu zodpovedajúcu slotu
+  function najdiBudovuProSlot(zona, kategoria, typFilter, poradie) {
+    const zhody = budovy
+      .filter((b) => b.zona === zona && b.kategoria === kategoria && (!typFilter || typFilter.includes(b.typ)))
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    return zhody[poradie];
   }
-
-  const vlekSlot = { zona: "luka", kategoria: "lanovka", typFilter: ["vlek"] };
-  const vlekBudova = najdiBudovuProSlot(vlekSlot.zona, vlekSlot.kategoria, vlekSlot.typFilter);
 
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
@@ -99,10 +121,10 @@ export default function PrehladPage() {
 
       {otvorenySlot && (
         <SlotModal
-          zona={otvorenySlot.zona}
+          zona="luka"
           kategoria={otvorenySlot.kategoria}
           typFilter={otvorenySlot.typFilter}
-          existujucaBudova={najdiBudovuProSlot(otvorenySlot.zona, otvorenySlot.kategoria, otvorenySlot.typFilter)}
+          existujucaBudova={najdiBudovuProSlot("luka", otvorenySlot.kategoria, otvorenySlot.typFilter, otvorenySlot.poradie)}
           postavitBudovu={postavitBudovu}
           najatPreBudovu={najatPreBudovu}
           prepustitPreBudovu={prepustitPreBudovu}
@@ -120,33 +142,77 @@ export default function PrehladPage() {
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
       />
 
-      {/* Testovací bod — Vlek v Lúke */}
-      <button
-        onClick={() => setOtvorenySlot(vlekSlot)}
-        title="Vlek v Lúke"
-        style={{
-          position: "absolute",
-          left: "56.4%",
-          top: "89.3%",
-          width: 36,
-          height: 36,
-          marginLeft: -18,
-          marginTop: -18,
-          borderRadius: "50%",
-          background: vlekBudova ? "rgba(47,158,110,0.85)" : "rgba(255,255,255,0.25)",
-          border: "2px solid white",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 18,
-          boxShadow: "0 0 12px rgba(47,158,110,0.6)",
-          zIndex: 2,
-          cursor: "pointer",
-          padding: 0,
-        }}
-      >
-        {vlekBudova ? "🚡" : "+"}
-      </button>
+      {/* Klikacie sloty — Lúka */}
+      {SLOTY_LUKA.map((slot) => {
+        const budovaVSlote = najdiBudovuProSlot("luka", slot.kategoria, slot.typFilter, slot.poradie);
+        const zamknuty = slot.zamykaHory && !stanica.hory_odomknute && !budovaVSlote;
+        const voVystavbeTuto = budovaVSlote?.stav === "vo_vystavbe";
+
+        return (
+          <button
+            key={slot.id}
+            onClick={() => {
+              if (zamknuty) return;
+              setOtvorenySlot(slot);
+            }}
+            title={zamknuty ? "Odomkne sa spolu s Horami" : KATEGORIE[slot.kategoria].nazov}
+            style={{
+              position: "absolute",
+              left: slot.left,
+              top: slot.top,
+              width: 34,
+              height: 34,
+              marginLeft: -17,
+              marginTop: -17,
+              borderRadius: "50%",
+              background: zamknuty ? "rgba(80,80,80,0.5)" : voVystavbeTuto ? "rgba(242,153,74,0.85)" : budovaVSlote ? "rgba(47,158,110,0.85)" : "rgba(255,255,255,0.25)",
+              border: "2px solid white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 16,
+              boxShadow: budovaVSlote ? "0 0 10px rgba(47,158,110,0.6)" : "none",
+              zIndex: 2,
+              cursor: zamknuty ? "default" : "pointer",
+              padding: 0,
+              opacity: zamknuty ? 0.6 : 1,
+            }}
+          >
+            {zamknuty ? "🔒" : voVystavbeTuto ? "🚧" : budovaVSlote ? KATEGORIE[slot.kategoria].ikona : "+"}
+          </button>
+        );
+      })}
+
+      {/* Vizuálne body konkurencie — Lúka (nie klikacie) */}
+      {KONKURENCIA_MARKERY_LUKA.map((m, i) => {
+        const aktivny = (pocetKonkurencie[m.kat] || 0) > m.poradie;
+        return (
+          <div
+            key={i}
+            title={aktivny ? `Konkurencia — ${KATEGORIE[m.kat].nazov}` : "Konkurencia sa tu ešte neobjavila"}
+            style={{
+              position: "absolute",
+              left: m.left,
+              top: m.top,
+              width: 26,
+              height: 26,
+              marginLeft: -13,
+              marginTop: -13,
+              borderRadius: "50%",
+              background: aktivny ? "rgba(242,73,73,0.55)" : "rgba(255,255,255,0.08)",
+              border: aktivny ? "2px solid rgba(242,73,73,0.9)" : "1px dashed rgba(255,255,255,0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 12,
+              zIndex: 1,
+              opacity: aktivny ? 1 : 0.5,
+            }}
+          >
+            {aktivny ? KATEGORIE[m.kat].ikona : ""}
+          </div>
+        );
+      })}
 
       {/* Plávajúca horná lišta */}
       <div style={{ position: "absolute", top: 12, left: 12, right: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 12px" }}>
@@ -202,7 +268,7 @@ export default function PrehladPage() {
 
             {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
               <p style={{ color: "#657685", fontSize: 15, marginTop: 8 }}>
-                Zatiaľ nemáš žiadnu budovu. Klikni na 🚡 na mape a postav prvú.
+                Zatiaľ nemáš žiadnu budovu. Klikni na + na mape a postav prvú.
               </p>
             )}
           </div>
