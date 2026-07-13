@@ -5,6 +5,8 @@ import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
 import TopBar from "../components/TopBar";
 import NavSide from "../components/NavSide";
+import WindowModal from "../components/WindowModal";
+import BudovyOkno from "../components/okna/BudovyOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
@@ -28,10 +30,19 @@ export default function PrehladPage() {
     handleLogout,
     efektivitaBudovy,
     pocetKonkurencie,
+    postavitBudovu,
+    najatPreBudovu,
+    prepustitPreBudovu,
+    zmenitCenu,
+    podmienkyOdomknutiaUdolia,
+    odomknutUdolie,
+    podmienkyOdomknutiaHor,
+    odomknutHory,
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
   const [panelOtvoreny, setPanelOtvoreny] = useState(true);
+  const [okno, setOkno] = useState(null);
 
   if (!session) return <AuthForm />;
 
@@ -81,13 +92,32 @@ export default function PrehladPage() {
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
       <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
-      <NavSide />
+      <NavSide onOtvorBudovy={() => setOkno("budovy")} />
+
+      {okno === "budovy" && (
+        <WindowModal title="🏗️ Budovy" onClose={() => setOkno(null)}>
+          <BudovyOkno
+            stanica={stanica}
+            budovy={budovy}
+            postavitBudovu={postavitBudovu}
+            najatPreBudovu={najatPreBudovu}
+            prepustitPreBudovu={prepustitPreBudovu}
+            zmenitCenu={zmenitCenu}
+            efektivitaBudovy={efektivitaBudovy}
+            pocetKonkurencie={pocetKonkurencie}
+            podmienkyOdomknutiaUdolia={podmienkyOdomknutiaUdolia}
+            odomknutUdolie={odomknutUdolie}
+            podmienkyOdomknutiaHor={podmienkyOdomknutiaHor}
+            odomknutHory={odomknutHory}
+          />
+        </WindowModal>
+      )}
 
       {/* Mapa na celú obrazovku — čisto dekoratívna */}
       <img
         src={mapaObrazok}
         alt="Mapa strediska"
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
       />
 
       {/* Plávajúca horná lišta */}
