@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ShieldAlert, Wallet, Trophy, ClipboardList, Settings } from "lucide-react";
+import { Home, Building2, ShieldAlert, Wallet, Trophy, ClipboardList, Settings } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "Prehľad", Icon: Home },
+  { href: "/budovy", label: "Budovy", Icon: Building2 },
   { href: "/konkurencia", label: "Konkurencia", Icon: ShieldAlert },
   { href: "/financie", label: "Financie", Icon: Wallet },
   { href: "/rebricek", label: "Rebríček", Icon: Trophy },
