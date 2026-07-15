@@ -22,6 +22,8 @@ import { jeZimnyMesiac } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
+const LOGA = ["🏔️", "🚡", "⛷️", "🎿", "🏂", "🗻", "❄️", "🏨"];
+
 export default function PrehladPage() {
   const {
     session,
@@ -45,12 +47,14 @@ export default function PrehladPage() {
     odomknutHory,
     konkurenciaJednotky,
     premenovatStanicu,
+    zmenitLogo,
     zmenitEmail,
     zmenitHeslo,
     zmazatMojeData,
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
+  const [vybraneLogo, setVybraneLogo] = useState("🏔️");
   const [panelOtvoreny, setPanelOtvoreny] = useState(true);
   const [okno, setOkno] = useState(null);
 
@@ -64,10 +68,31 @@ export default function PrehladPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (novyNazov.trim()) vytvorStanicu(novyNazov.trim());
+            if (novyNazov.trim()) vytvorStanicu(novyNazov.trim(), vybraneLogo);
           }}
           style={{ display: "flex", flexDirection: "column", gap: 12 }}
         >
+          <label style={{ fontSize: 13, color: "#9fb0bf" }}>Vyber logo strediska</label>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            {LOGA.map((l) => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => setVybraneLogo(l)}
+                style={{
+                  fontSize: 24,
+                  width: 44,
+                  height: 44,
+                  borderRadius: 8,
+                  border: vybraneLogo === l ? "2px solid #2f9e6e" : "1px solid #2a3744",
+                  background: vybraneLogo === l ? "rgba(47,158,110,0.2)" : "#0f1720",
+                  cursor: "pointer",
+                }}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
           <input
             type="text"
             placeholder="napr. Snežné sedlo"
@@ -117,6 +142,7 @@ export default function PrehladPage() {
             session={session}
             stanica={stanica}
             premenovatStanicu={premenovatStanicu}
+            zmenitLogo={zmenitLogo}
             zmenitEmail={zmenitEmail}
             zmenitHeslo={zmenitHeslo}
             zmazatMojeData={zmazatMojeData}
