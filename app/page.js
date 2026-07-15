@@ -204,14 +204,14 @@ export default function PrehladPage() {
         <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
       </div>
 
-      {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
+    {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
       <button
         onClick={() => setPanelOtvoreny((o) => !o)}
         title={panelOtvoreny ? "Skryť panel" : "Zobraziť panel"}
         style={{
           position: "absolute",
           top: 66,
-          right: 272,
+          right: panelOtvoreny ? 272 : 132,
           zIndex: 4,
           width: 30,
           height: 30,
@@ -227,10 +227,9 @@ export default function PrehladPage() {
       </button>
 
       {/* Plávajúci info panel — počasie vždy viditeľné (bez šípok, keď je zbalený), zvyšok len keď je rozbalený */}
-      <div style={{ position: "absolute", top: 66, right: 12, width: 250, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ position: "absolute", top: 66, right: 12, width: panelOtvoreny ? 250 : 110, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
         <PocasiePanel kompaktne={!panelOtvoreny} />
         {panelOtvoreny && <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />}
       </div>
-    </div>
   );
 }
