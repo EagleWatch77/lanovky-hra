@@ -193,13 +193,13 @@ export default function PrehladPage() {
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
       />
 
-      {/* Plávajúci zhluk vľavo hore — štatistiky, posunuté doprava */}
+      {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
       <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 12px" }}>
         <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
       </div>
 
       {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 8px" }}>
+      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, width: 110, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 8px" }}>
         <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
       </div>
 
@@ -210,7 +210,7 @@ export default function PrehladPage() {
         style={{
           position: "absolute",
           top: 66,
-          right: panelOtvoreny ? 272 : 132,
+          right: 272,
           zIndex: 4,
           width: 30,
           height: 30,
@@ -225,8 +225,8 @@ export default function PrehladPage() {
         {panelOtvoreny ? "›" : "‹"}
       </button>
 
-      {/* Plávajúci info panel — počasie vždy viditeľné, zvyšok len keď je rozbalený */}
-      <div style={{ position: "absolute", top: 66, right: 12, width: panelOtvoreny ? 250 : 110, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
+      {/* Plávajúci info panel — počasie vždy viditeľné (bez šípok, keď je zbalený), zvyšok len keď je rozbalený */}
+      <div style={{ position: "absolute", top: 66, right: 12, width: 250, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
         <PocasiePanel kompaktne={!panelOtvoreny} />
         {panelOtvoreny && <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />}
       </div>
