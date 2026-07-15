@@ -42,6 +42,8 @@ export default function BudovyOkno({
   stanica,
   budovy,
   postavitBudovu,
+  najatPreBudovu,
+  prepustitPreBudovu,
   zmenitCenu,
   efektivitaBudovy,
   pocetKonkurencie,
@@ -175,7 +177,11 @@ export default function BudovyOkno({
                       <div style={{ padding: "0 12px 12px 40px", display: "flex", flexDirection: "column", gap: 6 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#9fb0bf" }}>
                           <span>Zamestnanci</span>
-                          <span>{potrebnyB} (plný stav)</span>
+                          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <button onClick={() => prepustitPreBudovu(b)} disabled={(b.zamestnanci_pridelenych || 0) <= 0} style={{ ...buttonStyle, padding: "1px 8px", fontSize: 11, background: "#3a4753" }}>−</button>
+                            {b.zamestnanci_pridelenych || 0} / {potrebnyB}
+                            <button onClick={() => najatPreBudovu(b)} disabled={(b.zamestnanci_pridelenych || 0) >= potrebnyB} style={{ ...buttonStyle, padding: "1px 8px", fontSize: 11 }}>+</button>
+                          </span>
                         </div>
                         {maCenu && (
                           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#9fb0bf" }}>
