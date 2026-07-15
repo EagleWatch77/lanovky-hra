@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Wrench, Power } from "lucide-react";
+import { Bell, Wrench, Hammer, Power } from "lucide-react";
 
 export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLogout }) {
   return (
@@ -21,11 +21,13 @@ export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLog
         onClick={onOtvorNastavenia}
         title="Nastavenia"
         style={{
+          position: "relative",
           display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34,
           borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
         }}
       >
-        <Wrench size={18} strokeWidth={1.8} />
+        <Wrench size={16} strokeWidth={2} style={{ position: "absolute", transform: "rotate(-45deg) translate(-2px, 2px)" }} />
+        <Hammer size={16} strokeWidth={2} style={{ position: "absolute", transform: "rotate(45deg) translate(2px, 2px)" }} />
       </button>
       <button
         onClick={onLogout}
