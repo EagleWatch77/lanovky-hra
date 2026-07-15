@@ -14,7 +14,6 @@ import RebricekOkno from "../components/okna/RebricekOkno";
 import InfoOkno from "../components/okna/InfoOkno";
 import NastaveniaOkno from "../components/okna/NastaveniaOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
-import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PocasiePanel from "../components/PocasiePanel";
 import { KATEGORIE } from "../lib/katalog";
@@ -264,8 +263,7 @@ export default function PrehladPage() {
             )}
           </div>
 
-          <PrestizRadar budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
-          <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+         <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
         </div>
       )}
     </div>
