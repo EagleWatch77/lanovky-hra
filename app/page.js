@@ -16,7 +16,6 @@ import NastaveniaOkno from "../components/okna/NastaveniaOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PocasiePanel from "../components/PocasiePanel";
-import { KATEGORIE } from "../lib/katalog";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
@@ -236,32 +235,7 @@ export default function PrehladPage() {
         <div style={{ position: "absolute", top: 66, right: 12, width: 250, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
           <PocasiePanel />
 
-          <div style={{ ...cardStyle, textAlign: "center" }}>
-            <div style={{ color: "#9fb0bf", fontSize: 13, marginBottom: 4 }}>{stanica.nazov}</div>
-            <div style={{ color: "#9fb0bf", fontSize: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-              <span>🏗️ Hotových budov: <strong style={{ color: "#e8edf2" }}>{hotoveBudovy.length}</strong></span>
-              <span>🚧 Vo výstavbe: <strong style={{ color: "#e8edf2" }}>{voVystavbe.length}</strong></span>
-              {podpriemernaEfektivita > 0 && (
-                <span style={{ color: "#f2994a" }}>⚠️ {podpriemernaEfektivita} budov beží na zníženú efektivitu</span>
-              )}
-            </div>
-
-            {Object.keys(suhrnKategorii).length > 0 && (
-              <div style={{ marginTop: 14, display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-                {Object.keys(suhrnKategorii).map((kat) => (
-                  <div key={kat} style={{ fontSize: 14, color: "#9fb0bf" }}>
-                    {KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}: <strong style={{ color: "#e8edf2" }}>{suhrnKategorii[kat]}</strong>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {hotoveBudovy.length === 0 && voVystavbe.length === 0 && (
-              <p style={{ color: "#657685", fontSize: 15, marginTop: 8 }}>
-                Zatiaľ nemáš žiadnu budovu. Choď na stránku <strong>Budovy</strong> a postav prvú.
-              </p>
-            )}
-          </div>
+        
 
          <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
         </div>
