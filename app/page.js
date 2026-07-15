@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -204,7 +203,7 @@ export default function PrehladPage() {
         <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
       </div>
 
-    {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
+      {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
       <button
         onClick={() => setPanelOtvoreny((o) => !o)}
         title={panelOtvoreny ? "Skryť panel" : "Zobraziť panel"}
@@ -231,5 +230,6 @@ export default function PrehladPage() {
         <PocasiePanel kompaktne={!panelOtvoreny} />
         {panelOtvoreny && <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />}
       </div>
+    </div>
   );
 }
