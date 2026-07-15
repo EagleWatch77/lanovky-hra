@@ -25,22 +25,12 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy }) {
   const sezona = vypocitajSezonu(hDatum);
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 26 }}>{stanica.logo || "🏔️"}</span>
-        <div>
-          <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: 1, color: "#1e293b" }}>{stanica.nazov.toUpperCase()}</div>
-          <div style={{ fontSize: 8, color: "#475569", letterSpacing: 2 }}>RESORT</div>
-        </div>
-      </div>
-
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <Stat label="⭐ Prestíž" value={stanica.prestiz.toLocaleString("sk-SK")} />
-        <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} />
-        <Stat label="😊 Efekt." value={priemernaEfektivita + " %"} />
-        <Stat label="📅 Dátum" value={hDatum.toLocaleDateString("sk-SK")} />
-        <Stat label={sezona === "ZIMA" ? "❄️ Sezóna" : "☀️ Sezóna"} value={sezona} />
-      </div>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+      <Stat label="⭐ Prestíž" value={stanica.prestiz.toLocaleString("sk-SK")} />
+      <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} />
+      <Stat label="😊 Efekt." value={priemernaEfektivita + " %"} />
+      <Stat label="📅 Dátum" value={hDatum.toLocaleDateString("sk-SK")} />
+      <Stat label={sezona === "ZIMA" ? "❄️ Sezóna" : "☀️ Sezóna"} value={sezona} />
     </div>
   );
 }
