@@ -13,6 +13,8 @@ import FinancieOkno from "../components/okna/FinancieOkno";
 import RebricekOkno from "../components/okna/RebricekOkno";
 import InfoOkno from "../components/okna/InfoOkno";
 import NastaveniaOkno from "../components/okna/NastaveniaOkno";
+import AlianciaOkno from "../components/okna/AlianciaOkno";
+import SpravyOkno from "../components/okna/SpravyOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PocasiePanel from "../components/PocasiePanel";
@@ -45,7 +47,17 @@ export default function PrehladPage() {
     podmienkyOdomknutiaHor,
     odomknutHory,
     konkurenciaJednotky,
+    aliancie,
+    spravy,
+    nacitajAliancie,
+    vytvoritAlianciu,
+    pripojitSaKAlliancii,
+    opustitAllianciu,
+    nacitajSpravy,
+    poslatSpravu,
+    oznacitPrecitane,
     premenovatStanicu,
+    zmenitMenoHraca,
     zmenitLogo,
     zmenitEmail,
     zmenitHeslo,
@@ -53,6 +65,7 @@ export default function PrehladPage() {
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
+  const [noveMenoHraca, setNoveMenoHraca] = useState("");
   const [vybraneLogo, setVybraneLogo] = useState("🏔️");
   const [panelOtvoreny, setPanelOtvoreny] = useState(true);
   const [okno, setOkno] = useState(null);
@@ -67,10 +80,20 @@ export default function PrehladPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (novyNazov.trim()) vytvorStanicu(novyNazov.trim(), vybraneLogo);
+            if (novyNazov.trim()) vytvorStanicu(novyNazov.trim(), vybraneLogo, noveMenoHraca.trim());
           }}
           style={{ display: "flex", flexDirection: "column", gap: 12 }}
         >
+          <label style={{ fontSize: 13, color: "#9fb0bf" }}>Tvoje meno (voliteľné, uvidia ho ostatní hráči)</label>
+          <input
+            type="text"
+            placeholder="napr. Mirko"
+            value={noveMenoHraca}
+            onChange={(e) => setNoveMenoHraca(e.target.value)}
+            maxLength={30}
+            style={inputStyle}
+          />
+
           <label style={{ fontSize: 13, color: "#9fb0bf" }}>Vyber logo strediska</label>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {LOGA.map((l) => (
@@ -127,7 +150,26 @@ export default function PrehladPage() {
         onOtvorFinancie={() => setOkno("financie")}
         onOtvorRebricek={() => setOkno("rebricek")}
         onOtvorInfo={() => setOkno("info")}
+        onOtvorAliancia={() => setOkno("aliancia")}
       />
+
+      {okno === "aliancia" && (
+        <WindowModal title="🤝 Aliancia" onClose={() => setOkno(null)} width={480}>
+          <AlianciaOkno
+            stanica={stanica}
+            aliancie={aliancie}
+            vytvoritAlianciu={vytvoritAlianciu}
+            pripojitSaKAlliancii={pripojitSaKAlliancii}
+            opustitAllianciu={opustitAllianciu}
+          />
+        </WindowModal>
+      )}
+
+      {okno === "spravy" && (
+        <WindowModal title="✉️ Správy" onClose={() => setOkno(null)} width={480}>
+          <SpravyOkno spravy={spravy} oznacitPrecitane={oznacitPrecitane} poslatSpravu={poslatSpravu} />
+        </WindowModal>
+      )}
 
       {okno === "nastavenia" && (
         <WindowModal title="⚙️ Nastavenia" onClose={() => setOkno(null)} width={520}>
@@ -135,6 +177,7 @@ export default function PrehladPage() {
             session={session}
             stanica={stanica}
             premenovatStanicu={premenovatStanicu}
+            zmenitMenoHraca={zmenitMenoHraca}
             zmenitLogo={zmenitLogo}
             zmenitEmail={zmenitEmail}
             zmenitHeslo={zmenitHeslo}
@@ -151,7 +194,7 @@ export default function PrehladPage() {
 
       {okno === "rebricek" && (
         <WindowModal title="🏆 Rebríček podľa prestíže" onClose={() => setOkno(null)} width={480}>
-          <RebricekOkno stanica={stanica} />
+          <RebricekOkno stanica={stanica} poslatSpravu={poslatSpravu} />
         </WindowModal>
       )}
 
@@ -194,13 +237,19 @@ export default function PrehladPage() {
       />
 
       {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
-   <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 40, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 12px" }}>
+      <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 12px" }}>
         <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
       </div>
 
-      {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-     <div style={{ position: "absolute", top: 12, right: 100, zIndex: 3, width: 110, height: 40, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 8px" }}>
-        <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
+      {/* Plávajúci zhluk vpravo hore — notifikácie, správy, nastavenia, odhlásiť */}
+      <div style={{ position: "absolute", top: 12, right: 100, zIndex: 3, width: 110, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 8px" }}>
+        <TopBarPrava
+          notifikacie={notifikacie}
+          onOtvorNastavenia={() => setOkno("nastavenia")}
+          onOtvorSpravy={() => setOkno("spravy")}
+          pocetNeprecitanych={spravy.filter((s) => !s.precitana).length}
+          onLogout={handleLogout}
+        />
       </div>
 
       {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
