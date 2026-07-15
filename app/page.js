@@ -210,7 +210,7 @@ export default function PrehladPage() {
         style={{
           position: "absolute",
           top: 66,
-          right: panelOtvoreny ? 272 : 12,
+          right: panelOtvoreny ? 272 : 132,
           zIndex: 4,
           width: 30,
           height: 30,
@@ -225,14 +225,11 @@ export default function PrehladPage() {
         {panelOtvoreny ? "›" : "‹"}
       </button>
 
-      {/* Plávajúci info panel */}
-      {panelOtvoreny && (
-        <div style={{ position: "absolute", top: 66, right: 12, width: 250, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
-          <PocasiePanel />
-
-          <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
-        </div>
-      )}
+      {/* Plávajúci info panel — počasie vždy viditeľné, zvyšok len keď je rozbalený */}
+      <div style={{ position: "absolute", top: 66, right: 12, width: panelOtvoreny ? 250 : 110, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
+        <PocasiePanel kompaktne={!panelOtvoreny} />
+        {panelOtvoreny && <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />}
+      </div>
     </div>
   );
 }
