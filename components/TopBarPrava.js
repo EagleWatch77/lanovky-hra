@@ -22,7 +22,7 @@ export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLog
         title="Nastavenia"
         style={{
           display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32,
-          borderRadius: 8, background: "transparent", border: "none", color: "rgba(232,237,242,0.65)", cursor: "pointer",
+          borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
         }}
       >
         <Settings size={16} strokeWidth={1.8} />
@@ -32,7 +32,7 @@ export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLog
         title="Odhlásiť sa"
         style={{
           display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32,
-          borderRadius: 8, background: "transparent", border: "none", color: "rgba(232,237,242,0.65)", cursor: "pointer",
+          borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
         }}
       >
         <LogOut size={16} strokeWidth={1.8} />
