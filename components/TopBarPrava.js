@@ -1,10 +1,10 @@
 "use client";
 
-import { Bell, Settings, LogOut } from "lucide-react";
+import { Bell, Wrench, Power } from "lucide-react";
 
 export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLogout }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
       {notifikacie.length > 0 && (
         <div style={{ position: "relative", padding: 6 }} title={notifikacie.map((n) => n.text).join("\n")}>
           <Bell size={17} color="#f2994a" strokeWidth={1.8} />
@@ -21,21 +21,21 @@ export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLog
         onClick={onOtvorNastavenia}
         title="Nastavenia"
         style={{
-          display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32,
+          display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34,
           borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
         }}
       >
-        <Settings size={16} strokeWidth={1.8} />
+        <Wrench size={18} strokeWidth={1.8} />
       </button>
       <button
         onClick={onLogout}
         title="Odhlásiť sa"
         style={{
-          display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32,
+          display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34,
           borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
         }}
       >
-        <LogOut size={16} strokeWidth={1.8} />
+        <Power size={18} strokeWidth={1.8} />
       </button>
     </div>
   );
