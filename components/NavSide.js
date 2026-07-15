@@ -14,10 +14,17 @@ const NAV = [
   { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
 ];
 
-export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFinancie, onOtvorRebricek }) {
+export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFinancie, onOtvorRebricek, onOtvorInfo, onOtvorNastavenia }) {
   const pathname = usePathname();
 
-  const OKNA = { "/budovy": onOtvorBudovy, "/konkurencia": onOtvorKonkurencia, "/financie": onOtvorFinancie, "/rebricek": onOtvorRebricek };
+  const OKNA = {
+    "/budovy": onOtvorBudovy,
+    "/konkurencia": onOtvorKonkurencia,
+    "/financie": onOtvorFinancie,
+    "/rebricek": onOtvorRebricek,
+    "/co-je-hotove": onOtvorInfo,
+    "/nastavenia": onOtvorNastavenia,
+  };
 
   return (
     <div
