@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Building2, ShieldAlert, Wallet, Trophy, ClipboardList, Settings } from "lucide-react";
+import { Home, Building2, ShieldAlert, Wallet, Trophy, ClipboardList } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "Prehľad", Icon: Home },
@@ -11,10 +11,9 @@ const NAV = [
   { href: "/financie", label: "Financie", Icon: Wallet },
   { href: "/rebricek", label: "Rebríček", Icon: Trophy },
   { href: "/co-je-hotove", label: "Info", Icon: ClipboardList },
-  { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
 ];
 
-export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFinancie, onOtvorRebricek, onOtvorInfo, onOtvorNastavenia }) {
+export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFinancie, onOtvorRebricek, onOtvorInfo }) {
   const pathname = usePathname();
 
   const OKNA = {
@@ -23,7 +22,6 @@ export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFina
     "/financie": onOtvorFinancie,
     "/rebricek": onOtvorRebricek,
     "/co-je-hotove": onOtvorInfo,
-    "/nastavenia": onOtvorNastavenia,
   };
 
   return (
