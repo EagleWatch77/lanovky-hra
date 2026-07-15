@@ -7,6 +7,7 @@ import TopBar from "../components/TopBar";
 import NavSide from "../components/NavSide";
 import WindowModal from "../components/WindowModal";
 import BudovyOkno from "../components/okna/BudovyOkno";
+import KonkurenciaOkno from "../components/okna/KonkurenciaOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
@@ -38,6 +39,7 @@ export default function PrehladPage() {
     odomknutUdolie,
     podmienkyOdomknutiaHor,
     odomknutHory,
+    konkurenciaJednotky,
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
@@ -92,10 +94,16 @@ export default function PrehladPage() {
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
       <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
-      <NavSide onOtvorBudovy={() => setOkno("budovy")} />
+      <NavSide onOtvorBudovy={() => setOkno("budovy")} onOtvorKonkurencia={() => setOkno("konkurencia")} />
+
+      {okno === "konkurencia" && (
+        <WindowModal title="🛡️ Konkurencia" onClose={() => setOkno(null)} width={480}>
+          <KonkurenciaOkno konkurenciaJednotky={konkurenciaJednotky} />
+        </WindowModal>
+      )}
 
       {okno === "budovy" && (
-        <WindowModal title="🏗️ Budovy" onClose={() => setOkno(null)}>
+        <WindowModal title="🏗️ Budovy" onClose={() => setOkno(null)} width={640}>
           <BudovyOkno
             stanica={stanica}
             budovy={budovy}
