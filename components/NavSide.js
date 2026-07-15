@@ -14,8 +14,10 @@ const NAV = [
   { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
 ];
 
-export default function NavSide({ onOtvorBudovy }) {
+export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia }) {
   const pathname = usePathname();
+
+  const OKNA = { "/budovy": onOtvorBudovy, "/konkurencia": onOtvorKonkurencia };
 
   return (
     <div
@@ -37,11 +39,12 @@ export default function NavSide({ onOtvorBudovy }) {
     >
       {NAV.map((n) => {
         const aktivny = pathname === n.href;
-        if (n.href === "/budovy" && onOtvorBudovy) {
+        const onOtvor = OKNA[n.href];
+        if (onOtvor) {
           return (
             <button
               key={n.href}
-              onClick={onOtvorBudovy}
+              onClick={onOtvor}
               title={n.label}
               style={{
                 display: "flex",
