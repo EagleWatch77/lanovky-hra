@@ -8,6 +8,8 @@ import NavSide from "../components/NavSide";
 import WindowModal from "../components/WindowModal";
 import BudovyOkno from "../components/okna/BudovyOkno";
 import KonkurenciaOkno from "../components/okna/KonkurenciaOkno";
+import FinancieOkno from "../components/okna/FinancieOkno";
+import RebricekOkno from "../components/okna/RebricekOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
@@ -94,7 +96,19 @@ export default function PrehladPage() {
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
       <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
-      <NavSide onOtvorBudovy={() => setOkno("budovy")} onOtvorKonkurencia={() => setOkno("konkurencia")} />
+      <NavSide onOtvorBudovy={() => setOkno("budovy")} onOtvorKonkurencia={() => setOkno("konkurencia")} onOtvorFinancie={() => setOkno("financie")} onOtvorRebricek={() => setOkno("rebricek")} />
+
+      {okno === "rebricek" && (
+        <WindowModal title="🏆 Rebríček podľa prestíže" onClose={() => setOkno(null)} width={480}>
+          <RebricekOkno stanica={stanica} />
+        </WindowModal>
+      )}
+
+      {okno === "financie" && (
+        <WindowModal title="💰 Financie" onClose={() => setOkno(null)} width={640}>
+          <FinancieOkno stanica={stanica} />
+        </WindowModal>
+      )}
 
       {okno === "konkurencia" && (
         <WindowModal title="🛡️ Konkurencia" onClose={() => setOkno(null)} width={480}>
