@@ -1,8 +1,8 @@
 "use client";
 
-import { Bell, Wrench, Hammer, Power } from "lucide-react";
+import { Bell, Wrench, Hammer, Power, Mail } from "lucide-react";
 
-export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLogout }) {
+export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onOtvorSpravy, pocetNeprecitanych = 0, onLogout }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
       {notifikacie.length > 0 && (
@@ -17,6 +17,26 @@ export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onLog
           </span>
         </div>
       )}
+      <button
+        onClick={onOtvorSpravy}
+        title="Správy"
+        style={{
+          position: "relative",
+          display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34,
+          borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
+        }}
+      >
+        <Mail size={17} strokeWidth={1.8} />
+        {pocetNeprecitanych > 0 && (
+          <span style={{
+            position: "absolute", top: 2, right: 2, background: "#f2994a", color: "#0d141b",
+            fontSize: 9, fontWeight: 700, borderRadius: 8, minWidth: 14, height: 14,
+            display: "flex", alignItems: "center", justifyContent: "center", padding: "0 3px",
+          }}>
+            {pocetNeprecitanych}
+          </span>
+        )}
+      </button>
       <button
         onClick={onOtvorNastavenia}
         title="Nastavenia"
