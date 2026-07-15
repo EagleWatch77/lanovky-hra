@@ -201,12 +201,12 @@ export default function PrehladPage() {
       />
 
       {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky */}
-      <div style={{ position: "absolute", top: 12, left: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 12px" }}>
+      <div style={{ position: "absolute", top: 12, left: 12, zIndex: 3, background: "rgba(255,255,255,0.25)", backdropFilter: "blur(10px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.15)", padding: "6px 12px" }}>
         <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
       </div>
 
       {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 8px" }}>
+      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, background: "rgba(255,255,255,0.25)", backdropFilter: "blur(10px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.15)", padding: "6px 8px" }}>
         <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
       </div>
 
