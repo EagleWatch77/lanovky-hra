@@ -197,7 +197,7 @@ export default function PrehladPage() {
       <img
         src={mapaObrazok}
         alt="Mapa strediska"
-        style={{ position: "absolute", inset: 0, width: "90%", height: "100%", objectFit: "cover", objectPosition: "center 65%" }}
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
       />
 
       {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky */}
