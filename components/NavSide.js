@@ -37,9 +37,10 @@ export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFina
         gap: 6,
         padding: 6,
         borderRadius: 14,
-        background: "rgba(13,20,27,0.55)",
-        backdropFilter: "blur(6px)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        background: "rgba(255,255,255,0.25)",
+        backdropFilter: "blur(10px)",
+        border: "1px solid rgba(255,255,255,0.5)",
+        boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
       }}
     >
       {NAV.map((n) => {
@@ -60,7 +61,7 @@ export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFina
                 borderRadius: 9,
                 background: "transparent",
                 border: "none",
-                color: "rgba(232,237,242,0.65)",
+                color: "#1e293b",
                 cursor: "pointer",
               }}
             >
@@ -80,8 +81,8 @@ export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFina
               width: 34,
               height: 34,
               borderRadius: 9,
-              background: aktivny ? "rgba(255,255,255,0.16)" : "transparent",
-              color: aktivny ? "#e8edf2" : "rgba(232,237,242,0.65)",
+              background: aktivny ? "rgba(255,255,255,0.6)" : "transparent",
+              color: "#1e293b",
               textDecoration: "none",
             }}
           >
