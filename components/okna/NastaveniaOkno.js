@@ -3,9 +3,14 @@
 import { useState } from "react";
 import { cardStyle, buttonStyle, inputStyle } from "../../lib/styles";
 
-export default function NastaveniaOkno({ session, stanica, premenovatStanicu, zmenitEmail, zmenitHeslo, zmazatMojeData }) {
+const LOGA = ["🏔️", "🚡", "⛷️", "🎿", "🏂", "🗻", "❄️", "🏨", "🎫", "🌲", "🏕️", "🚠", "🛷", "⛰️", "🥌", "🧊"];
+
+export default function NastaveniaOkno({ session, stanica, premenovatStanicu, zmenitMenoHraca, zmenitLogo, zmenitEmail, zmenitHeslo, zmazatMojeData }) {
   const [nazov, setNazov] = useState("");
   const [spravaNazov, setSpravaNazov] = useState("");
+
+  const [menoHraca, setMenoHraca] = useState("");
+  const [spravaMeno, setSpravaMeno] = useState("");
 
   const [novyEmail, setNovyEmail] = useState("");
   const [spravaEmail, setSpravaEmail] = useState("");
@@ -21,6 +26,12 @@ export default function NastaveniaOkno({ session, stanica, premenovatStanicu, zm
     await premenovatStanicu(nazov.trim());
     setSpravaNazov("Uložené ✅");
     setNazov("");
+  }
+
+  async function odoslatMeno(e) {
+    e.preventDefault();
+    await zmenitMenoHraca(menoHraca.trim());
+    setSpravaMeno("Uložené ✅");
   }
 
   async function odoslatEmail(e) {
@@ -62,6 +73,41 @@ export default function NastaveniaOkno({ session, stanica, premenovatStanicu, zm
           <button type="submit" style={buttonStyle}>Uložiť</button>
         </form>
         {spravaNazov && <p style={{ color: "#4ade80", fontSize: 13, marginTop: 8 }}>{spravaNazov}</p>}
+
+        <label style={{ fontSize: 13, color: "#9fb0bf", marginTop: 16, display: "block" }}>Tvoje meno (aktuálne: {stanica?.meno_hraca || "nenastavené"})</label>
+        <form onSubmit={odoslatMeno} style={{ display: "flex", gap: 8, marginTop: 6 }}>
+          <input
+            type="text"
+            placeholder="Napr. Mirko"
+            value={menoHraca}
+            onChange={(e) => setMenoHraca(e.target.value)}
+            maxLength={30}
+            style={{ ...inputStyle, flex: 1 }}
+          />
+          <button type="submit" style={buttonStyle}>Uložiť</button>
+        </form>
+        {spravaMeno && <p style={{ color: "#4ade80", fontSize: 13, marginTop: 8 }}>{spravaMeno}</p>}
+
+        <label style={{ fontSize: 13, color: "#9fb0bf", marginTop: 16, display: "block" }}>Logo strediska</label>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 6 }}>
+          {LOGA.map((l) => (
+            <button
+              key={l}
+              onClick={() => zmenitLogo(l)}
+              style={{
+                fontSize: 22,
+                width: 40,
+                height: 40,
+                borderRadius: 8,
+                border: stanica?.logo === l ? "2px solid #2f9e6e" : "1px solid #2a3744",
+                background: stanica?.logo === l ? "rgba(47,158,110,0.2)" : "#0f1720",
+                cursor: "pointer",
+              }}
+            >
+              {l}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div style={cardStyle}>
