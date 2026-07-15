@@ -42,9 +42,9 @@ export default function TopBar({ onLogout, stanica, budovy, efektivitaBudovy, po
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 22 }}>🏔️</span>
+        <span style={{ fontSize: 22 }}>{stanica.logo || "🏔️"}</span>
         <div>
-          <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: 1 }}>SNOWPEAK</div>
+          <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: 1 }}>{stanica.nazov.toUpperCase()}</div>
           <div style={{ fontSize: 8, color: "#9fb0bf", letterSpacing: 2 }}>RESORT</div>
         </div>
       </div>
