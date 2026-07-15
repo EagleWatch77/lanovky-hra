@@ -193,8 +193,8 @@ export default function PrehladPage() {
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
       />
 
-      {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
-      <div style={{ position: "absolute", top: 12, left: 12, zIndex: 3, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 12px" }}>
+      {/* Plávajúci zhluk vľavo hore — štatistiky, posunuté doprava */}
+      <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 12px" }}>
         <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
       </div>
 
