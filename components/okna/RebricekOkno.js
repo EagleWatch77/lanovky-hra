@@ -53,8 +53,8 @@ export default function RebricekOkno({ stanica, poslatSpravu }) {
               style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", cursor: jeToJa ? "default" : "pointer" }}
             >
               <div>
-                <div style={{ color: "#e8edf2" }}>
-                  #{i + 1} {r.nazov}{jeToJa && " (ty)"}
+                 <div style={{ color: "#e8edf2" }}>
+                  #{i + 1} {r.nazov}
                 </div>
                 <div style={{ fontSize: 12, color: "#657685", marginTop: 2 }}>
                   {r.meno_hraca && <>👤 {r.meno_hraca} </>}
