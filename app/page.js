@@ -10,6 +10,8 @@ import BudovyOkno from "../components/okna/BudovyOkno";
 import KonkurenciaOkno from "../components/okna/KonkurenciaOkno";
 import FinancieOkno from "../components/okna/FinancieOkno";
 import RebricekOkno from "../components/okna/RebricekOkno";
+import InfoOkno from "../components/okna/InfoOkno";
+import NastaveniaOkno from "../components/okna/NastaveniaOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import PrestizRadar from "../components/PrestizRadar";
 import LanovkyPanel from "../components/LanovkyPanel";
@@ -42,6 +44,10 @@ export default function PrehladPage() {
     podmienkyOdomknutiaHor,
     odomknutHory,
     konkurenciaJednotky,
+    premenovatStanicu,
+    zmenitEmail,
+    zmenitHeslo,
+    zmazatMojeData,
   } = useGameState();
 
   const [novyNazov, setNovyNazov] = useState("");
@@ -96,7 +102,33 @@ export default function PrehladPage() {
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
       <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
-      <NavSide onOtvorBudovy={() => setOkno("budovy")} onOtvorKonkurencia={() => setOkno("konkurencia")} onOtvorFinancie={() => setOkno("financie")} onOtvorRebricek={() => setOkno("rebricek")} />
+      <NavSide
+        onOtvorBudovy={() => setOkno("budovy")}
+        onOtvorKonkurencia={() => setOkno("konkurencia")}
+        onOtvorFinancie={() => setOkno("financie")}
+        onOtvorRebricek={() => setOkno("rebricek")}
+        onOtvorInfo={() => setOkno("info")}
+        onOtvorNastavenia={() => setOkno("nastavenia")}
+      />
+
+      {okno === "nastavenia" && (
+        <WindowModal title="⚙️ Nastavenia" onClose={() => setOkno(null)} width={520}>
+          <NastaveniaOkno
+            session={session}
+            stanica={stanica}
+            premenovatStanicu={premenovatStanicu}
+            zmenitEmail={zmenitEmail}
+            zmenitHeslo={zmenitHeslo}
+            zmazatMojeData={zmazatMojeData}
+          />
+        </WindowModal>
+      )}
+
+      {okno === "info" && (
+        <WindowModal title="ℹ️ Info" onClose={() => setOkno(null)} width={560}>
+          <InfoOkno />
+        </WindowModal>
+      )}
 
       {okno === "rebricek" && (
         <WindowModal title="🏆 Rebríček podľa prestíže" onClose={() => setOkno(null)} width={480}>
