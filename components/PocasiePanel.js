@@ -34,9 +34,13 @@ export default function PocasiePanel({ kompaktne = false }) {
             «
           </button>
         )}
-        <h3 style={{ margin: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600, textAlign: "center", flex: 1 }}>
-          {efektivnyOffset === 0 && "Dnes — "}
-          {zobrazovanyDatum.toLocaleDateString("sk-SK", { weekday: "long", day: "numeric", month: "long" })}
+       <h3 style={{ margin: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600, textAlign: "center", flex: 1, whiteSpace: "nowrap" }}>
+          {kompaktne ? "Dnes" : (
+            <>
+              {efektivnyOffset === 0 && "Dnes — "}
+              {zobrazovanyDatum.toLocaleDateString("sk-SK", { weekday: "long", day: "numeric", month: "long" })}
+            </>
+          )}
         </h3>
         {!kompaktne && (
           <button
