@@ -115,11 +115,6 @@ export default function PrehladPage() {
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
   const podpriemernaEfektivita = hotoveBudovy.filter((b) => efektivitaBudovy(b) < 1).length;
 
-  const suhrnKategorii = {};
-  for (const b of hotoveBudovy) {
-    suhrnKategorii[b.kategoria] = (suhrnKategorii[b.kategoria] || 0) + 1;
-  }
-
   const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
   const mapaObrazok = jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-plna-zima.png" : "/mapa-plna-leto.png";
 
@@ -198,18 +193,13 @@ export default function PrehladPage() {
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
       />
 
-      {/* Samostatné logo — bez rámika, priamo na mape */}
-      <div style={{ position: "absolute", top: 8, left: 12, zIndex: 3, fontSize: 42, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))" }}>
-        {stanica.logo || "🏔️"}
-      </div>
-
-      {/* Plávajúci zhluk vľavo hore — názov, štatistiky */}
-      <div style={{ position: "absolute", top: 12, left: 70, zIndex: 3, background: "rgba(255,255,255,0.25)", backdropFilter: "blur(10px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.15)", padding: "6px 12px" }}>
+      {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
+      <div style={{ position: "absolute", top: 12, left: 12, zIndex: 3, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 12px" }}>
         <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
       </div>
 
       {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, background: "rgba(255,255,255,0.25)", backdropFilter: "blur(10px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.15)", padding: "6px 8px" }}>
+      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 8px" }}>
         <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
       </div>
 
@@ -240,9 +230,7 @@ export default function PrehladPage() {
         <div style={{ position: "absolute", top: 66, right: 12, width: 250, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
           <PocasiePanel />
 
-        
-
-         <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+          <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
         </div>
       )}
     </div>
