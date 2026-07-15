@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
 import TopBar from "../components/TopBar";
+import TopBarPrava from "../components/TopBarPrava";
 import NavSide from "../components/NavSide";
 import WindowModal from "../components/WindowModal";
 import BudovyOkno from "../components/okna/BudovyOkno";
@@ -22,7 +23,7 @@ import { jeZimnyMesiac } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
-const LOGA = ["🏔️", "🚡", "⛷️", "🎿", "🏂", "🗻", "❄️", "🏨"];
+const LOGA = ["🏔️", "🚡", "⛷️", "🎿", "🏂", "🗻", "❄️", "🏨", "🎫", "🌲", "🏕️", "🚠", "🛷", "⛰️", "🥌", "🧊"];
 
 export default function PrehladPage() {
   const {
@@ -133,7 +134,6 @@ export default function PrehladPage() {
         onOtvorFinancie={() => setOkno("financie")}
         onOtvorRebricek={() => setOkno("rebricek")}
         onOtvorInfo={() => setOkno("info")}
-        onOtvorNastavenia={() => setOkno("nastavenia")}
       />
 
       {okno === "nastavenia" && (
@@ -200,9 +200,14 @@ export default function PrehladPage() {
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
       />
 
-      {/* Plávajúca horná lišta */}
-      <div style={{ position: "absolute", top: 12, left: 12, right: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 12px" }}>
-        <TopBar onLogout={handleLogout} stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} pocetKonkurencie={pocetKonkurencie} notifikacie={notifikacie} />
+      {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky */}
+      <div style={{ position: "absolute", top: 12, left: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 12px" }}>
+        <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+      </div>
+
+      {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
+      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, background: "rgba(13,20,27,0.55)", backdropFilter: "blur(6px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: "6px 8px" }}>
+        <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
       </div>
 
       {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
