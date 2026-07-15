@@ -1,9 +1,8 @@
 "use client";
 
-import { KATEGORIE, KONKURENCIA_KONFIG } from "../../lib/katalog";
+import { useState } from "react";
+import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY } from "../../lib/katalog";
 import { cardStyle, tileStyle } from "../../lib/styles";
-
-const NAZVY = { hotel: "Hotely", bar: "Bary", parkovisko: "Parkoviská", servis: "Servis a požičovňa" };
 
 function zostavaCasu(koniecVystavby) {
   const zostava = new Date(koniecVystavby) - new Date();
@@ -13,21 +12,44 @@ function zostavaCasu(koniecVystavby) {
 }
 
 export default function KonkurenciaOkno({ konkurenciaJednotky }) {
+  const [aktivnaZona, setAktivnaZona] = useState("luka");
+  const zonaConfig = KONKURENCIA_ZONY_KONFIG[aktivnaZona];
+
   return (
     <div>
+      <div style={{ display: "flex", gap: 6, marginBottom: 16, borderBottom: "1px solid #223040", paddingBottom: 10 }}>
+        {Object.keys(KONKURENCIA_ZONY_KONFIG).map((zk) => (
+          <button
+            key={zk}
+            onClick={() => setAktivnaZona(zk)}
+            style={{
+              padding: "6px 14px",
+              borderRadius: 8,
+              border: "none",
+              background: aktivnaZona === zk ? "rgba(47,158,110,0.25)" : "transparent",
+              color: aktivnaZona === zk ? "#4ade80" : "#9fb0bf",
+              fontSize: 13,
+              cursor: "pointer",
+            }}
+          >
+            {ZONY[zk].ikona} {ZONY[zk].nazov}
+          </button>
+        ))}
+      </div>
+
       <p style={{ color: "#657685", fontSize: 13, marginTop: 0 }}>
-        Konkurencia sa objaví, ak niektorú z týchto 4 kategórií nemáš postavenú dlhší čas. Stavia rovnako dlho ako ty a znižuje ti dopyt, ale zvyšuje celkovú prestíž strediska.
+        Konkurencia sa objaví, ak niektorú z týchto kategórií v tejto zóne nemáš postavenú dlhší čas. Stavia rovnako dlho ako ty a znižuje ti dopyt, ale zvyšuje celkovú prestíž strediska.
       </p>
 
-      {Object.keys(NAZVY).map((kat) => {
-        const jednotky = konkurenciaJednotky.filter((k) => k.kategoria === kat);
-        const cfg = KONKURENCIA_KONFIG[kat];
+      {Object.keys(zonaConfig).map((kat) => {
+        const jednotky = konkurenciaJednotky.filter((k) => k.kategoria === kat && k.zona === aktivnaZona);
+        const cfg = zonaConfig[kat];
         const hotovoPocet = jednotky.filter((k) => k.stav === "hotovo").length;
 
         return (
           <div key={kat} style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <h3 style={{ margin: 0, fontSize: 15 }}>{KATEGORIE[kat].ikona} {NAZVY[kat]}</h3>
+              <h3 style={{ margin: 0, fontSize: 15 }}>{KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}</h3>
               <span style={{ color: "#9fb0bf", fontSize: 13 }}>
                 {jednotky.length} / {cfg.max}
                 {cfg.sezonne && " (len leto)"}
@@ -51,7 +73,7 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
 
             {hotovoPocet > 0 && (
               <p style={{ color: "#9fb0bf", fontSize: 12, marginTop: 12 }}>
-                Efekt: -{Math.round(cfg.stratapenazi * hotovoPocet * 100)}% dopytu v tejto kategórii, +{cfg.prestizBonus * hotovoPocet} prestíže strediska
+                Efekt: -{Math.round(cfg.stratapenazi * hotovoPocet * 100)}% dopytu v tejto kategórii a zóne, +{cfg.prestizBonus * hotovoPocet} prestíže strediska
               </p>
             )}
           </div>
