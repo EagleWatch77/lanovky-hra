@@ -199,7 +199,7 @@ export default function PrehladPage() {
       </div>
 
       {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, width: 110, background: "rgba(255,255,255,0.4)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.6)", padding: "6px 8px" }}>
+      <div style={{ position: "absolute", top: 12, right: 12, zIndex: 3, width: 110, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(8px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.35)", padding: "6px 8px" }}>
         <TopBarPrava notifikacie={notifikacie} onOtvorNastavenia={() => setOkno("nastavenia")} onLogout={handleLogout} />
       </div>
 
