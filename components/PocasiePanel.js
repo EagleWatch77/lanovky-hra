@@ -7,12 +7,27 @@ import { cardStyle, linkStyle } from "../lib/styles";
 
 const MAX_DNI = 7;
 
-export default function PocasiePanel() {
+export default function PocasiePanel({ kompaktne = false }) {
   const [offsetDni, setOffsetDni] = useState(0);
 
   const zobrazovanyDatum = hernyDatum(new Date());
   zobrazovanyDatum.setDate(zobrazovanyDatum.getDate() + offsetDni);
   const pocasie = vypocitajDenoePocasie(zobrazovanyDatum);
+
+  if (kompaktne) {
+    const dnesnyDatum = hernyDatum(new Date());
+    const dnesnePocasie = vypocitajDenoePocasie(dnesnyDatum);
+    const teraz = dnesnePocasie[Math.min(1, dnesnePocasie.length - 1)] || dnesnePocasie[0];
+    return (
+      <div style={{ ...cardStyle, display: "flex", alignItems: "center", gap: 8, padding: "8px 10px" }}>
+        <span style={{ fontSize: 22 }}>{teraz.ikona}</span>
+        <div>
+          <div style={{ fontSize: 15, fontWeight: 700 }}>{teraz.teplota}°C</div>
+          <div style={{ fontSize: 10, color: teraz.lanovkyZatvorene ? "#f2994a" : "#657685" }}>💨 {teraz.vietor} m/s</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={cardStyle}>
