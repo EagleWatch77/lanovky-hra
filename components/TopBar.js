@@ -26,12 +26,9 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy }) {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 22 }}>{stanica.logo || "🏔️"}</span>
-        <div>
-          <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: 1, color: "#1e293b" }}>{stanica.nazov.toUpperCase()}</div>
-          <div style={{ fontSize: 8, color: "#475569", letterSpacing: 2 }}>RESORT</div>
-        </div>
+      <div>
+        <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: 1, color: "#1e293b" }}>{stanica.nazov.toUpperCase()}</div>
+        <div style={{ fontSize: 8, color: "#475569", letterSpacing: 2 }}>RESORT</div>
       </div>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
