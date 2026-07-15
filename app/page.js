@@ -198,8 +198,13 @@ export default function PrehladPage() {
         style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
       />
 
-      {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky */}
-      <div style={{ position: "absolute", top: 12, left: 12, zIndex: 3, background: "rgba(255,255,255,0.25)", backdropFilter: "blur(10px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.15)", padding: "6px 12px" }}>
+      {/* Samostatné logo — bez rámika, priamo na mape */}
+      <div style={{ position: "absolute", top: 8, left: 12, zIndex: 3, fontSize: 42, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))" }}>
+        {stanica.logo || "🏔️"}
+      </div>
+
+      {/* Plávajúci zhluk vľavo hore — názov, štatistiky */}
+      <div style={{ position: "absolute", top: 12, left: 70, zIndex: 3, background: "rgba(255,255,255,0.25)", backdropFilter: "blur(10px)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.5)", boxShadow: "0 4px 16px rgba(0,0,0,0.15)", padding: "6px 12px" }}>
         <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
       </div>
 
