@@ -23,7 +23,7 @@ export default function PocasiePanel({ kompaktne = false }) {
   const pocasie = kompaktne ? [pocasieVsetko[indexUseku]] : pocasieVsetko;
 
   return (
-    <div style={cardStyle}>
+    <div style={kompaktne ? { ...cardStyle, padding: "8px 10px" } : cardStyle}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
         {!kompaktne && (
           <button
@@ -34,7 +34,7 @@ export default function PocasiePanel({ kompaktne = false }) {
             «
           </button>
         )}
-       <h3 style={{ margin: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600, textAlign: "center", flex: 1, whiteSpace: "nowrap" }}>
+        <h3 style={{ margin: 0, fontSize: 14, color: "#9fb0bf", fontWeight: 600, textAlign: "center", flex: 1, whiteSpace: "nowrap" }}>
           {kompaktne ? "Dnes" : (
             <>
               {efektivnyOffset === 0 && "Dnes — "}
@@ -53,14 +53,17 @@ export default function PocasiePanel({ kompaktne = false }) {
         )}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
         {pocasie.map((p) => (
-          <div key={p.cas} style={{ flex: 1, textAlign: "center", padding: "12px 4px", borderRadius: 10, background: "rgba(255,255,255,0.03)" }}>
-            <div style={{ fontSize: 12, color: "#657685" }}>{p.cas}</div>
-            <div style={{ fontSize: 32, margin: "6px 0" }}>{p.ikona}</div>
-            <div style={{ fontSize: 13, color: "#9fb0bf" }}>{p.nazov}</div>
-            <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>{p.teplota}°C</div>
-            <div style={{ fontSize: 11, color: p.lanovkyZatvorene ? "#f2994a" : "#657685", marginTop: 2 }}>
+          <div key={p.cas} style={kompaktne
+            ? { textAlign: "center", padding: "4px 0" }
+            : { flex: 1, textAlign: "center", padding: "12px 4px", borderRadius: 10, background: "rgba(255,255,255,0.03)" }
+          }>
+            {!kompaktne && <div style={{ fontSize: 12, color: "#657685" }}>{p.cas}</div>}
+            <div style={{ fontSize: kompaktne ? 22 : 32, margin: kompaktne ? "2px 0" : "6px 0" }}>{p.ikona}</div>
+            <div style={{ fontSize: kompaktne ? 11 : 13, color: "#9fb0bf" }}>{p.nazov}</div>
+            <div style={{ fontSize: kompaktne ? 15 : 18, fontWeight: 700, marginTop: kompaktne ? 2 : 4 }}>{p.teplota}°C</div>
+            <div style={{ fontSize: kompaktne ? 10 : 11, color: p.lanovkyZatvorene ? "#f2994a" : "#657685", marginTop: 2 }}>
               💨 {p.vietor} m/s{p.lanovkyZatvorene && " ⚠️"}
             </div>
           </div>
