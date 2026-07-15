@@ -14,10 +14,10 @@ const NAV = [
   { href: "/nastavenia", label: "Nastavenia", Icon: Settings },
 ];
 
-export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia }) {
+export default function NavSide({ onOtvorBudovy, onOtvorKonkurencia, onOtvorFinancie, onOtvorRebricek }) {
   const pathname = usePathname();
 
-  const OKNA = { "/budovy": onOtvorBudovy, "/konkurencia": onOtvorKonkurencia };
+  const OKNA = { "/budovy": onOtvorBudovy, "/konkurencia": onOtvorKonkurencia, "/financie": onOtvorFinancie, "/rebricek": onOtvorRebricek };
 
   return (
     <div
