@@ -19,6 +19,18 @@ import {
 import { buttonStyle, inputStyle, tileStyle, tileStyleActive } from "../../lib/styles";
 
 const NELANOVKOVE_TYPY = Object.keys(LANOVKY_TYPY).filter((t) => t !== "vlek");
+const NAZVY_JEDNOTNE = {
+  penzion: "Penzión",
+  parkovisko: "Parkovisko",
+  bar: "Bufet",
+  hotel: "Hotel",
+  servis: "Ski servis",
+  pokladna: "Pokladňa",
+  lanovka: "Lanovka",
+  ratrak: "Ratrak",
+  zasnezovanie: "Zasnežovanie",
+  obchod: "Obchod",
+};
 
 function realnaKategoria(kat) {
   return kat === "vlek" ? "lanovka" : kat;
@@ -136,7 +148,7 @@ export default function BudovyOkno({
             Array.from({ length: zona.limity[kat] }).map((_, poradie) => {
               const riadokKluc = `${kat}-${poradie}`;
               const budova = pocetVZone(aktivnaZona, kat, poradie);
-              const nazov = zona.popisky?.[kat] || KATEGORIE[realnaKategoria(kat)].nazov;
+              const nazov = zona.popisky?.[kat] || NAZVY_JEDNOTNE[kat] || KATEGORIE[realnaKategoria(kat)].nazov;
               const ikona = KATEGORIE[realnaKategoria(kat)].ikona;
               const zamknutySlot = aktivnaZona === "luka" && kat === "lanovka" && !stanica.hory_odomknute && !budova;
 
