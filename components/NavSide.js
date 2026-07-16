@@ -10,7 +10,7 @@ const NAV = [
   { href: "/konkurencia", label: "Konkurencia", Icon: ShieldAlert },
   { href: "/financie", label: "Financie", Icon: Wallet },
   { href: "/rebricek", label: "Rebríček", Icon: Trophy },
-  { href: "/aliancia", label: "Aliancia", Icon: Users },
+  { href: "/aliancia", label: "Ski konzorcium", Icon: Users },
   { href: "/co-je-hotove", label: "Info", Icon: ClipboardList },
 ];
 
