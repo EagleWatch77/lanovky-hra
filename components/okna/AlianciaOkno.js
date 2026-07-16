@@ -10,6 +10,7 @@ export default function AlianciaOkno({
   vytvoritAlianciu,
   pripojitSaKAlliancii,
   opustitAllianciu,
+  upravitPopisKonzorcia,
   poziadatOVstup,
   mojeZiadosti,
   prijateZiadosti,
@@ -27,13 +28,19 @@ export default function AlianciaOkno({
   const [hladatHraca, setHladatHraca] = useState("");
   const [vysledkyHraca, setVysledkyHraca] = useState([]);
   const [pozvanyId, setPozvanyId] = useState(null);
+  const [popisText, setPopisText] = useState("");
+  const [popisUlozeny, setPopisUlozeny] = useState(false);
+  const [rozbaleneId, setRozbaleneId] = useState(null);
 
   const mojeKonzorcium = aliancie.find((a) => a.id === stanica.aliancia_id);
   const somZakladatel = mojeKonzorcium && mojeKonzorcium.zakladatel_stanica_id === stanica.id;
   const filtrovaneKonzorcia = aliancie.filter((a) => a.nazov.toLowerCase().includes(hladat.toLowerCase()));
 
   useEffect(() => {
-    if (mojeKonzorcium) nacitajClenov();
+    if (mojeKonzorcium) {
+      nacitajClenov();
+      setPopisText(mojeKonzorcium.popis || "");
+    }
   }, [mojeKonzorcium?.id]);
 
   async function nacitajClenov() {
@@ -62,6 +69,12 @@ export default function AlianciaOkno({
   async function odoslatPozvanku(cieloveId) {
     await pozvatHraca(mojeKonzorcium.id, cieloveId);
     setPozvanyId(cieloveId);
+  }
+
+  async function odoslatPopis() {
+    await upravitPopisKonzorcia(mojeKonzorcium.id, popisText.trim());
+    setPopisUlozeny(true);
+    setTimeout(() => setPopisUlozeny(false), 2000);
   }
 
   const jeUzPoziadany = (alianciaId) => mojeZiadosti.some((z) => z.aliancia_id === alianciaId && z.typ !== "pozvanka");
@@ -118,6 +131,29 @@ export default function AlianciaOkno({
             <button onClick={opustitAllianciu} style={{ ...buttonStyle, background: "#3a4753" }}>
               Opustiť Ski konzorcium
             </button>
+          </div>
+
+          <div style={{ ...cardStyle, marginTop: 0 }}>
+            <h3 style={{ marginTop: 0 }}>O konzorciu</h3>
+            {somZakladatel ? (
+              <>
+                <textarea
+                  placeholder="Napíš niečo o vašom konzorciu (napr. čo hľadáte, ciele, trofeje...)"
+                  value={popisText}
+                  onChange={(e) => setPopisText(e.target.value)}
+                  maxLength={500}
+                  rows={4}
+                  style={{ ...inputStyle, width: "100%", boxSizing: "border-box", resize: "vertical", fontFamily: "inherit" }}
+                />
+                <button onClick={odoslatPopis} style={{ ...buttonStyle, marginTop: 8 }}>
+                  {popisUlozeny ? "Uložené ✅" : "Uložiť popis"}
+                </button>
+              </>
+            ) : (
+              <p style={{ color: "#9fb0bf", fontSize: 13, whiteSpace: "pre-wrap" }}>
+                {mojeKonzorcium.popis || "Zakladateľ zatiaľ nenapísal žiadny popis."}
+              </p>
+            )}
           </div>
 
           <div style={{ ...cardStyle, marginTop: 0 }}>
@@ -217,18 +253,37 @@ export default function AlianciaOkno({
               <p style={{ color: "#657685", fontSize: 13 }}>Žiadne Ski konzorcium nezodpovedá hľadaniu.</p>
             )}
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {filtrovaneKonzorcia.map((a) => (
-                <div key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8 }}>
-                  <span>🤝 {a.nazov}</span>
-                  {jeUzPoziadany(a.id) ? (
-                    <span style={{ color: "#9fb0bf", fontSize: 12 }}>Žiadosť odoslaná ⏳</span>
-                  ) : (
-                    <button onClick={() => poziadatOVstup(a.id)} style={{ ...buttonStyle, padding: "4px 12px", fontSize: 13 }}>
-                      Požiadať o vstup
-                    </button>
-                  )}
-                </div>
-              ))}
+              {filtrovaneKonzorcia.map((a) => {
+                const rozbalene = rozbaleneId === a.id;
+                return (
+                  <div key={a.id} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, overflow: "hidden" }}>
+                    <div
+                      onClick={() => setRozbaleneId(rozbalene ? null : a.id)}
+                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", cursor: "pointer" }}
+                    >
+                      <span>🤝 {a.nazov}</span>
+                      {jeUzPoziadany(a.id) ? (
+                        <span style={{ color: "#9fb0bf", fontSize: 12 }}>Žiadosť odoslaná ⏳</span>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            poziadatOVstup(a.id);
+                          }}
+                          style={{ ...buttonStyle, padding: "4px 12px", fontSize: 13 }}
+                        >
+                          Požiadať o vstup
+                        </button>
+                      )}
+                    </div>
+                    {rozbalene && (
+                      <p style={{ padding: "0 12px 12px 12px", margin: 0, color: "#9fb0bf", fontSize: 13, whiteSpace: "pre-wrap" }}>
+                        {a.popis || "Toto konzorcium zatiaľ nemá žiadny popis."}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
