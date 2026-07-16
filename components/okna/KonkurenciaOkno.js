@@ -38,34 +38,36 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
       </div>
 
       <p style={{ color: "#657685", fontSize: 13, marginTop: 0 }}>
-        Konkurencia sa objaví, ak niektorú z týchto kategórií v tejto zóne nemáš postavenú dlhší čas. Stavia rovnako dlho ako ty a znižuje ti dopyt, ale zvyšuje celkovú prestíž strediska.
+        Zoznam konkurencie v tvojom stredisku.
       </p>
 
       {Object.keys(zonaConfig).map((kat) => {
         const jednotky = konkurenciaJednotky.filter((k) => k.kategoria === kat && k.zona === aktivnaZona);
         const cfg = zonaConfig[kat];
         const hotovoPocet = jednotky.filter((k) => k.stav === "hotovo").length;
+        const sloty = Array.from({ length: cfg.max }, (_, i) => jednotky[i] || null);
 
         return (
           <div key={kat} style={cardStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <h3 style={{ margin: 0, fontSize: 15 }}>{KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}</h3>
-              <span style={{ color: "#9fb0bf", fontSize: 13 }}>
-                {jednotky.length} / {cfg.max}
-                {cfg.sezonne && " (len leto)"}
-              </span>
+              {cfg.sezonne && <span style={{ color: "#657685", fontSize: 12 }}>(len leto)</span>}
             </div>
 
-            {jednotky.length === 0 && (
-              <p style={{ color: "#4a5866", fontSize: 13 }}>Zatiaľ žiadna konkurencia v tejto kategórii.</p>
-            )}
-
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {jednotky.map((k) => (
-                <div key={k.id} style={{ ...tileStyle, cursor: "default", minWidth: 110 }}>
-                  <div style={{ fontSize: 20 }}>{k.stav === "hotovo" ? "🏢" : "🚧"}</div>
+              {sloty.map((k, i) => (
+                <div
+                  key={k?.id || i}
+                  style={{
+                    ...tileStyle,
+                    cursor: "default",
+                    minWidth: 110,
+                    opacity: k ? 1 : 0.4,
+                  }}
+                >
+                  <div style={{ fontSize: 20 }}>{!k ? "❔" : k.stav === "hotovo" ? "🏢" : "🚧"}</div>
                   <div style={{ fontSize: 12, marginTop: 4 }}>
-                    {k.stav === "hotovo" ? "Aktívna" : zostavaCasu(k.koniec_vystavby)}
+                    {!k ? "Ešte sa neobjavila" : k.stav === "hotovo" ? "Aktívna" : zostavaCasu(k.koniec_vystavby)}
                   </div>
                 </div>
               ))}
