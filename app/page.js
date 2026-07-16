@@ -154,7 +154,7 @@ export default function PrehladPage() {
       />
 
       {okno === "aliancia" && (
-        <WindowModal title="🤝 Aliancia" onClose={() => setOkno(null)} width={480}>
+        <WindowModal title="🤝 Ski konzorcium" onClose={() => setOkno(null)} width={480}>
           <AlianciaOkno
             stanica={stanica}
             aliancie={aliancie}
