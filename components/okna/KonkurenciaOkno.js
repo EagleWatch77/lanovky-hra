@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY } from "../../lib/katalog";
 
+const NAZVY_JEDNOTNE = {
+  penzion: "Penzión",
+  parkovisko: "Parkovisko",
+  bar: "Bufet",
+  hotel: "Hotel",
+  servis: "Ski servis",
+};
+
 function zostavaCasu(koniecVystavby) {
   const zostava = new Date(koniecVystavby) - new Date();
   if (zostava <= 0) return "Dokončuje sa...";
@@ -44,7 +52,7 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
         const jednotky = konkurenciaJednotky.filter((k) => k.kategoria === kat && k.zona === aktivnaZona);
         const cfg = zonaConfig[kat];
         const sloty = Array.from({ length: cfg.max }, (_, i) => jednotky[i] || null);
-        const nazov = KATEGORIE[kat].nazov;
+        const nazov = NAZVY_JEDNOTNE[kat] || KATEGORIE[kat].nazov;
         const ikona = KATEGORIE[kat].ikona;
 
         return (
