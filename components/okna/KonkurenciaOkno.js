@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY } from "../../lib/katalog";
-import { cardStyle, tileStyle } from "../../lib/styles";
 
 function zostavaCasu(koniecVystavby) {
   const zostava = new Date(koniecVystavby) - new Date();
@@ -44,40 +43,47 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
       {Object.keys(zonaConfig).map((kat) => {
         const jednotky = konkurenciaJednotky.filter((k) => k.kategoria === kat && k.zona === aktivnaZona);
         const cfg = zonaConfig[kat];
-        const hotovoPocet = jednotky.filter((k) => k.stav === "hotovo").length;
         const sloty = Array.from({ length: cfg.max }, (_, i) => jednotky[i] || null);
+        const nazov = KATEGORIE[kat].nazov;
+        const ikona = KATEGORIE[kat].ikona;
 
         return (
-          <div key={kat} style={cardStyle}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <h3 style={{ margin: 0, fontSize: 15 }}>{KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}</h3>
-              {cfg.sezonne && <span style={{ color: "#657685", fontSize: 12 }}>(len leto)</span>}
-            </div>
-
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {sloty.map((k, i) => (
-                <div
-                  key={k?.id || i}
-                  style={{
-                    ...tileStyle,
-                    cursor: "default",
-                    minWidth: 110,
-                    opacity: k ? 1 : 0.4,
-                  }}
-                >
-                  <div style={{ fontSize: 20 }}>{!k ? "❔" : k.stav === "hotovo" ? "🏢" : "🚧"}</div>
-                  <div style={{ fontSize: 12, marginTop: 4 }}>
-                    {!k ? "Ešte sa neobjavila" : k.stav === "hotovo" ? "Aktívna" : zostavaCasu(k.koniec_vystavby)}
+          <div key={kat} style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 8 }}>
+            {sloty.map((k, i) => {
+              if (k?.stav === "hotovo") {
+                return (
+                  <div key={k.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "rgba(242,73,73,0.15)", borderRadius: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 18 }}>{ikona}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600 }}>{nazov}</span>
+                    </div>
+                    <span style={{ fontSize: 12, color: "#f29494" }}>
+                      Aktívna · -{Math.round(cfg.stratapenazi * 100)}% dopytu
+                    </span>
                   </div>
+                );
+              }
+              if (k?.stav === "vo_vystavbe") {
+                return (
+                  <div key={k.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "rgba(242,153,74,0.15)", borderRadius: 8 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 18 }}>🚧</span>
+                      <span style={{ fontSize: 14, fontWeight: 600 }}>{nazov}</span>
+                    </div>
+                    <span style={{ fontSize: 12, color: "#f2994a" }}>Stavia sa · {zostavaCasu(k.koniec_vystavby)}</span>
+                  </div>
+                );
+              }
+              return (
+                <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, opacity: 0.6 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 18 }}>{ikona}</span>
+                    <span style={{ fontSize: 14 }}>{nazov}</span>
+                  </div>
+                  <span style={{ fontSize: 12, color: "#657685" }}>Ešte sa neobjavila</span>
                 </div>
-              ))}
-            </div>
-
-            {hotovoPocet > 0 && (
-              <p style={{ color: "#9fb0bf", fontSize: 12, marginTop: 12 }}>
-                Efekt: -{Math.round(cfg.stratapenazi * hotovoPocet * 100)}% dopytu v tejto kategórii a zóne, +{cfg.prestizBonus * hotovoPocet} prestíže strediska
-              </p>
-            )}
+              );
+            })}
           </div>
         );
       })}
