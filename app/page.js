@@ -48,6 +48,15 @@ export default function PrehladPage() {
     odomknutHory,
     konkurenciaJednotky,
     aliancie,
+    mojeZiadosti,
+    prijateZiadosti,
+    prijatePozvanky,
+    poziadatOVstup,
+    schvalitZiadost,
+    zamietnutZiadost,
+    pozvatHraca,
+    prijatPozvanku,
+    odmietnutPozvanku,
     spravy,
     nacitajAliancie,
     vytvoritAlianciu,
@@ -138,6 +147,11 @@ export default function PrehladPage() {
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
   const podpriemernaEfektivita = hotoveBudovy.filter((b) => efektivitaBudovy(b) < 1).length;
 
+  const suhrnKategorii = {};
+  for (const b of hotoveBudovy) {
+    suhrnKategorii[b.kategoria] = (suhrnKategorii[b.kategoria] || 0) + 1;
+  }
+
   const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
   const mapaObrazok = jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-plna-zima.png" : "/mapa-plna-leto.png";
 
@@ -161,6 +175,15 @@ export default function PrehladPage() {
             vytvoritAlianciu={vytvoritAlianciu}
             pripojitSaKAlliancii={pripojitSaKAlliancii}
             opustitAllianciu={opustitAllianciu}
+            poziadatOVstup={poziadatOVstup}
+            mojeZiadosti={mojeZiadosti}
+            prijateZiadosti={prijateZiadosti}
+            schvalitZiadost={schvalitZiadost}
+            zamietnutZiadost={zamietnutZiadost}
+            prijatePozvanky={prijatePozvanky}
+            prijatPozvanku={prijatPozvanku}
+            odmietnutPozvanku={odmietnutPozvanku}
+            pozvatHraca={pozvatHraca}
           />
         </WindowModal>
       )}
@@ -241,7 +264,7 @@ export default function PrehladPage() {
         <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
       </div>
 
-      {/* Plávajúci zhluk vpravo hore — notifikácie, správy, nastavenia, odhlásiť */}
+      {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
       <div style={{ position: "absolute", top: 12, right: 100, zIndex: 3, width: 110, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 8px" }}>
         <TopBarPrava
           notifikacie={notifikacie}
