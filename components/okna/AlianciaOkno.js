@@ -7,22 +7,22 @@ export default function AlianciaOkno({ stanica, aliancie, vytvoritAlianciu, prip
   const [novyNazov, setNovyNazov] = useState("");
   const [hladat, setHladat] = useState("");
 
-  const mojaAliancia = aliancie.find((a) => a.id === stanica.aliancia_id);
-  const filtrovaneAliancie = aliancie.filter((a) => a.nazov.toLowerCase().includes(hladat.toLowerCase()));
+  const mojeKonzorcium = aliancie.find((a) => a.id === stanica.aliancia_id);
+  const filtrovaneKonzorcia = aliancie.filter((a) => a.nazov.toLowerCase().includes(hladat.toLowerCase()));
 
-  if (mojaAliancia) {
+  if (mojeKonzorcium) {
     return (
       <div>
         <div style={{ ...cardStyle, marginTop: 0, textAlign: "center" }}>
           <div style={{ fontSize: 28 }}>🤝</div>
-          <h3 style={{ margin: "8px 0 4px" }}>{mojaAliancia.nazov}</h3>
-          <p style={{ color: "#9fb0bf", fontSize: 13 }}>Si členom tejto aliancie.</p>
+          <h3 style={{ margin: "8px 0 4px" }}>{mojeKonzorcium.nazov}</h3>
+          <p style={{ color: "#9fb0bf", fontSize: 13 }}>Si členom tohto Ski konzorcia.</p>
           <button onClick={opustitAllianciu} style={{ ...buttonStyle, background: "#3a4753" }}>
-            Opustiť alianciu
+            Opustiť Ski konzorcium
           </button>
         </div>
         <p style={{ color: "#657685", fontSize: 12 }}>
-          Zoznam členov a spoločné projekty aliancie pridáme neskôr.
+          Zoznam členov a spoločné projekty konzorcia pridáme neskôr.
         </p>
       </div>
     );
@@ -31,11 +31,11 @@ export default function AlianciaOkno({ stanica, aliancie, vytvoritAlianciu, prip
   return (
     <div>
       <div style={cardStyle}>
-        <h3 style={{ marginTop: 0 }}>Vytvoriť novú alianciu</h3>
+        <h3 style={{ marginTop: 0 }}>Vytvoriť nové Ski konzorcium</h3>
         <div style={{ display: "flex", gap: 8 }}>
           <input
             type="text"
-            placeholder="Názov aliancie"
+            placeholder="Názov Ski konzorcia"
             value={novyNazov}
             onChange={(e) => setNovyNazov(e.target.value)}
             maxLength={40}
@@ -56,7 +56,7 @@ export default function AlianciaOkno({ stanica, aliancie, vytvoritAlianciu, prip
       </div>
 
       <div style={{ ...cardStyle, marginTop: 0 }}>
-        <h3 style={{ marginTop: 0 }}>Existujúce aliancie</h3>
+        <h3 style={{ marginTop: 0 }}>Existujúce Ski konzorciá</h3>
         <input
           type="text"
           placeholder="🔍 Hľadať podľa názvu..."
@@ -64,12 +64,12 @@ export default function AlianciaOkno({ stanica, aliancie, vytvoritAlianciu, prip
           onChange={(e) => setHladat(e.target.value)}
           style={{ ...inputStyle, width: "100%", marginBottom: 10, boxSizing: "border-box" }}
         />
-        {aliancie.length === 0 && <p style={{ color: "#657685", fontSize: 13 }}>Zatiaľ žiadne aliancie. Buď prvý!</p>}
-        {aliancie.length > 0 && filtrovaneAliancie.length === 0 && (
-          <p style={{ color: "#657685", fontSize: 13 }}>Žiadna aliancia nezodpovedá hľadaniu.</p>
+        {aliancie.length === 0 && <p style={{ color: "#657685", fontSize: 13 }}>Zatiaľ žiadne Ski konzorciá. Buď prvý!</p>}
+        {aliancie.length > 0 && filtrovaneKonzorcia.length === 0 && (
+          <p style={{ color: "#657685", fontSize: 13 }}>Žiadne Ski konzorcium nezodpovedá hľadaniu.</p>
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {filtrovaneAliancie.map((a) => (
+          {filtrovaneKonzorcia.map((a) => (
             <div key={a.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8 }}>
               <span>🤝 {a.nazov}</span>
               <button onClick={() => pripojitSaKAlliancii(a.id)} style={{ ...buttonStyle, padding: "4px 12px", fontSize: 13 }}>
