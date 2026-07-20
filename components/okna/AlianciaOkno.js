@@ -17,6 +17,7 @@ export default function AlianciaOkno({
   prijateZiadosti,
   schvalitZiadost,
   zamietnutZiadost,
+  oznacitZiadostOznamenu,
   prijatePozvanky,
   prijatPozvanku,
   odmietnutPozvanku,
@@ -44,6 +45,21 @@ export default function AlianciaOkno({
     }
   }, [mojeKonzorcium?.id]);
 
+  useEffect(() => {
+    const neoznamena = mojeZiadosti.find(
+      (z) => z.typ !== "pozvanka" && (z.stav === "prijata" || z.stav === "zamietnuta") && !z.oznamene
+    );
+    if (neoznamena) {
+      const nazovKonzorcia = aliancie.find((a) => a.id === neoznamena.aliancia_id)?.nazov || "konzorcia";
+      if (neoznamena.stav === "prijata") {
+        alert(`🎉 Boli ste prijatí do konzorcia "${nazovKonzorcia}"!`);
+      } else {
+        alert(`Vaša žiadosť o vstup do konzorcia "${nazovKonzorcia}" bola zamietnutá. Môžete skúsiť požiadať znova.`);
+      }
+      oznacitZiadostOznamenu(neoznamena.id);
+    }
+  }, [mojeZiadosti]);
+
   async function nacitajClenov() {
     const { data } = await supabase
       .from("stanice")
@@ -68,7 +84,8 @@ export default function AlianciaOkno({
     setTimeout(() => setOdoslaneId(null), 3000);
   }
 
-  const jeUzPoziadany = (alianciaId) => mojeZiadosti.some((z) => z.aliancia_id === alianciaId && z.typ !== "pozvanka");
+  const jeUzPoziadany = (alianciaId) =>
+    mojeZiadosti.some((z) => z.aliancia_id === alianciaId && z.typ !== "pozvanka" && z.stav === "cakajuca");
 
   return (
     <div>
