@@ -62,6 +62,7 @@ export default function PrehladPage() {
     vytvoritAlianciu,
     pripojitSaKAlliancii,
     opustitAllianciu,
+    upravitPopisKonzorcia,
     nacitajSpravy,
     poslatSpravu,
     oznacitPrecitane,
@@ -147,11 +148,6 @@ export default function PrehladPage() {
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
   const podpriemernaEfektivita = hotoveBudovy.filter((b) => efektivitaBudovy(b) < 1).length;
 
-  const suhrnKategorii = {};
-  for (const b of hotoveBudovy) {
-    suhrnKategorii[b.kategoria] = (suhrnKategorii[b.kategoria] || 0) + 1;
-  }
-
   const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
   const mapaObrazok = jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-plna-zima.png" : "/mapa-plna-leto.png";
 
@@ -175,6 +171,7 @@ export default function PrehladPage() {
             vytvoritAlianciu={vytvoritAlianciu}
             pripojitSaKAlliancii={pripojitSaKAlliancii}
             opustitAllianciu={opustitAllianciu}
+            upravitPopisKonzorcia={upravitPopisKonzorcia}
             poziadatOVstup={poziadatOVstup}
             mojeZiadosti={mojeZiadosti}
             prijateZiadosti={prijateZiadosti}
@@ -183,7 +180,7 @@ export default function PrehladPage() {
             prijatePozvanky={prijatePozvanky}
             prijatPozvanku={prijatPozvanku}
             odmietnutPozvanku={odmietnutPozvanku}
-            pozvatHraca={pozvatHraca}
+            poslatSpravu={poslatSpravu}
           />
         </WindowModal>
       )}
