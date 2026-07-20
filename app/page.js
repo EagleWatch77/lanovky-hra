@@ -54,7 +54,7 @@ export default function PrehladPage() {
     poziadatOVstup,
     schvalitZiadost,
     zamietnutZiadost,
-    pozvatHraca,
+    oznacitZiadostOznamenu,
     prijatPozvanku,
     odmietnutPozvanku,
     spravy,
@@ -177,6 +177,7 @@ export default function PrehladPage() {
             prijateZiadosti={prijateZiadosti}
             schvalitZiadost={schvalitZiadost}
             zamietnutZiadost={zamietnutZiadost}
+            oznacitZiadostOznamenu={oznacitZiadostOznamenu}
             prijatePozvanky={prijatePozvanky}
             prijatPozvanku={prijatPozvanku}
             odmietnutPozvanku={odmietnutPozvanku}
