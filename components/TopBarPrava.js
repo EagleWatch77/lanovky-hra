@@ -1,8 +1,16 @@
 "use client";
 
-import { Bell, Wrench, Hammer, Power, Mail } from "lucide-react";
+import { Bell, Wrench, Hammer, Power, Mail, MessageCircle } from "lucide-react";
 
-export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onOtvorSpravy, pocetNeprecitanych = 0, onLogout }) {
+export default function TopBarPrava({
+  notifikacie = [],
+  onOtvorNastavenia,
+  onOtvorSpravy,
+  pocetNeprecitanych = 0,
+  onLogout,
+  maKonzorcium = false,
+  onOtvorForum,
+}) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
       {notifikacie.length > 0 && (
@@ -16,6 +24,18 @@ export default function TopBarPrava({ notifikacie = [], onOtvorNastavenia, onOtv
             {notifikacie.length}
           </span>
         </div>
+      )}
+      {maKonzorcium && (
+        <button
+          onClick={onOtvorForum}
+          title="Nástenka konzorcia"
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34,
+            borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
+          }}
+        >
+          <MessageCircle size={17} strokeWidth={1.8} />
+        </button>
       )}
       <button
         onClick={onOtvorSpravy}
