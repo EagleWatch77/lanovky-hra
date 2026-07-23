@@ -14,6 +14,7 @@ import RebricekOkno from "../components/okna/RebricekOkno";
 import InfoOkno from "../components/okna/InfoOkno";
 import NastaveniaOkno from "../components/okna/NastaveniaOkno";
 import AlianciaOkno from "../components/okna/AlianciaOkno";
+import AlianciaForumOkno from "../components/okna/AlianciaForumOkno";
 import SpravyOkno from "../components/okna/SpravyOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import LanovkyPanel from "../components/LanovkyPanel";
@@ -59,6 +60,8 @@ export default function PrehladPage() {
     odmietnutPozvanku,
     pozvatHraca,
     vyhoditClena,
+    aliancneSpravy,
+    poslatAliancnuSpravu,
     spravy,
     nacitajAliancie,
     vytvoritAlianciu,
@@ -192,6 +195,12 @@ export default function PrehladPage() {
         </WindowModal>
       )}
 
+      {okno === "forum" && (
+        <WindowModal title="🗣️ Nástenka konzorcia" onClose={() => setOkno(null)} width={520}>
+          <AlianciaForumOkno stanica={stanica} aliancneSpravy={aliancneSpravy} poslatAliancnuSpravu={poslatAliancnuSpravu} />
+        </WindowModal>
+      )}
+
       {okno === "spravy" && (
         <WindowModal title="✉️ Správy" onClose={() => setOkno(null)} width={480}>
           <SpravyOkno spravy={spravy} oznacitPrecitane={oznacitPrecitane} poslatSpravu={poslatSpravu} />
@@ -276,6 +285,8 @@ export default function PrehladPage() {
           onOtvorSpravy={() => setOkno("spravy")}
           pocetNeprecitanych={spravy.filter((s) => !s.precitana).length}
           onLogout={handleLogout}
+          maKonzorcium={!!stanica.aliancia_id}
+          onOtvorForum={() => setOkno("forum")}
         />
       </div>
 
