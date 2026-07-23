@@ -57,6 +57,8 @@ export default function PrehladPage() {
     oznacitZiadostOznamenu,
     prijatPozvanku,
     odmietnutPozvanku,
+    pozvatHraca,
+    vyhoditClena,
     spravy,
     nacitajAliancie,
     vytvoritAlianciu,
@@ -184,6 +186,8 @@ export default function PrehladPage() {
             odmietnutPozvanku={odmietnutPozvanku}
             poslatSpravu={poslatSpravu}
             nacitajMojeZiadosti={nacitajMojeZiadosti}
+            pozvatHraca={pozvatHraca}
+            vyhoditClena={vyhoditClena}
           />
         </WindowModal>
       )}
