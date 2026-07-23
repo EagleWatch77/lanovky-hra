@@ -3,18 +3,37 @@
 import { useState } from "react";
 import { cardStyle, buttonStyle, inputStyle } from "../../lib/styles";
 
-export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu }) {
+export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu, vymazatSpravy }) {
   const [otvorenaId, setOtvorenaId] = useState(null);
   const [textOdpovede, setTextOdpovede] = useState("");
   const [odoslane, setOdoslane] = useState(false);
+  const [vybrane, setVybrane] = useState([]);
 
   const otvorena = spravy.find((s) => s.id === otvorenaId);
+  const vsetkyVybrane = spravy.length > 0 && vybrane.length === spravy.length;
 
   function otvorSpravu(s) {
     if (!s.precitana) oznacitPrecitane(s.id);
     setOtvorenaId(s.id);
     setTextOdpovede("");
     setOdoslane(false);
+  }
+
+  function prepnutVyber(id, e) {
+    e.stopPropagation();
+    setVybrane((v) => (v.includes(id) ? v.filter((x) => x !== id) : [...v, id]));
+  }
+
+  function prepnutVsetky() {
+    setVybrane(vsetkyVybrane ? [] : spravy.map((s) => s.id));
+  }
+
+  function vymazatOznacene() {
+    if (vybrane.length === 0) return;
+    if (!confirm(`Naozaj vymazať ${vybrane.length} vybraných správ?`)) return;
+    vymazatSpravy(vybrane);
+    setVybrane([]);
+    if (vybrane.includes(otvorenaId)) setOtvorenaId(null);
   }
 
   function odoslatOdpoved() {
@@ -73,35 +92,59 @@ export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      {spravy.map((s) => (
-        <div
-          key={s.id}
-          onClick={() => otvorSpravu(s)}
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "10px 12px",
-            background: s.precitana ? "rgba(255,255,255,0.03)" : "rgba(47,158,110,0.12)",
-            borderRadius: 8,
-            cursor: "pointer",
-          }}
-        >
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontSize: 13, color: "#9fb0bf", display: "flex", alignItems: "center", gap: 6 }}>
-              {!s.precitana && <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block", flexShrink: 0 }} />}
-              {s.odosielatel?.meno_hraca || s.odosielatel?.nazov || "Neznámy"}
-            </div>
-            <div style={{ fontSize: 14, color: "#e8edf2", fontWeight: s.precitana ? 400 : 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 4px 8px 4px", borderBottom: "1px solid #223040", marginBottom: 8, fontSize: 11, color: "#657685", textTransform: "uppercase", letterSpacing: 0.5 }}>
+        <input type="checkbox" checked={vsetkyVybrane} onChange={prepnutVsetky} style={{ flexShrink: 0 }} />
+        <div style={{ flex: "2 1 0", minWidth: 0 }}>Predmet</div>
+        <div style={{ flex: "1 1 0", minWidth: 0 }}>Od</div>
+        <div style={{ width: 70, textAlign: "right", flexShrink: 0 }}>Dátum</div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        {spravy.map((s) => (
+          <div
+            key={s.id}
+            onClick={() => otvorSpravu(s)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "8px 4px",
+              background: s.precitana ? "rgba(255,255,255,0.03)" : "rgba(47,158,110,0.12)",
+              borderRadius: 6,
+              cursor: "pointer",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={vybrane.includes(s.id)}
+              onChange={(e) => prepnutVyber(s.id, e)}
+              onClick={(e) => e.stopPropagation()}
+              style={{ flexShrink: 0 }}
+            />
+            <div style={{ flex: "2 1 0", minWidth: 0, fontSize: 13, color: "#e8edf2", fontWeight: s.precitana ? 400 : 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {!s.precitana && <span style={{ color: "#4ade80" }}>● </span>}
               {s.predmet || "(bez predmetu)"}
             </div>
+            <div style={{ flex: "1 1 0", minWidth: 0, fontSize: 12, color: "#9fb0bf", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {s.odosielatel?.meno_hraca || s.odosielatel?.nazov || "Neznámy"}
+            </div>
+            <div style={{ width: 70, textAlign: "right", flexShrink: 0, fontSize: 11, color: "#657685" }}>
+              {new Date(s.created_at).toLocaleDateString("sk-SK", { day: "2-digit", month: "2-digit" })}
+            </div>
           </div>
-          <span style={{ fontSize: 11, color: "#657685", whiteSpace: "nowrap", marginLeft: 12 }}>
-            {new Date(s.created_at).toLocaleDateString("sk-SK")}
-          </span>
-        </div>
-      ))}
+        ))}
+      </div>
+
+      <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #223040" }}>
+        <button
+          onClick={vymazatOznacene}
+          disabled={vybrane.length === 0}
+          style={{ ...buttonStyle, background: vybrane.length > 0 ? "#c0392b" : "#3a4753", opacity: vybrane.length > 0 ? 1 : 0.6 }}
+        >
+          🗑 Vymazať vybrané {vybrane.length > 0 && `(${vybrane.length})`}
+        </button>
+      </div>
     </div>
   );
 }
