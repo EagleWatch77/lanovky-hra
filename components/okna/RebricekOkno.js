@@ -9,6 +9,7 @@ export default function RebricekOkno({ stanica, poslatSpravu }) {
   const [rebricek, setRebricek] = useState([]);
   const [nacitavaSa, setNacitavaSa] = useState(true);
   const [otvorenyId, setOtvorenyId] = useState(null);
+  const [predmetSpravy, setPredmetSpravy] = useState("");
   const [textSpravy, setTextSpravy] = useState("");
   const [odoslane, setOdoslane] = useState(null);
 
@@ -25,7 +26,8 @@ export default function RebricekOkno({ stanica, poslatSpravu }) {
 
   function odoslatSpravu(komuId) {
     if (!textSpravy.trim()) return;
-    poslatSpravu(komuId, textSpravy);
+    poslatSpravu(komuId, textSpravy, predmetSpravy);
+    setPredmetSpravy("");
     setTextSpravy("");
     setOtvorenyId(null);
     setOdoslane(komuId);
@@ -34,7 +36,6 @@ export default function RebricekOkno({ stanica, poslatSpravu }) {
 
   if (nacitavaSa) return <p style={{ color: "#9fb0bf" }}>Načítavam...</p>;
 
-  // Zoskupenie podľa konzorcia (súčet prestíže, počet členov)
   const konzorciaMapa = {};
   for (const r of rebricek) {
     if (!r.aliancia_nazov) continue;
@@ -101,22 +102,31 @@ export default function RebricekOkno({ stanica, poslatSpravu }) {
                 </div>
 
                 {rozbaleny && !jeToJa && (
-                  <div style={{ padding: "0 12px 12px 12px" }}>
+                  <div style={{ padding: "0 12px 12px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
                     {odoslane === r.id ? (
                       <p style={{ color: "#4ade80", fontSize: 13 }}>Správa odoslaná ✅</p>
                     ) : (
-                      <div style={{ display: "flex", gap: 6 }}>
+                      <>
                         <input
                           type="text"
-                          placeholder="Napíš správu..."
-                          value={textSpravy}
-                          onChange={(e) => setTextSpravy(e.target.value)}
-                          style={{ ...inputStyle, flex: 1, padding: "6px 10px", fontSize: 13 }}
+                          placeholder="Predmet..."
+                          value={predmetSpravy}
+                          onChange={(e) => setPredmetSpravy(e.target.value)}
+                          style={{ ...inputStyle, padding: "6px 10px", fontSize: 13 }}
                         />
-                        <button onClick={() => odoslatSpravu(r.id)} style={{ ...buttonStyle, padding: "6px 12px", fontSize: 13 }}>
-                          Odoslať
-                        </button>
-                      </div>
+                        <div style={{ display: "flex", gap: 6 }}>
+                          <input
+                            type="text"
+                            placeholder="Napíš správu..."
+                            value={textSpravy}
+                            onChange={(e) => setTextSpravy(e.target.value)}
+                            style={{ ...inputStyle, flex: 1, padding: "6px 10px", fontSize: 13 }}
+                          />
+                          <button onClick={() => odoslatSpravu(r.id)} style={{ ...buttonStyle, padding: "6px 12px", fontSize: 13 }}>
+                            Odoslať
+                          </button>
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
