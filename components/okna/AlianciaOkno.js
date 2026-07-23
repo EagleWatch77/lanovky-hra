@@ -59,7 +59,8 @@ export default function AlianciaOkno({
       .from("stanice")
       .select("id, nazov, meno_hraca, prestiz")
       .eq("aliancia_id", mojeKonzorcium.id)
-      .order("prestiz", { ascending: false });
+      .order("prestiz", { ascending: false })
+      .order("id", { ascending: true });
     setClenovia(data || []);
   }
 
