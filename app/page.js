@@ -285,7 +285,7 @@ export default function PrehladPage() {
           notifikacie={notifikacie}
           onOtvorNastavenia={() => setOkno("nastavenia")}
           onOtvorSpravy={() => setOkno("spravy")}
-          pocetNeprecitanych={spravy.filter((s) => !s.precitana).length}
+          pocetNeprecitanych={spravy.filter((s) => !s.precitana && s.od_stanica_id !== stanica.id).length}
           onLogout={handleLogout}
           maKonzorcium={!!stanica.aliancia_id}
           onOtvorForum={() => {
