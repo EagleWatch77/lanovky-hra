@@ -22,6 +22,8 @@ export default function AlianciaOkno({
   odmietnutPozvanku,
   poslatSpravu,
   nacitajMojeZiadosti,
+  pozvatHraca,
+  vyhoditClena,
 }) {
   const [zalozka, setZalozka] = useState("konzorcium");
   const [novyNazov, setNovyNazov] = useState("");
@@ -33,6 +35,9 @@ export default function AlianciaOkno({
   const [spravaPreId, setSpravaPreId] = useState(null);
   const [textSpravy, setTextSpravy] = useState("");
   const [odoslaneId, setOdoslaneId] = useState(null);
+  const [hladatHraca, setHladatHraca] = useState("");
+  const [vysledkyHraca, setVysledkyHraca] = useState([]);
+  const [pozvanyId, setPozvanyId] = useState(null);
 
   useEffect(() => {
     nacitajMojeZiadosti();
@@ -71,6 +76,31 @@ export default function AlianciaOkno({
     setSpravaPreId(null);
     setOdoslaneId(komuId);
     setTimeout(() => setOdoslaneId(null), 3000);
+  }
+
+  async function vyhoditClenaAObnovit(clenId) {
+    if (!confirm("Naozaj chceš vyhodiť tohto člena z konzorcia?")) return;
+    await vyhoditClena(clenId);
+    await nacitajClenov();
+  }
+
+  async function hladatHracaVRebricku(text) {
+    setHladatHraca(text);
+    if (!text.trim()) {
+      setVysledkyHraca([]);
+      return;
+    }
+    const { data } = await supabase
+      .from("rebricek")
+      .select("id, nazov, meno_hraca, aliancia_nazov")
+      .ilike("nazov", `%${text}%`)
+      .limit(10);
+    setVysledkyHraca((data || []).filter((r) => r.id !== stanica.id && !r.aliancia_nazov));
+  }
+
+  async function odoslatPozvanku(cieloveId) {
+    await pozvatHraca(mojeKonzorcium.id, cieloveId);
+    setPozvanyId(cieloveId);
   }
 
   const jeUzPoziadany = (alianciaId) =>
@@ -178,11 +208,12 @@ export default function AlianciaOkno({
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {clenovia.map((c) => {
                 const jeToJa = c.id === stanica.id;
+                const jeZakladatel = c.id === mojeKonzorcium.zakladatel_stanica_id;
                 const rozbaleny = spravaPreId === c.id;
                 return (
                   <div key={c.id} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 6, overflow: "hidden" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 10px", fontSize: 13 }}>
-                      <span>{c.nazov}{c.meno_hraca && ` (${c.meno_hraca})`}{c.id === mojeKonzorcium.zakladatel_stanica_id && " 👑"}</span>
+                      <span>{c.nazov}{c.meno_hraca && ` (${c.meno_hraca})`}{jeZakladatel && " 👑"}</span>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <span style={{ color: "#f2c94c" }}>⭐ {c.prestiz}</span>
                         {!jeToJa && (
@@ -192,6 +223,14 @@ export default function AlianciaOkno({
                             style={{ display: "flex", alignItems: "center", background: "transparent", border: "none", color: "#9fb0bf", cursor: "pointer", padding: 2 }}
                           >
                             <Mail size={15} strokeWidth={1.8} />
+                          </button>
+                        )}
+                        {somZakladatel && !jeToJa && !jeZakladatel && (
+                          <button
+                            onClick={() => vyhoditClenaAObnovit(c.id)}
+                            style={{ background: "transparent", border: "none", color: "#f28b8b", cursor: "pointer", fontSize: 11, padding: "2px 4px" }}
+                          >
+                            Vyhodiť
                           </button>
                         )}
                       </div>
@@ -233,6 +272,31 @@ export default function AlianciaOkno({
                       <button onClick={() => schvalitZiadost(z.id, z.stanica_id, z.aliancia_id)} style={{ ...buttonStyle, padding: "3px 10px", fontSize: 12 }}>Prijať</button>
                       <button onClick={() => zamietnutZiadost(z.id, z.stanica_id, z.aliancia_id)} style={{ ...buttonStyle, padding: "3px 10px", fontSize: 12, background: "#3a4753" }}>Zamietnuť</button>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {somZakladatel && (
+            <div style={{ ...cardStyle, marginTop: 0 }}>
+              <h3 style={{ marginTop: 0 }}>Pozvať hráča</h3>
+              <input
+                type="text"
+                placeholder="🔍 Hľadať podľa názvu strediska..."
+                value={hladatHraca}
+                onChange={(e) => hladatHracaVRebricku(e.target.value)}
+                style={{ ...inputStyle, width: "100%", marginBottom: 10, boxSizing: "border-box" }}
+              />
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {vysledkyHraca.map((r) => (
+                  <div key={r.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 6, fontSize: 13 }}>
+                    <span>{r.nazov}{r.meno_hraca && ` (${r.meno_hraca})`}</span>
+                    {pozvanyId === r.id ? (
+                      <span style={{ color: "#4ade80", fontSize: 12 }}>Pozvánka odoslaná ✅</span>
+                    ) : (
+                      <button onClick={() => odoslatPozvanku(r.id)} style={{ ...buttonStyle, padding: "3px 10px", fontSize: 12 }}>Pozvať</button>
+                    )}
                   </div>
                 ))}
               </div>
