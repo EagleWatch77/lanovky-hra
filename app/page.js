@@ -56,7 +56,10 @@ export default function PrehladPage() {
     zamietnutZiadost,
     oznacitZiadostOznamenu,
     prijatPozvanku,
-    odmietnutPozvanku,
+    odmietnutPozvanku={odmietnutPozvanku}
+            poslatSpravu={poslatSpravu}
+            nacitajMojeZiadosti={nacitajMojeZiadosti}
+          />
     spravy,
     nacitajAliancie,
     vytvoritAlianciu,
@@ -64,6 +67,7 @@ export default function PrehladPage() {
     opustitAllianciu,
     upravitPopisKonzorcia,
     nacitajSpravy,
+    nacitajMojeZiadosti,
     poslatSpravu,
     oznacitPrecitane,
     premenovatStanicu,
