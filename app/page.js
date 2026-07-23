@@ -206,7 +206,7 @@ export default function PrehladPage() {
 
       {okno === "spravy" && (
         <WindowModal title="✉️ Správy" onClose={() => setOkno(null)} width={480}>
-          <SpravyOkno spravy={spravy} oznacitPrecitane={oznacitPrecitane} poslatSpravu={poslatSpravu} />
+       <SpravyOkno spravy={spravy} oznacitPrecitane={oznacitPrecitane} poslatSpravu={poslatSpravu} vymazatSpravy={vymazatSpravy} />
         </WindowModal>
       )}
 
