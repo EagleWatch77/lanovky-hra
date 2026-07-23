@@ -10,6 +10,7 @@ export default function TopBarPrava({
   onLogout,
   maKonzorcium = false,
   onOtvorForum,
+  pocetNeprecitanychVoFore = 0,
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
@@ -30,11 +31,21 @@ export default function TopBarPrava({
           onClick={onOtvorForum}
           title="Nástenka konzorcia"
           style={{
+            position: "relative",
             display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34,
             borderRadius: 8, background: "transparent", border: "none", color: "#1e293b", cursor: "pointer",
           }}
         >
           <MessageCircle size={17} strokeWidth={1.8} />
+          {pocetNeprecitanychVoFore > 0 && (
+            <span style={{
+              position: "absolute", top: 2, right: 2, background: "#e03131", color: "#fff",
+              fontSize: 9, fontWeight: 700, borderRadius: 8, minWidth: 14, height: 14,
+              display: "flex", alignItems: "center", justifyContent: "center", padding: "0 3px",
+            }}>
+              {pocetNeprecitanychVoFore}
+            </span>
+          )}
         </button>
       )}
       <button
