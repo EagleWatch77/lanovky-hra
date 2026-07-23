@@ -74,6 +74,7 @@ export default function PrehladPage() {
     nacitajMojeZiadosti,
     poslatSpravu,
     oznacitPrecitane,
+    vymazatSpravy,
     premenovatStanicu,
     zmenitMenoHraca,
     zmenitLogo,
