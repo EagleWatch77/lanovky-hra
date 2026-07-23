@@ -21,6 +21,7 @@ export default function AlianciaOkno({
   prijatPozvanku,
   odmietnutPozvanku,
   poslatSpravu,
+  nacitajMojeZiadosti,
 }) {
   const [zalozka, setZalozka] = useState("konzorcium");
   const [novyNazov, setNovyNazov] = useState("");
@@ -32,6 +33,10 @@ export default function AlianciaOkno({
   const [spravaPreId, setSpravaPreId] = useState(null);
   const [textSpravy, setTextSpravy] = useState("");
   const [odoslaneId, setOdoslaneId] = useState(null);
+
+  useEffect(() => {
+    nacitajMojeZiadosti();
+  }, []);
 
   const mojeKonzorcium = aliancie.find((a) => a.id === stanica.aliancia_id);
   const somZakladatel = mojeKonzorcium && mojeKonzorcium.zakladatel_stanica_id === stanica.id;
