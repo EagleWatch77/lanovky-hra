@@ -3,14 +3,19 @@
 import { useState } from "react";
 import { cardStyle, buttonStyle, inputStyle } from "../../lib/styles";
 
+const NA_STRANKU = 10;
+
 export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu, vymazatSpravy }) {
   const [otvorenaId, setOtvorenaId] = useState(null);
   const [textOdpovede, setTextOdpovede] = useState("");
   const [odoslane, setOdoslane] = useState(false);
   const [vybrane, setVybrane] = useState([]);
+  const [strana, setStrana] = useState(1);
 
   const otvorena = spravy.find((s) => s.id === otvorenaId);
-  const vsetkyVybrane = spravy.length > 0 && vybrane.length === spravy.length;
+  const pocetStran = Math.max(1, Math.ceil(spravy.length / NA_STRANKU));
+  const spravyNaStranke = spravy.slice((strana - 1) * NA_STRANKU, strana * NA_STRANKU);
+  const vsetkyNaStrankeVybrane = spravyNaStranke.length > 0 && spravyNaStranke.every((s) => vybrane.includes(s.id));
 
   function otvorSpravu(s) {
     if (!s.precitana) oznacitPrecitane(s.id);
@@ -24,16 +29,21 @@ export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu, vym
     setVybrane((v) => (v.includes(id) ? v.filter((x) => x !== id) : [...v, id]));
   }
 
-  function prepnutVsetky() {
-    setVybrane(vsetkyVybrane ? [] : spravy.map((s) => s.id));
+  function prepnutVsetkyNaStranke() {
+    const idNaStranke = spravyNaStranke.map((s) => s.id);
+    if (vsetkyNaStrankeVybrane) {
+      setVybrane((v) => v.filter((id) => !idNaStranke.includes(id)));
+    } else {
+      setVybrane((v) => [...new Set([...v, ...idNaStranke])]);
+    }
   }
 
   function vymazatOznacene() {
     if (vybrane.length === 0) return;
     if (!confirm(`Naozaj vymazať ${vybrane.length} vybraných správ?`)) return;
     vymazatSpravy(vybrane);
-    setVybrane([]);
     if (vybrane.includes(otvorenaId)) setOtvorenaId(null);
+    setVybrane([]);
   }
 
   function odoslatOdpoved() {
@@ -94,14 +104,14 @@ export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu, vym
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 4px 8px 4px", borderBottom: "1px solid #223040", marginBottom: 8, fontSize: 11, color: "#657685", textTransform: "uppercase", letterSpacing: 0.5 }}>
-        <input type="checkbox" checked={vsetkyVybrane} onChange={prepnutVsetky} style={{ flexShrink: 0 }} />
+        <input type="checkbox" checked={vsetkyNaStrankeVybrane} onChange={prepnutVsetkyNaStranke} style={{ flexShrink: 0 }} />
         <div style={{ flex: "2 1 0", minWidth: 0 }}>Predmet</div>
         <div style={{ flex: "1 1 0", minWidth: 0 }}>Od</div>
         <div style={{ width: 70, textAlign: "right", flexShrink: 0 }}>Dátum</div>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        {spravy.map((s) => (
+        {spravyNaStranke.map((s) => (
           <div
             key={s.id}
             onClick={() => otvorSpravu(s)}
@@ -135,6 +145,30 @@ export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu, vym
           </div>
         ))}
       </div>
+
+      {pocetStran > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", gap: 4, marginTop: 12 }}>
+          {Array.from({ length: pocetStran }, (_, i) => i + 1).map((cislo) => (
+            <button
+              key={cislo}
+              onClick={() => setStrana(cislo)}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 6,
+                border: "none",
+                background: strana === cislo ? "rgba(47,158,110,0.3)" : "rgba(255,255,255,0.05)",
+                color: strana === cislo ? "#4ade80" : "#9fb0bf",
+                fontSize: 12,
+                fontWeight: strana === cislo ? 700 : 400,
+                cursor: "pointer",
+              }}
+            >
+              {cislo}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #223040" }}>
         <button
