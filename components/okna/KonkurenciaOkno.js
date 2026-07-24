@@ -6,7 +6,7 @@ import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY } from "../../lib/katalog";
 const NAZVY_JEDNOTNE = {
   penzion: "Penzión",
   parkovisko: "Parkovisko",
-  bar: "Bufet",
+  bar: "Apréski",
   hotel: "Hotel",
   servis: "Ski servis",
 };
@@ -30,13 +30,9 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
             key={zk}
             onClick={() => setAktivnaZona(zk)}
             style={{
-              padding: "6px 14px",
-              borderRadius: 8,
-              border: "none",
+              padding: "6px 14px", borderRadius: 8, border: "none",
               background: aktivnaZona === zk ? "rgba(47,158,110,0.25)" : "transparent",
-              color: aktivnaZona === zk ? "#4ade80" : "#9fb0bf",
-              fontSize: 13,
-              cursor: "pointer",
+              color: aktivnaZona === zk ? "#4ade80" : "#9fb0bf", fontSize: 13, cursor: "pointer",
             }}
           >
             {ZONY[zk].ikona} {ZONY[zk].nazov}
