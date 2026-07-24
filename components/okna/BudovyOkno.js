@@ -22,14 +22,13 @@ const NELANOVKOVE_TYPY = Object.keys(LANOVKY_TYPY).filter((t) => t !== "vlek");
 const NAZVY_JEDNOTNE = {
   penzion: "Penzión",
   parkovisko: "Parkovisko",
-  bar: "Bufet",
+  bar: "Apréski",
   hotel: "Hotel",
   servis: "Ski servis",
   pokladna: "Pokladňa",
   lanovka: "Lanovka",
   ratrak: "Ratrak",
   zasnezovanie: "Zasnežovanie",
-  obchod: "Obchod",
 };
 
 function realnaKategoria(kat) {
@@ -130,7 +129,7 @@ export default function BudovyOkno({
               <div>
                 {"vek" in podm && <PodmienkaRiadok splnene={podm.vek} text="Stredisko dostatočne staré" />}
                 {"prestiz" in podm && <PodmienkaRiadok splnene={podm.prestiz} text="Dostatočná prestíž" />}
-                {"konkurencia" in podm && <PodmienkaRiadok splnene={podm.konkurencia} text="Konkurencia sa objavila v parkovisku alebo bare" />}
+                {"konkurencia" in podm && <PodmienkaRiadok splnene={podm.konkurencia} text="Konkurencia sa objavila v parkovisku alebo apréski" />}
                 {"udolie" in podm && <PodmienkaRiadok splnene={podm.udolie} text="Údolie odomknuté" />}
                 <PodmienkaRiadok splnene={podm.peniaze} text={`Máš aspoň ${cena.toLocaleString("sk-SK")} €`} />
                 <button onClick={onOdomknut} disabled={!podm.vsetkoSplnene} style={{ ...buttonStyle, width: "100%", marginTop: 10, opacity: podm.vsetkoSplnene ? 1 : 0.5 }}>
@@ -157,12 +156,11 @@ export default function BudovyOkno({
                 const info = KATEGORIE[b.kategoria].katalog[b.typ];
                 const maCenu = KATEGORIE[b.kategoria].maCenu;
                 const efektivitaB = efektivitaBudovy(b);
-                const konkurenciaMult = konkurencnyMultiplikator(b.kategoria, pocetKonkurencie);
+                const konkurenciaMult = konkurencnyMultiplikator(b.kategoria, b.zona, pocetKonkurencie);
                 const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
                 const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB * konkurenciaMult) : null;
                 const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB * konkurenciaMult) : null;
                 const rozbalene = rozbaleny === riadokKluc;
-                const znackaInfo = b.znacka ? KATEGORIE[b.kategoria].znackyKatalog?.[b.znacka] : null;
 
                 return (
                   <div key={riadokKluc} style={{ background: "rgba(47,158,110,0.15)", borderRadius: 8, overflow: "hidden" }}>
@@ -173,11 +171,6 @@ export default function BudovyOkno({
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                         <span style={{ fontSize: 18 }}>{ikona}</span>
                         <span style={{ fontSize: 14, fontWeight: 600 }}>{info.nazov}</span>
-                        {znackaInfo && (
-                          <span style={{ fontSize: 11, background: "#0f1720", padding: "2px 8px", borderRadius: 20, color: "#9fb0bf" }}>
-                            {znackaInfo.ikona} {znackaInfo.nazov}
-                          </span>
-                        )}
                         {konkurenciaMult < 1 && <span style={{ fontSize: 11, color: "#f2994a" }}>⚠️</span>}
                       </div>
                       <span style={{ fontSize: 14, color: "#9fb0bf" }}>{rozbalene ? "▲" : "▼"}</span>
@@ -298,15 +291,6 @@ function StavbaFormular({ zonaKluc, kat, onPostavit }) {
           </button>
         ))}
       </div>
-      {znackyKatalog && (
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
-          {Object.keys(znackyKatalog).map((zn) => (
-            <button key={zn} onClick={() => setVyberZnacka(zn)} style={{ ...(vyberZnacka === zn ? tileStyleActive : tileStyle), padding: "6px 8px", fontSize: 11 }}>
-              {znackyKatalog[zn].ikona} {znackyKatalog[zn].nazov}
-            </button>
-          ))}
-        </div>
-      )}
       <div style={{ fontSize: 11, color: "#9fb0bf", marginBottom: 8 }}>
         💰 {cenaBudovy(realna, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} € · 🕐 {Math.round(vystavbaVRealnychDnoch(katalog[vyberTyp].vystavbaHernychMesiacov))} dní · ⭐ {prestizBudovy(realna, vyberTyp, vyberZnacka)}
       </div>
