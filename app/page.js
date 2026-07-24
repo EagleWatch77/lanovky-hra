@@ -19,6 +19,7 @@ import AlianciaForumOkno from "../components/okna/AlianciaForumOkno";
 import SpravyOkno from "../components/okna/SpravyOkno";
 import VyjednavanieModal from "../components/VyjednavanieModal";
 import LanovkyPanel from "../components/LanovkyPanel";
+import PrestizRozpis from "../components/PrestizRozpis";
 import PocasiePanel from "../components/PocasiePanel";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac } from "../lib/katalog";
@@ -89,6 +90,7 @@ export default function PrehladPage() {
   const [vybraneLogo, setVybraneLogo] = useState("🏔️");
   const [panelOtvoreny, setPanelOtvoreny] = useState(true);
   const [okno, setOkno] = useState(null);
+  const [prestizRozbalena, setPrestizRozbalena] = useState(false);
 
   if (!session) return <AuthForm />;
 
@@ -285,8 +287,20 @@ export default function PrehladPage() {
 
       {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
       <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 12px" }}>
-        <TopBar stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} />
+        <TopBar
+          stanica={stanica}
+          budovy={budovy}
+          efektivitaBudovy={efektivitaBudovy}
+          onKliknutePrestiz={() => setPrestizRozbalena((r) => !r)}
+          prestizRozbalena={prestizRozbalena}
+        />
       </div>
+
+      {prestizRozbalena && (
+        <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
+          <PrestizRozpis stanica={stanica} budovy={budovy} pocetKonkurencie={pocetKonkurencie} />
+        </div>
+      )}
 
       {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
       <div style={{ position: "absolute", top: 12, right: 95, zIndex: 3, width: stanica.aliancia_id ? 170 : 136, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 8px" }}>
