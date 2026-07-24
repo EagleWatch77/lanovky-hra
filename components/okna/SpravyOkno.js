@@ -110,7 +110,7 @@ export default function SpravyOkno({ spravy, oznacitPrecitane, poslatSpravu, vym
         <div style={{ width: 70, textAlign: "right", flexShrink: 0 }}>Dátum</div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, minHeight: NA_STRANKU * 42 }}>
         {spravyNaStranke.map((s) => (
           <div
             key={s.id}
