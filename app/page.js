@@ -9,6 +9,7 @@ import NavSide from "../components/NavSide";
 import WindowModal from "../components/WindowModal";
 import BudovyOkno from "../components/okna/BudovyOkno";
 import KonkurenciaOkno from "../components/okna/KonkurenciaOkno";
+import ZamestnanciOkno from "../components/okna/ZamestnanciOkno";
 import FinancieOkno from "../components/okna/FinancieOkno";
 import RebricekOkno from "../components/okna/RebricekOkno";
 import InfoOkno from "../components/okna/InfoOkno";
@@ -170,6 +171,7 @@ export default function PrehladPage() {
         onOtvorRebricek={() => setOkno("rebricek")}
         onOtvorInfo={() => setOkno("info")}
         onOtvorAliancia={() => setOkno("aliancia")}
+        onOtvorZamestnanci={() => setOkno("zamestnanci")}
       />
 
       {okno === "aliancia" && (
@@ -206,7 +208,7 @@ export default function PrehladPage() {
 
       {okno === "spravy" && (
         <WindowModal title="✉️ Správy" onClose={() => setOkno(null)} width={480}>
-       <SpravyOkno spravy={spravy} oznacitPrecitane={oznacitPrecitane} poslatSpravu={poslatSpravu} vymazatSpravy={vymazatSpravy} />
+          <SpravyOkno spravy={spravy} oznacitPrecitane={oznacitPrecitane} poslatSpravu={poslatSpravu} vymazatSpravy={vymazatSpravy} />
         </WindowModal>
       )}
 
@@ -240,6 +242,12 @@ export default function PrehladPage() {
       {okno === "financie" && (
         <WindowModal title="💰 Financie" onClose={() => setOkno(null)} width={640}>
           <FinancieOkno stanica={stanica} />
+        </WindowModal>
+      )}
+
+      {okno === "zamestnanci" && (
+        <WindowModal title="👷 Zamestnanci" onClose={() => setOkno(null)} width={480}>
+          <ZamestnanciOkno stanica={stanica} budovy={budovy} />
         </WindowModal>
       )}
 
