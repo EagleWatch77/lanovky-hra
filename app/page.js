@@ -46,6 +46,7 @@ export default function PrehladPage() {
     najatPreBudovu,
     prepustitPreBudovu,
     zmenitCenu,
+    zmenitPrevadzkovuDobu,
     podmienkyOdomknutiaUdolia,
     odomknutUdolie,
     podmienkyOdomknutiaHor,
