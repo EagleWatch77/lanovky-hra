@@ -30,7 +30,7 @@ const NAZVY_JEDNOTNE = {
 };
 
 // Všetky kľúče lanoviek (vlek + konkrétne trasy) patria pod kategóriu "lanovka" v DB
-const LANOVKOVE_SLOTY = ["vlek", "lanovka_luka", "lanovka_do_hor", "lanovka_udolie", "lanovka_na_vrchol", "lanovka_ladovec"];
+const LANOVKOVE_SLOTY = ["vlek", "lanovka_luka", "lanovka_do_hor", "lanovka_udolie", "lanovka_na_vrchol", "lanovka_ladovec", "lanovka_ladovec_lokalna"];
 
 function realnaKategoria(kat) {
   return LANOVKOVE_SLOTY.includes(kat) ? "lanovka" : kat;
