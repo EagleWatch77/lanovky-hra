@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Building2, ShieldAlert, Wallet, Trophy, ClipboardList, Users, HardHat } from "lucide-react";
+import { Home, Building2, ShieldAlert, Wallet, Trophy, ClipboardList, Users, HardHat, Euro } from "lucide-react";
 
 const NAV = [
   { href: "/", label: "Prehľad", Icon: Home },
   { href: "/budovy", label: "Budovy", Icon: Building2 },
   { href: "/konkurencia", label: "Konkurencia", Icon: ShieldAlert },
   { href: "/zamestnanci", label: "Zamestnanci", Icon: HardHat },
+  { href: "/ceny", label: "Ceny", Icon: Euro },
   { href: "/financie", label: "Financie", Icon: Wallet },
   { href: "/rebricek", label: "Rebríček", Icon: Trophy },
   { href: "/aliancia", label: "Ski konzorcium", Icon: Users },
@@ -23,6 +24,7 @@ export default function NavSide({
   onOtvorInfo,
   onOtvorAliancia,
   onOtvorZamestnanci,
+  onOtvorCeny,
 }) {
   const pathname = usePathname();
 
@@ -30,6 +32,7 @@ export default function NavSide({
     "/budovy": onOtvorBudovy,
     "/konkurencia": onOtvorKonkurencia,
     "/zamestnanci": onOtvorZamestnanci,
+    "/ceny": onOtvorCeny,
     "/financie": onOtvorFinancie,
     "/rebricek": onOtvorRebricek,
     "/aliancia": onOtvorAliancia,
