@@ -1,16 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { KATEGORIE, odhadovanaCena, skutocnaReferencnaCena, globalnyCenovyMultiplikator, sezonaIndex } from "../../lib/katalog";
+import { KATEGORIE, ZONY, PORADIE_ZON, odhadovanaCena, skutocnaReferencnaCena, globalnyCenovyMultiplikator, sezonaIndex } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
 import { inputStyle } from "../../lib/styles";
 
+const NAZVY_JEDNOTNE = {
+  penzion: "Penzión",
+  parkovisko: "Parkovisko",
+  bar: "Apréski",
+  hotel: "Hotel",
+  servis: "Ski servis",
+};
+
 export default function CenyOkno({ stanica, budovy, zmenitCenu }) {
   const [zalozka, setZalozka] = useState("ceny");
-  const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo" && KATEGORIE[b.kategoria]?.maCenu);
   const hDatum = hernyDatum(new Date());
   const globalnyMult = globalnyCenovyMultiplikator(stanica, budovy.filter((b) => b.stav === "hotovo"));
   const sezIndex = sezonaIndex(hDatum);
+
+  function pocetVZone(zonaKluc, kat, poradie) {
+    return budovy
+      .filter((b) => b.zona === zonaKluc && b.kategoria === (kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat) && (kat === "vlek" || kat.startsWith("lanovka") ? b.typ === kat : true))
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))[poradie];
+  }
 
   return (
     <div>
@@ -38,36 +51,75 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu }) {
       </div>
 
       {zalozka === "ceny" && (
-        <div>
-          <p style={{ color: "#657685", fontSize: 12, marginTop: 0, marginBottom: 14 }}>
-            Odhadovaná cena je len orientačná (nie je presná). Cenu môžeš meniť raz za herný týždeň.
-          </p>
-          {hotoveBudovy.length === 0 && <p style={{ color: "#657685", fontSize: 13 }}>Zatiaľ nemáš žiadnu dokončenú budovu s vlastnou cenou.</p>}
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {hotoveBudovy.map((b) => {
-              const info = KATEGORIE[b.kategoria].katalog[b.typ];
-              const refCenaDnes = skutocnaReferencnaCena(b.kategoria, b.typ, hDatum, globalnyMult);
-              const odhad = odhadovanaCena(stanica.id, b.kategoria, b.typ, sezIndex, refCenaDnes);
-              const jeDrahsie = odhad && b.cena > odhad;
-              return (
-                <div key={b.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8 }}>
-                  <div>
-                    <div style={{ fontSize: 14, color: "#e8edf2" }}>{KATEGORIE[b.kategoria].ikona} {info.nazov}</div>
-                    <div style={{ fontSize: 11, color: jeDrahsie ? "#f2994a" : "#4ade80" }}>
-                      odhadovaná cena: ~{odhad} €
-                    </div>
-                  </div>
-                  <input
-                    type="number"
-                    min="1"
-                    defaultValue={b.cena}
-                    onBlur={(e) => zmenitCenu(b, Number(e.target.value))}
-                    style={{ ...inputStyle, width: 80, textAlign: "right" }}
-                  />
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          {PORADIE_ZON.filter((zk) => zk !== "ladovec").map((zonaKluc) => {
+            const zona = ZONY[zonaKluc];
+            const zonaOdomknuta = zonaKluc === "luka" || (zonaKluc === "udolie" && stanica.udolie_odomknute) || (zonaKluc === "hory" && stanica.hory_odomknute);
+            const slotySCenou = Object.keys(zona.limity).filter((kat) => {
+              const realna = kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat;
+              return KATEGORIE[realna]?.maCenu;
+            });
+            if (slotySCenou.length === 0) return null;
+
+            return (
+              <div key={zonaKluc}>
+                <h3 style={{ fontSize: 13, color: "#9fb0bf", margin: "0 0 8px 0", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                  {zona.ikona} {zona.nazov}
+                </h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {slotySCenou.map((kat) =>
+                    Array.from({ length: zona.limity[kat] }).map((_, poradie) => {
+                      const riadokKluc = `${zonaKluc}-${kat}-${poradie}`;
+                      const realna = kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat;
+                      const budova = zonaOdomknuta ? pocetVZone(zonaKluc, kat, poradie) : null;
+                      const nazov = zona.popisky?.[kat] || KATEGORIE[realna]?.katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[realna]?.nazov;
+                      const ikona = KATEGORIE[realna]?.ikona;
+                      const jeHotovo = budova?.stav === "hotovo";
+
+                      let odhad = null;
+                      if (jeHotovo) {
+                        const refCenaDnes = skutocnaReferencnaCena(budova.kategoria, budova.typ, hDatum, globalnyMult);
+                        odhad = odhadovanaCena(stanica.id, budova.kategoria, budova.typ, sezIndex, refCenaDnes);
+                      }
+                      const jeDrahsie = odhad && jeHotovo && budova.cena > odhad;
+
+                      return (
+                        <div
+                          key={riadokKluc}
+                          style={{
+                            display: "flex", justifyContent: "space-between", alignItems: "center",
+                            padding: "10px 12px", borderRadius: 8,
+                            background: jeHotovo ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.015)",
+                            opacity: jeHotovo ? 1 : 0.45,
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontSize: 14, color: "#e8edf2" }}>{ikona} {nazov}</div>
+                            {jeHotovo ? (
+                              <div style={{ fontSize: 11, color: jeDrahsie ? "#f2994a" : "#4ade80" }}>odhadovaná cena: ~{odhad} €</div>
+                            ) : (
+                              <div style={{ fontSize: 11, color: "#657685" }}>
+                                {budova?.stav === "vo_vystavbe" ? "vo výstavbe" : "zatiaľ nepostavené"}
+                              </div>
+                            )}
+                          </div>
+                          <input
+                            type="number"
+                            min="1"
+                            disabled={!jeHotovo}
+                            defaultValue={jeHotovo ? budova.cena : ""}
+                            placeholder="—"
+                            onBlur={(e) => jeHotovo && zmenitCenu(budova, Number(e.target.value))}
+                            style={{ ...inputStyle, width: 80, textAlign: "right", opacity: jeHotovo ? 1 : 0.5, cursor: jeHotovo ? "text" : "not-allowed" }}
+                          />
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
