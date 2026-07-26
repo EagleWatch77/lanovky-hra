@@ -7,7 +7,7 @@ import {
   PORADIE_ZON,
   ODOMKNUTIE_UDOLIA,
   ODOMKNUTIE_HOR,
-  LANOVKY_TYPY,
+  ODOMKNUTIE_LANOVIEK_LUKA,
   cenaBudovy,
   prestizBudovy,
   vystavbaVRealnychDnoch,
@@ -18,7 +18,6 @@ import {
 } from "../../lib/katalog";
 import { buttonStyle, inputStyle, tileStyle, tileStyleActive } from "../../lib/styles";
 
-const NELANOVKOVE_TYPY = Object.keys(LANOVKY_TYPY).filter((t) => t !== "vlek");
 const NAZVY_JEDNOTNE = {
   penzion: "Penzión",
   parkovisko: "Parkovisko",
@@ -26,19 +25,20 @@ const NAZVY_JEDNOTNE = {
   hotel: "Hotel",
   servis: "Ski servis",
   pokladna: "Pokladňa",
-  lanovka: "Lanovka",
   ratrak: "Ratrak",
   zasnezovanie: "Zasnežovanie",
 };
 
+// Všetky kľúče lanoviek (vlek + konkrétne trasy) patria pod kategóriu "lanovka" v DB
+const LANOVKOVE_SLOTY = ["vlek", "lanovka_luka", "lanovka_do_hor", "lanovka_udolie", "lanovka_na_vrchol", "lanovka_ladovec"];
+
 function realnaKategoria(kat) {
-  return kat === "vlek" ? "lanovka" : kat;
+  return LANOVKOVE_SLOTY.includes(kat) ? "lanovka" : kat;
 }
 
+// Keďže každý slot lanovky teraz zodpovedá presne 1 konkrétnemu typu, filter je jednoduchý
 function typFilterPreSlot(zonaKluc, kat) {
-  if (zonaKluc === "luka" && kat === "vlek") return ["vlek"];
-  if (zonaKluc === "luka" && kat === "lanovka") return NELANOVKOVE_TYPY;
-  return null;
+  return LANOVKOVE_SLOTY.includes(kat) ? [kat] : null;
 }
 
 function PodmienkaRiadok({ splnene, text }) {
@@ -147,9 +147,16 @@ export default function BudovyOkno({
             Array.from({ length: zona.limity[kat] }).map((_, poradie) => {
               const riadokKluc = `${kat}-${poradie}`;
               const budova = pocetVZone(aktivnaZona, kat, poradie);
-              const nazov = zona.popisky?.[kat] || NAZVY_JEDNOTNE[kat] || KATEGORIE[realnaKategoria(kat)].nazov;
-              const ikona = KATEGORIE[realnaKategoria(kat)].ikona;
-              const zamknutySlot = aktivnaZona === "luka" && kat === "lanovka" && !stanica.hory_odomknute && !budova;
+              const realna = realnaKategoria(kat);
+              const nazov = zona.popisky?.[kat] || KATEGORIE[realna].katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[realna].nazov;
+              const ikona = KATEGORIE[realna].ikona;
+
+              // Osobitné zamknutie pre konkrétne lanovky v Lúke (aj keď je zóna sama odomknutá)
+              const potrebnaZonaPreLanovku = aktivnaZona === "luka" ? ODOMKNUTIE_LANOVIEK_LUKA[kat] : null;
+              const zamknutySlot =
+                potrebnaZonaPreLanovku && !budova &&
+                ((potrebnaZonaPreLanovku === "udolie" && !stanica.udolie_odomknute) ||
+                  (potrebnaZonaPreLanovku === "hory" && !stanica.hory_odomknute));
 
               if (budova?.stav === "hotovo") {
                 const b = budova;
@@ -178,6 +185,10 @@ export default function BudovyOkno({
 
                     {rozbalene && (
                       <div style={{ padding: "0 12px 12px 40px", display: "flex", flexDirection: "column", gap: 6 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#9fb0bf" }}>
+                          <span>Kapacita</span>
+                          <span>{info.kapacita} / h</span>
+                        </div>
                         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#9fb0bf" }}>
                           <span>Zamestnanci</span>
                           <span>{potrebnyB} (plný stav)</span>
@@ -230,7 +241,9 @@ export default function BudovyOkno({
                       <span style={{ fontSize: 18 }}>🔒</span>
                       <span style={{ fontSize: 14 }}>{nazov}</span>
                     </div>
-                    <span style={{ fontSize: 12, color: "#657685" }}>Odomkne sa s Horami</span>
+                    <span style={{ fontSize: 12, color: "#657685" }}>
+                      Odomkne sa s {potrebnaZonaPreLanovku === "udolie" ? "Údolím" : "Horami"}
+                    </span>
                   </div>
                 );
               }
@@ -292,7 +305,7 @@ function StavbaFormular({ zonaKluc, kat, onPostavit }) {
         ))}
       </div>
       <div style={{ fontSize: 11, color: "#9fb0bf", marginBottom: 8 }}>
-        💰 {cenaBudovy(realna, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} € · 🕐 {Math.round(vystavbaVRealnychDnoch(katalog[vyberTyp].vystavbaHernychMesiacov))} dní · ⭐ {prestizBudovy(realna, vyberTyp, vyberZnacka)}
+        💰 {cenaBudovy(realna, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} € · 🕐 {Math.round(vystavbaVRealnychDnoch(katalog[vyberTyp].vystavbaHernychMesiacov))} dní · ⭐ {prestizBudovy(realna, vyberTyp, vyberZnacka)} · 👥 {katalog[vyberTyp].kapacita}/h
       </div>
       <button onClick={() => onPostavit(vyberTyp, vyberZnacka)} style={{ ...buttonStyle, width: "100%" }}>
         ✅ Postaviť za {cenaBudovy(realna, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €
