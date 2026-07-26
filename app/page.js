@@ -10,6 +10,7 @@ import WindowModal from "../components/WindowModal";
 import BudovyOkno from "../components/okna/BudovyOkno";
 import KonkurenciaOkno from "../components/okna/KonkurenciaOkno";
 import ZamestnanciOkno from "../components/okna/ZamestnanciOkno";
+import CenyOkno from "../components/okna/CenyOkno";
 import FinancieOkno from "../components/okna/FinancieOkno";
 import RebricekOkno from "../components/okna/RebricekOkno";
 import InfoOkno from "../components/okna/InfoOkno";
@@ -174,6 +175,7 @@ export default function PrehladPage() {
         onOtvorInfo={() => setOkno("info")}
         onOtvorAliancia={() => setOkno("aliancia")}
         onOtvorZamestnanci={() => setOkno("zamestnanci")}
+        onOtvorCeny={() => setOkno("ceny")}
       />
 
       {okno === "aliancia" && (
@@ -250,6 +252,12 @@ export default function PrehladPage() {
       {okno === "zamestnanci" && (
         <WindowModal title="👷 Zamestnanci" onClose={() => setOkno(null)} width={480}>
           <ZamestnanciOkno stanica={stanica} budovy={budovy} />
+        </WindowModal>
+      )}
+
+      {okno === "ceny" && (
+        <WindowModal title="💶 Ceny" onClose={() => setOkno(null)} width={480}>
+          <CenyOkno stanica={stanica} budovy={budovy} zmenitCenu={zmenitCenu} />
         </WindowModal>
       )}
 
