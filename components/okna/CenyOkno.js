@@ -10,8 +10,7 @@ import {
   globalnyCenovyMultiplikator,
   sezonaIndex,
   idealnaPrevadzkaHodin,
-  PREVADZKA_HODIN_MIN,
-  PREVADZKA_HODIN_MAX,
+  hodinyNaCas,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
 import { inputStyle, buttonStyle } from "../../lib/styles";
@@ -26,22 +25,15 @@ const NAZVY_JEDNOTNE = {
 
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
-function hodinyNaText(hodiny) {
-  const celeHodiny = Math.floor(hodiny);
-  const minuty = Math.round((hodiny - celeHodiny) * 60);
-  return minuty === 0 ? `${celeHodiny}:00` : `${celeHodiny}:${minuty}`;
-}
-
 export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu }) {
   const [zalozka, setZalozka] = useState("ceny");
-  const [novaDoba, setNovaDoba] = useState(stanica.prevadzka_hodin ?? 7.5);
+  const [zaciatok, setZaciatok] = useState(stanica.prevadzka_zaciatok || "08:30");
+  const [koniec, setKoniec] = useState(stanica.prevadzka_koniec || "16:00");
   const hDatum = hernyDatum(new Date());
   const globalnyMult = globalnyCenovyMultiplikator(stanica, budovy.filter((b) => b.stav === "hotovo"));
   const sezIndex = sezonaIndex(hDatum);
 
   const idealDoba = idealnaPrevadzkaHodin(hDatum.getMonth(), stanica.hory_odomknute);
-  const aktualnaDoba = stanica.prevadzka_hodin ?? 7.5;
-  const rozdiel = aktualnaDoba - idealDoba;
 
   function pocetVZone(zonaKluc, kat, poradie) {
     return budovy
@@ -149,49 +141,35 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
       {zalozka === "prevadzka" && (
         <div>
-          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "12px 14px", marginBottom: 14 }}>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "12px 14px", marginBottom: 16 }}>
             <div style={{ fontSize: 12, color: "#657685", marginBottom: 4 }}>{NAZVY_MESIACOV[hDatum.getMonth()]} — ideálna prevádzka</div>
-            <div style={{ fontSize: 18, color: "#4ade80", fontWeight: 700 }}>8:30 – {hodinyNaText(8.5 + idealDoba)} ({idealDoba} h)</div>
+            <div style={{ fontSize: 18, color: "#4ade80", fontWeight: 700 }}>{hodinyNaCas(8.5)} – {hodinyNaCas(8.5 + idealDoba)}</div>
           </div>
 
-          <label style={{ fontSize: 13, color: "#9fb0bf", display: "block", marginBottom: 6 }}>
-            Tvoja nastavená prevádzková doba: <strong style={{ color: "#e8edf2" }}>{novaDoba} h</strong>
-          </label>
-          <input
-            type="range"
-            min={PREVADZKA_HODIN_MIN}
-            max={PREVADZKA_HODIN_MAX}
-            step={0.5}
-            value={novaDoba}
-            onChange={(e) => setNovaDoba(Number(e.target.value))}
-            style={{ width: "100%", marginBottom: 10 }}
-          />
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#657685", marginBottom: 14 }}>
-            <span>{PREVADZKA_HODIN_MIN} h</span>
-            <span>{PREVADZKA_HODIN_MAX} h</span>
+          <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: 12, color: "#9fb0bf", display: "block", marginBottom: 4 }}>Otvorenie</label>
+              <input
+                type="time"
+                value={zaciatok}
+                onChange={(e) => setZaciatok(e.target.value)}
+                style={{ ...inputStyle, width: "100%", boxSizing: "border-box" }}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: 12, color: "#9fb0bf", display: "block", marginBottom: 4 }}>Zatvorenie</label>
+              <input
+                type="time"
+                value={koniec}
+                onChange={(e) => setKoniec(e.target.value)}
+                style={{ ...inputStyle, width: "100%", boxSizing: "border-box" }}
+              />
+            </div>
           </div>
 
-          <button onClick={() => zmenitPrevadzkovuDobu(novaDoba)} style={{ ...buttonStyle, width: "100%", marginBottom: 14 }}>
+          <button onClick={() => zmenitPrevadzkovuDobu(zaciatok, koniec)} style={{ ...buttonStyle, width: "100%" }}>
             Uložiť prevádzkovú dobu
           </button>
-
-          {rozdiel > 0 && (
-            <p style={{ color: "#f2994a", fontSize: 13 }}>
-              ⚠️ Aktuálne máš nastavené o {rozdiel.toFixed(1)} h viac ako je ideál pre tento mesiac — tie hodiny navyše stoja plat, ale nezarobia nič (je tma).
-            </p>
-          )}
-          {rozdiel < 0 && (
-            <p style={{ color: "#f2994a", fontSize: 13 }}>
-              ⚠️ Aktuálne máš nastavené o {Math.abs(rozdiel).toFixed(1)} h menej ako je ideál pre tento mesiac — prichádzaš o príjem aj o prestíž (turisti si to nestihnú užiť).
-            </p>
-          )}
-          {rozdiel === 0 && (
-            <p style={{ color: "#4ade80", fontSize: 13 }}>✅ Presne na ideáli pre tento mesiac.</p>
-          )}
-
-          <p style={{ color: "#657685", fontSize: 12, marginTop: 14 }}>
-            Platí pre lanovky, vleky, apréski, ski servis a parkoviská. Ubytovanie (penzióny, hotely) beží nezávisle 24 hodín denne.
-          </p>
         </div>
       )}
     </div>
