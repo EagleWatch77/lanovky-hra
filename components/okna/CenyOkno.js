@@ -141,9 +141,9 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
       {zalozka === "prevadzka" && (
         <div>
-          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "12px 14px", marginBottom: 16 }}>
-            <div style={{ fontSize: 12, color: "#657685", marginBottom: 4 }}>{NAZVY_MESIACOV[hDatum.getMonth()]} — ideálna prevádzka</div>
-            <div style={{ fontSize: 18, color: "#4ade80", fontWeight: 700 }}>{hodinyNaCas(8.5)} – {hodinyNaCas(8.5 + idealDoba)}</div>
+            <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "12px 14px", marginBottom: 16 }}>
+            <div style={{ fontSize: 12, color: "#657685", marginBottom: 4 }}>{NAZVY_MESIACOV[hDatum.getMonth()]} — tvoja prevádzková doba</div>
+            <div style={{ fontSize: 18, color: "#4ade80", fontWeight: 700 }}>{zaciatok} – {koniec}</div>
           </div>
 
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
