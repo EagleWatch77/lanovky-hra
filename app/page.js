@@ -18,7 +18,6 @@ import NastaveniaOkno from "../components/okna/NastaveniaOkno";
 import AlianciaOkno from "../components/okna/AlianciaOkno";
 import AlianciaForumOkno from "../components/okna/AlianciaForumOkno";
 import SpravyOkno from "../components/okna/SpravyOkno";
-import VyjednavanieModal from "../components/VyjednavanieModal";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PrestizRozpis from "../components/PrestizRozpis";
 import PocasiePanel from "../components/PocasiePanel";
@@ -35,10 +34,9 @@ export default function PrehladPage() {
     stanica,
     budovy,
     loading,
-    ukazVyjednavanie,
     potrebujeNazov,
     vytvorStanicu,
-    vyjednatPlat,
+    rozhodnutieOdbory,
     handleLogout,
     efektivitaBudovy,
     pocetKonkurencie,
@@ -167,7 +165,6 @@ export default function PrehladPage() {
 
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
-      <VyjednavanieModal ukaz={ukazVyjednavanie} onVyjednat={vyjednatPlat} />
       <NavSide
         onOtvorBudovy={() => setOkno("budovy")}
         onOtvorKonkurencia={() => setOkno("konkurencia")}
@@ -252,7 +249,7 @@ export default function PrehladPage() {
 
       {okno === "zamestnanci" && (
         <WindowModal title="👷 Zamestnanci" onClose={() => setOkno(null)} width={480}>
-          <ZamestnanciOkno stanica={stanica} budovy={budovy} />
+          <ZamestnanciOkno stanica={stanica} budovy={budovy} rozhodnutieOdbory={rozhodnutieOdbory} />
         </WindowModal>
       )}
 
