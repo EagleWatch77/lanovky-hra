@@ -23,6 +23,16 @@ const NAZVY_JEDNOTNE = {
   servis: "Ski servis",
 };
 
+// Jasné označenie, ČO presne cena znamená pre danú kategóriu
+const POPIS_CENY = {
+  lanovka: "cena lístka",
+  bar: "priemerná útrata/osoba",
+  servis: "priemerná útrata/osoba",
+  parkovisko: "denné parkovné/miesto",
+  penzion: "cena za osobu/noc",
+  hotel: "cena za osobu/noc",
+};
+
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
 export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu }) {
@@ -91,6 +101,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
                       const nazov = zona.popisky?.[kat] || KATEGORIE[realna]?.katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[realna]?.nazov;
                       const ikona = KATEGORIE[realna]?.ikona;
                       const jeHotovo = budova?.stav === "hotovo";
+                      const popisCeny = POPIS_CENY[realna] || "cena";
 
                       let odhad = null;
                       if (jeHotovo) {
@@ -111,6 +122,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
                         >
                           <div>
                             <div style={{ fontSize: 14, color: "#e8edf2" }}>{ikona} {nazov}</div>
+                            <div style={{ fontSize: 10, color: "#657685", textTransform: "uppercase", letterSpacing: 0.3 }}>{popisCeny}</div>
                             {jeHotovo ? (
                               <div style={{ fontSize: 11, color: jeDrahsie ? "#f2994a" : "#4ade80" }}>odhadovaná cena: ~{odhad} €</div>
                             ) : (
@@ -141,7 +153,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
       {zalozka === "prevadzka" && (
         <div>
-            <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "12px 14px", marginBottom: 16 }}>
+          <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "12px 14px", marginBottom: 16 }}>
             <div style={{ fontSize: 12, color: "#657685", marginBottom: 4 }}>{NAZVY_MESIACOV[hDatum.getMonth()]} — tvoja prevádzková doba</div>
             <div style={{ fontSize: 18, color: "#4ade80", fontWeight: 700 }}>{zaciatok} – {koniec}</div>
           </div>
