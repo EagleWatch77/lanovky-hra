@@ -282,6 +282,7 @@ export default function PrehladPage() {
             odomknutUdolie={odomknutUdolie}
             podmienkyOdomknutiaHor={podmienkyOdomknutiaHor}
             odomknutHory={odomknutHory}
+            pridatBobovuDrahu={pridatBobovuDrahu}
           />
         </WindowModal>
       )}
