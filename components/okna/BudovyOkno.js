@@ -60,6 +60,7 @@ export default function BudovyOkno({
   odomknutUdolie,
   podmienkyOdomknutiaHor,
   odomknutHory,
+  pridatBobovuDrahu,
 }) {
   const [aktivnaZona, setAktivnaZona] = useState("luka");
   const [rozbaleny, setRozbaleny] = useState(null);
