@@ -281,8 +281,8 @@ export default function BudovyOkno({
                     <StavbaFormular
                       zonaKluc={aktivnaZona}
                       kat={kat}
-                      onPostavit={(typ, znacka) => {
-                        postavitBudovu(realnaKategoria(kat), typ, znacka, aktivnaZona);
+                      onPostavit={(typ, znacka, sBobovouDrahou) => {
+                        postavitBudovu(realnaKategoria(kat), typ, znacka, aktivnaZona, sBobovouDrahou);
                         setStavbaPreKluc(null);
                       }}
                     />
