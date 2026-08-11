@@ -65,7 +65,11 @@ export default function BudovyOkno({
 }) {
   const [aktivnaZona, setAktivnaZona] = useState("luka");
   const [rozbaleny, setRozbaleny] = useState(null);
-  const [stavbaPreKluc, setStavbaPreKluc] = useState(null);
+const [stavbaPreKluc, setStavbaPreKluc] = useState(null);
+  const hDatum = hernyDatum(new Date());
+  const hotoveVsetky = budovy.filter((b) => b.stav === "hotovo");
+  const maZasnezovanie = hotoveVsetky.some((b) => b.kategoria === "zasnezovanie");
+  const globalnyMult = globalnyCenovyMultiplikator(stanica, hotoveVsetky);
 
   function pocetVZone(zonaKluc, kat, poradie) {
     const typFilter = typFilterPreSlot(zonaKluc, kat);
