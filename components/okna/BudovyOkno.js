@@ -305,6 +305,9 @@ function StavbaFormular({ zonaKluc, kat, onPostavit }) {
   const [vyberTyp, setVyberTyp] = useState(Object.keys(katalog)[0]);
   const znackyKatalog = KATEGORIE[realna].znackyKatalog;
   const [vyberZnacka, setVyberZnacka] = useState(znackyKatalog ? Object.keys(znackyKatalog)[0] : null);
+  const [sBobovouDrahou, setSBobovouDrahou] = useState(false);
+  const jeVlek = realna === "lanovka" && vyberTyp === "vlek";
+  const cenaSpolu = cenaBudovy(realna, vyberTyp, vyberZnacka) + (jeVlek && sBobovouDrahou ? 200000 : 0);
 
   return (
     <div style={{ padding: "0 12px 12px 40px" }}>
@@ -316,11 +319,19 @@ function StavbaFormular({ zonaKluc, kat, onPostavit }) {
           </button>
         ))}
       </div>
+
+      {jeVlek && (
+        <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#e8edf2", marginBottom: 8, cursor: "pointer" }}>
+          <input type="checkbox" checked={sBobovouDrahou} onChange={(e) => setSBobovouDrahou(e.target.checked)} />
+          🎢 Aj s bobovou dráhou (+200 000 €) — bude fungovať aj v lete
+        </label>
+      )}
+
       <div style={{ fontSize: 11, color: "#9fb0bf", marginBottom: 8 }}>
-        💰 {cenaBudovy(realna, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} € · 🕐 {Math.round(vystavbaVRealnychDnoch(katalog[vyberTyp].vystavbaHernychMesiacov))} dní · ⭐ {prestizBudovy(realna, vyberTyp, vyberZnacka)} · 👥 {katalog[vyberTyp].kapacita}/h
+        💰 {cenaSpolu.toLocaleString("sk-SK")} € · 🕐 {Math.round(vystavbaVRealnychDnoch(katalog[vyberTyp].vystavbaHernychMesiacov))} dní · ⭐ {prestizBudovy(realna, vyberTyp, vyberZnacka)} · 👥 {katalog[vyberTyp].kapacita}/h
       </div>
-      <button onClick={() => onPostavit(vyberTyp, vyberZnacka)} style={{ ...buttonStyle, width: "100%" }}>
-        ✅ Postaviť za {cenaBudovy(realna, vyberTyp, vyberZnacka).toLocaleString("sk-SK")} €
+      <button onClick={() => onPostavit(vyberTyp, vyberZnacka, sBobovouDrahou)} style={{ ...buttonStyle, width: "100%" }}>
+        ✅ Postaviť za {cenaSpolu.toLocaleString("sk-SK")} €
       </button>
     </div>
   );
