@@ -303,9 +303,9 @@ export default function PrehladPage() {
         />
       </div>
 
-      {prestizRozbalena && (
+     {prestizRozbalena && (
         <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
-          <PrestizRozpis stanica={stanica} budovy={budovy} pocetKonkurencie={pocetKonkurencie} />
+          <PrestizRozpis prestizRozpis={prestizRozpis} />
         </div>
       )}
 
