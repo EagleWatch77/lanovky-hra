@@ -34,6 +34,7 @@ export default function PrehladPage() {
     stanica,
     budovy,
     loading,
+    prestizRozpis,
     potrebujeNazov,
     vytvorStanicu,
     rozhodnutieOdbory,
