@@ -216,6 +216,17 @@ export default function BudovyOkno({
                           <span>Efektivita</span>
                           <span style={{ color: efektivitaB < 1 ? "#f2994a" : "#e8edf2", fontWeight: 600 }}>{Math.round(efektivitaB * 100)} %</span>
                         </div>
+                        {b.kategoria === "lanovka" && b.typ === "vlek" && !b.bobova_draha && (
+                          <button
+                            onClick={() => pridatBobovuDrahu(b)}
+                            style={{ ...buttonStyle, marginTop: 4, fontSize: 12, padding: "6px 10px" }}
+                          >
+                            🎢 Pridať bobovú dráhu (200 000 €) — funguje aj v lete
+                          </button>
+                        )}
+                        {b.kategoria === "lanovka" && b.typ === "vlek" && b.bobova_draha && (
+                          <div style={{ fontSize: 11, color: "#4ade80" }}>🎢 Má bobovú dráhu — funguje celoročne</div>
+                        )}
                       </div>
                     )}
                   </div>
