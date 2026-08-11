@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import {
   KATEGORIE,
   ZONY,
@@ -15,7 +13,10 @@ import {
   turistiZaHodinu,
   prijemZaHodinu,
   konkurencnyMultiplikator,
+  skutocnaReferencnaCena,
+  globalnyCenovyMultiplikator,
 } from "../../lib/katalog";
+import { hernyDatum } from "../../lib/hernyCas";
 import { buttonStyle, inputStyle, tileStyle, tileStyleActive } from "../../lib/styles";
 
 const NAZVY_JEDNOTNE = {
