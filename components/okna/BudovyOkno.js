@@ -171,8 +171,9 @@ const [stavbaPreKluc, setStavbaPreKluc] = useState(null);
                 const efektivitaB = efektivitaBudovy(b);
                 const konkurenciaMult = konkurencnyMultiplikator(b.kategoria, b.zona, pocetKonkurencie);
                 const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
-                const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB * konkurenciaMult) : null;
-                const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena) * efektivitaB * konkurenciaMult) : null;
+                const refCenaDnes = maCenu ? skutocnaReferencnaCena(b.kategoria, b.typ, hDatum, globalnyMult, maZasnezovanie) : 0;
+                const odhadTuristov = maCenu ? Math.round(turistiZaHodinu(b.kategoria, b.typ, b.cena, refCenaDnes) * efektivitaB * konkurenciaMult) : null;
+                const odhadPrijem = maCenu ? Math.round(prijemZaHodinu(b.kategoria, b.typ, b.cena, refCenaDnes) * efektivitaB * konkurenciaMult) : null;
                 const rozbalene = rozbaleny === riadokKluc;
 
                 return (
