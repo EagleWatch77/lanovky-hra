@@ -1,52 +1,43 @@
 "use client";
 
-import { KATEGORIE, prestizBudovy, konkurencnaPrestiz } from "../lib/katalog";
-import { cardStyle } from "../lib/styles";
-
-export default function PrestizRozpis({ stanica, budovy, pocetKonkurencie }) {
-  const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
-
-  const sucetBudov = hotoveBudovy.reduce((s, b) => s + prestizBudovy(b.kategoria, b.typ, b.znacka), 0);
-
-  const efektivnyBonusAktivny = new Date(stanica.efektivita_bonus_do) >= new Date();
-  const efektivitaZamestnancov = efektivnyBonusAktivny ? (stanica.efektivita_bonus ?? 1) : 1;
-  const stratyZoZamestnancov = Math.round(sucetBudov * (1 - efektivitaZamestnancov));
-
-  const bonusZKonkurencie = Math.round(konkurencnaPrestiz(pocetKonkurencie));
+export default function PrestizRozpis({ prestizRozpis }) {
+  const r = prestizRozpis || { budovy: 0, turisti: 0, konkurencia: 0, spolu: 0 };
 
   const riadky = [
-    { ikona: "🏗️", nazov: "Budovy", hodnota: Math.round(sucetBudov), popis: `${hotoveBudovy.length} dokončených budov` },
-    { ikona: "👷", nazov: "Spokojnosť zamestnancov", hodnota: -stratyZoZamestnancov, popis: `${Math.round(efektivitaZamestnancov * 100)} % efektivita (vyjednávanie o plat)` },
-    { ikona: "🛡️", nazov: "Konkurencia", hodnota: bonusZKonkurencie, popis: "bonus za aktívnu konkurenciu v okolí" },
-    { ikona: "😊", nazov: "Spokojnosť turistov", hodnota: null, popis: "pripravujeme — zatiaľ sa nezapočítava" },
+    { nazov: "🏢 Budovy (bez lístkov)", hodnota: r.budovy, popis: "pevná prestíž z katalógu × efektivita" },
+    { nazov: "🎿 Turisti (lístky)", hodnota: r.turisti, popis: "počet turistov × spokojnosť (2-8/turistu)" },
+    { nazov: "🛡️ Konkurencia", hodnota: r.konkurencia, popis: "bonus za aktívnu konkurenciu v okolí" },
   ];
 
   return (
-    <div style={{ ...cardStyle, marginTop: 8, maxWidth: 280 }}>
-      <h3 style={{ marginTop: 0, marginBottom: 10, fontSize: 14 }}>⭐ Rozklad prestíže</h3>
+    <div
+      style={{
+        background: "rgba(13,20,27,0.92)",
+        border: "1px solid rgba(255,255,255,0.15)",
+        borderRadius: 12,
+        padding: 14,
+        width: 280,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+      }}
+    >
+      <h3 style={{ margin: "0 0 10px 0", fontSize: 14, color: "#e8edf2" }}>⭐ Rozklad prestíže</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {riadky.map((r) => (
-          <div key={r.nazov} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              <div style={{ fontSize: 13, color: "#e8edf2" }}>{r.ikona} {r.nazov}</div>
-              <div style={{ fontSize: 11, color: "#657685" }}>{r.popis}</div>
+        {riadky.map((riadok) => (
+          <div key={riadok.nazov}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+              <span style={{ color: "#e8edf2" }}>{riadok.nazov}</span>
+              <span style={{ color: riadok.hodnota >= 0 ? "#4ade80" : "#f2994a", fontWeight: 600 }}>
+                {riadok.hodnota >= 0 ? "+" : ""}
+                {riadok.hodnota}
+              </span>
             </div>
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: r.hodnota === null ? "#657685" : r.hodnota < 0 ? "#f2994a" : "#4ade80",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {r.hodnota === null ? "—" : `${r.hodnota > 0 ? "+" : ""}${r.hodnota}`}
-            </span>
+            <div style={{ fontSize: 10, color: "#657685" }}>{riadok.popis}</div>
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10, paddingTop: 10, borderTop: "1px solid #223040" }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "#e8edf2" }}>Spolu</span>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "#f2c94c" }}>⭐ {stanica.prestiz}</span>
+      <div style={{ borderTop: "1px solid #223040", marginTop: 10, paddingTop: 8, display: "flex", justifyContent: "space-between" }}>
+        <span style={{ color: "#9fb0bf", fontSize: 13 }}>Spolu</span>
+        <span style={{ color: "#4ade80", fontWeight: 700, fontSize: 15 }}>⭐ {r.spolu}</span>
       </div>
     </div>
   );
