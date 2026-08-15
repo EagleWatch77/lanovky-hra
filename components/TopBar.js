@@ -49,7 +49,7 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
     <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
       <Stat label="⭐ Prestíž" value={stanica.prestiz.toLocaleString("sk-SK")} onClick={onKliknutePrestiz} aktivny={prestizRozbalena} />
       <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} />
-     <Stat label="😊 Efekt." value={priemernaEfektivita + " %"} />
+    <Stat label="😊 Spokojnosť" value={Math.round((spokojnostCelkova ?? 1) * 100) + " %"} />
       <Stat label="🎿 Turisti" value={(pocetTuristov ?? 0).toLocaleString("sk-SK") + "/h"} />
       <Stat label="📅 Dátum" value={hDatum.toLocaleDateString("sk-SK")} />
       <Stat label={sezona === "ZIMA" ? "❄️ Sezóna" : "☀️ Sezóna"} value={sezona} />
