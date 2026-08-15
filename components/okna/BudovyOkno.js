@@ -51,7 +51,6 @@ function PodmienkaRiadok({ splnene, text }) {
     </div>
   );
 }
-
 export default function BudovyOkno({
   stanica,
   budovy,
@@ -64,6 +63,7 @@ export default function BudovyOkno({
   podmienkyOdomknutiaHor,
   odomknutHory,
   pridatBobovuDrahu,
+  prepnutZasnezovanie,
 }) {
   const [aktivnaZona, setAktivnaZona] = useState("luka");
   const [rozbaleny, setRozbaleny] = useState(null);
