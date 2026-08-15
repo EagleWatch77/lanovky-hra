@@ -298,12 +298,13 @@ export default function PrehladPage() {
 
       {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
       <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 12px" }}>
-        <TopBar
+       <TopBar
           stanica={stanica}
           budovy={budovy}
           efektivitaBudovy={efektivitaBudovy}
           onKliknutePrestiz={() => setPrestizRozbalena((r) => !r)}
           prestizRozbalena={prestizRozbalena}
+          pocetTuristov={pocetTuristov}
         />
       </div>
 
