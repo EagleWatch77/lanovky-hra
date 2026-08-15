@@ -232,8 +232,22 @@ const [stavbaPreKluc, setStavbaPreKluc] = useState(null);
                             🎢 Pridať bobovú dráhu (200 000 €) — funguje aj v lete
                           </button>
                         )}
-                        {b.kategoria === "lanovka" && b.typ === "vlek" && b.bobova_draha && (
+                   {b.kategoria === "lanovka" && b.typ === "vlek" && b.bobova_draha && (
                           <div style={{ fontSize: 11, color: "#4ade80" }}>🎢 Má bobovú dráhu — funguje celoročne</div>
+                        )}
+                        {b.kategoria === "zasnezovanie" && (
+                          <button
+                            onClick={() => prepnutZasnezovanie(b)}
+                            style={{
+                              ...buttonStyle,
+                              marginTop: 4,
+                              fontSize: 12,
+                              padding: "6px 10px",
+                              background: b.zasnezovanie_zapnute ? "#c0392b" : buttonStyle.background,
+                            }}
+                          >
+                            {b.zasnezovanie_zapnute ? "❄️ Vypnúť zasnežovanie" : "❄️ Zapnúť zasnežovanie"}
+                          </button>
                         )}
                       </div>
                     )}
