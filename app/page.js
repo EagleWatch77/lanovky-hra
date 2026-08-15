@@ -47,6 +47,7 @@ export default function PrehladPage() {
     zmenitCenu,
   zmenitPrevadzkovuDobu,
     pridatBobovuDrahu,
+    prepnutZasnezovanie,
     podmienkyOdomknutiaUdolia,
     odomknutUdolie,
     podmienkyOdomknutiaHor,
