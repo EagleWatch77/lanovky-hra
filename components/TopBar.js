@@ -38,7 +38,7 @@ function Stat({ label, value, onClick, aktivny }) {
   );
 }
 
-export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePrestiz, prestizRozbalena, pocetTuristov }) {
+export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePrestiz, prestizRozbalena, pocetTuristov, spokojnostCelkova }) {
   const hDatum = hernyDatum(new Date());
   const hotove = budovy.filter((b) => b.stav === "hotovo");
   const sucetEfektivit = hotove.reduce((s, b) => s + efektivitaBudovy(b), 0);
