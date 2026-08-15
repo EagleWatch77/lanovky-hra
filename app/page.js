@@ -97,7 +97,8 @@ spokojnostCelkova,
   const [vybraneLogo, setVybraneLogo] = useState("🏔️");
   const [panelOtvoreny, setPanelOtvoreny] = useState(true);
   const [okno, setOkno] = useState(null);
-  const [prestizRozbalena, setPrestizRozbalena] = useState(false);
+ const [prestizRozbalena, setPrestizRozbalena] = useState(false);
+  const [spokojnostRozbalena, setSpokojnostRozbalena] = useState(false);
 
   if (!session) return <AuthForm />;
 
