@@ -306,6 +306,7 @@ export default function PrehladPage() {
           onKliknutePrestiz={() => setPrestizRozbalena((r) => !r)}
           prestizRozbalena={prestizRozbalena}
           pocetTuristov={pocetTuristov}
+          spokojnostCelkova={spokojnostCelkova}
         />
       </div>
 
