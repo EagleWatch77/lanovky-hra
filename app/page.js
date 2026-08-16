@@ -327,7 +327,7 @@ export default function PrehladPage() {
         />
       </div>
 
-   {prestizRozbalena && (
+{otvorenyPanel === "prestiz" && (
         <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
           <PrestizRozpis prestizRozpis={prestizRozpis} />
         </div>
