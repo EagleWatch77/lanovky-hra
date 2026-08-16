@@ -333,7 +333,7 @@ export default function PrehladPage() {
         </div>
       )}
 
-   {spokojnostRozbalena && (
+  {otvorenyPanel === "spokojnost" && (
         <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
           <SpokojnostRozpis spokojnostRozpis={spokojnostRozpis} />
         </div>
