@@ -316,12 +316,14 @@ export default function PrehladPage() {
           efektivitaBudovy={efektivitaBudovy}
           onKliknutePrestiz={() => setPrestizRozbalena((r) => !r)}
           prestizRozbalena={prestizRozbalena}
-          pocetTuristov={pocetTuristov}
+          dennyPocetTuristov={dennyPocetTuristov}
           spokojnostCelkova={spokojnostCelkova}
           onKliknuteSpokojnost={() => setSpokojnostRozbalena((r) => !r)}
           spokojnostRozbalena={spokojnostRozbalena}
           onKliknuteDatum={() => setDatumRozbaleny((r) => !r)}
           datumRozbaleny={datumRozbaleny}
+          onKliknuteTuristi={() => setTuristiRozbaleni((r) => !r)}
+          turistiRozbaleni={turistiRozbaleni}
         />
       </div>
 
