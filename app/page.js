@@ -100,6 +100,7 @@ spokojnostCelkova,
   const [okno, setOkno] = useState(null);
  const [prestizRozbalena, setPrestizRozbalena] = useState(false);
   const [spokojnostRozbalena, setSpokojnostRozbalena] = useState(false);
+  const [datumRozbaleny, setDatumRozbaleny] = useState(false);
 
   if (!session) return <AuthForm />;
 
