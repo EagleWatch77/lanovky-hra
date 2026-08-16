@@ -24,7 +24,7 @@ import SpokojnostRozpis from "../components/SpokojnostRozpis";
 import SezonaInfo from "../components/SezonaInfo";
 import PocasiePanel from "../components/PocasiePanel";
 import { hernyDatum } from "../lib/hernyCas";
-import { jeZimnyMesiac, hranicaSezony, zaciatokDalsejSezony, jeMedzisezona } from "../lib/katalog";
+import { jeZimnyMesiac, sezonnyPrehlad, jeMedzisezona } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
