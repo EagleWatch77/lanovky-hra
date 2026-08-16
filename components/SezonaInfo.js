@@ -6,6 +6,12 @@ function formatDatum(d) {
   return `${d.getDate()}. ${NAZVY_MESIACOV[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+function nazovFazy(typ) {
+  if (typ === "zima") return "❄️ Aktuálna zimná sezóna";
+  if (typ === "leto") return "☀️ Aktuálna letná sezóna";
+  return "🚧 Práve prebieha medzisezóna";
+}
+
 export default function SezonaInfo({ prehlad, jeMedzisezonaTeraz }) {
   const { aktualna, medzisezona, dalsia } = prehlad;
 
@@ -29,20 +35,20 @@ export default function SezonaInfo({ prehlad, jeMedzisezonaTeraz }) {
       )}
 
       <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: 12, color: "#9fb0bf" }}>
-          {aktualna.typ === "zima" ? "❄️ Aktuálna zimná sezóna" : "☀️ Aktuálna letná sezóna"}
-        </div>
+        <div style={{ fontSize: 12, color: "#9fb0bf" }}>{nazovFazy(aktualna.typ)}</div>
         <div style={{ fontSize: 14, color: "#e8edf2", fontWeight: 600 }}>
           {formatDatum(aktualna.zaciatok)} – {formatDatum(aktualna.koniec)}
         </div>
       </div>
 
-      <div style={{ marginBottom: 10, borderTop: "1px solid #223040", paddingTop: 10 }}>
-        <div style={{ fontSize: 12, color: "#9fb0bf" }}>🚧 Medzisezóna (stredisko zatvorené)</div>
-        <div style={{ fontSize: 14, color: "#f2994a", fontWeight: 600 }}>
-          {formatDatum(medzisezona.zaciatok)} – {formatDatum(medzisezona.koniec)}
+      {aktualna.typ !== "medzisezona" && (
+        <div style={{ marginBottom: 10, borderTop: "1px solid #223040", paddingTop: 10 }}>
+          <div style={{ fontSize: 12, color: "#9fb0bf" }}>🚧 Medzisezóna (stredisko zatvorené)</div>
+          <div style={{ fontSize: 14, color: "#f2994a", fontWeight: 600 }}>
+            {formatDatum(medzisezona.zaciatok)} – {formatDatum(medzisezona.koniec)}
+          </div>
         </div>
-      </div>
+      )}
 
       <div style={{ borderTop: "1px solid #223040", paddingTop: 10 }}>
         <div style={{ fontSize: 12, color: "#9fb0bf" }}>
