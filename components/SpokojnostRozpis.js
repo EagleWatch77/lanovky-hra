@@ -21,16 +21,16 @@ export default function SpokojnostRozpis({ spokojnostRozpis }) {
       }}
     >
       <h3 style={{ margin: "0 0 10px 0", fontSize: 14, color: "#e8edf2" }}>😊 Rozklad spokojnosti</h3>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {riadky.map((riadok) => (
-          <div key={riadok.nazov} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-            <span style={{ color: "#e8edf2" }}>{riadok.nazov}</span>
-          <span style={{ color: riadok.hodnota > 0 ? "#4ade80" : riadok.hodnota < 0 ? "#f2994a" : "#9fb0bf", fontWeight: 600 }}>
-              {riadok.hodnota > 0 ? "+" : ""}
-              {riadok.hodnota} %
-            </span>
-          </div>
-        ))}
+<div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {riadky.map((riadok) => {
+          const hodnotaZo100 = Math.max(0, 100 + riadok.hodnota);
+          return (
+            <div key={riadok.nazov} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+              <span style={{ color: "#e8edf2" }}>{riadok.nazov}</span>
+              <span style={{ color: hodnotaZo100 === 100 ? "#9fb0bf" : "#f2994a", fontWeight: 600 }}>{hodnotaZo100} %</span>
+            </div>
+          );
+        })}
       </div>
       <div style={{ borderTop: "1px solid #223040", marginTop: 10, paddingTop: 8, display: "flex", justifyContent: "space-between" }}>
         <span style={{ color: "#9fb0bf", fontSize: 13 }}>Spolu</span>
