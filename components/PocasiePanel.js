@@ -23,7 +23,7 @@ export default function PocasiePanel({ kompaktne = false }) {
   const pocasie = kompaktne ? [pocasieVsetko[indexUseku]] : pocasieVsetko;
 
  return (
-    <div style={{ ...cardStyle, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(0,0,0,0.6)" }}>
+<div style={{ ...cardStyle, background: "transparent", backdropFilter: "none", border: "1px solid rgba(0,0,0,0.6)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
         {!kompaktne && (
           <button
