@@ -22,8 +22,8 @@ export default function PocasiePanel({ kompaktne = false }) {
   else if (aktualnaHodina < 14) indexUseku = 1; // 12:00
   const pocasie = kompaktne ? [pocasieVsetko[indexUseku]] : pocasieVsetko;
 
-  return (
-    <div style={cardStyle}>
+ return (
+    <div style={{ ...cardStyle, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(0,0,0,0.6)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
         {!kompaktne && (
           <button
