@@ -17,10 +17,17 @@ const ocistenyTajnyKluc = (process.env.TICK_SECRET || "").trim();
 const { searchParams: sp2 } = new URL(request.url);
   if (sp2.get("debug") === "1") {
     const kluc = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+    let rola = null;
+    try {
+      const casti = kluc.split(".");
+      const payload = JSON.parse(Buffer.from(casti[1], "base64").toString("utf8"));
+      rola = payload.role;
+    } catch (e) {
+      rola = "chyba pri dekódovaní: " + e.message;
+    }
     return Response.json({
       dlzkaKlucaZnakov: kluc.length,
-      zaciatok: kluc.slice(0, 10),
-      koniec: kluc.slice(-10),
+      rolaVKluci: rola,
       url: process.env.NEXT_PUBLIC_SUPABASE_URL,
     });
   }
