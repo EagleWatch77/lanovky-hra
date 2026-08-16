@@ -35,19 +35,17 @@ const HOTOVE = [
   "Medzisezóna (1.-7. október) — stredisko je počas nej zatvorené, žiadny príjem",
 ];
 const PLANOVANE = [
+  "Spokojnosť Infraštruktúra — prechod na skutočný pomer kapacita/dopyt (nie len 'máš/nemáš'), zahrnúť penzióny (Lúka), 2. parkovisko/hotel (Údolie), ski servis, apres-ski bar; konkurencia sa počíta ako pokrytie rovnako ako vlastná budova",
   "Anti-cheat pre ligu — prestíž pod hranicou (napr. 10) sa nebude počítať do súčtu ligy, rieši multi-účty aj dlho neaktívnych hráčov",
-  "Denný počet turistov v hornom paneli (kliknuteľný rozpis podľa jednotlivých budov, sčíta sa cez celý herný deň)",
-  "Nový transparentný vzorec spokojnosti (jednotlivé postihy namiesto skrytého násobenia)",
   "Oprava panela Lanovky — má ukazovať skutočnú vyťaženosť dopytom, nie efektivitu zamestnancov",
   "Ľadovec — vlastný (lacnejší) ratrak systém, obmedzené/žiadne leto (ochrana ľadovca pre budúce generácie)",
-  "Ubytovacia spokojnosť — kapacita penziónov/hotelov vs. skutočný dopyt na prespanie",
+  "Spokojnosť relatívna k lige — zaujímavá myšlienka, spokojnosť čiastočne ovplyvnená tým, ako si vedieš oproti ostatným hráčom v lige",
   "Klikacie body priamo na mape (stavanie kliknutím na konkrétne miesto)",
   "Náhodné incidenty (poruchy, sťažnosti)",
   "Ligový systém s postupom/zostupom medzi úrovňami",
   "Aliancie a spoločné projekty",
   "Južná strana strediska (rozšírenie)",
 ];
-
 const TYPY_POCASIA_TABULKA = [
   { nazov: "Slnečno", zima: "25%", leto: "35%" },
   { nazov: "Zamračené", zima: "30%", leto: "25%" },
