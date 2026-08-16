@@ -339,7 +339,7 @@ export default function PrehladPage() {
         </div>
       )}
 
- {datumRozbaleny && (
+{otvorenyPanel === "datum" && (
         <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
           <SezonaInfo prehlad={sezonnyPrehladInfo} jeMedzisezonaTeraz={jeTerazMedzisezona} />
         </div>
