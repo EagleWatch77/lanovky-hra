@@ -50,7 +50,7 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
       <Stat label="⭐ Prestíž" value={stanica.prestiz.toLocaleString("sk-SK")} onClick={onKliknutePrestiz} aktivny={prestizRozbalena} />
       <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} />
     <Stat label="😊 Spokojnosť" value={Math.round((spokojnostCelkova ?? 1) * 100) + " %"} onClick={onKliknuteSpokojnost} aktivny={spokojnostRozbalena} />
-      <Stat label="🎿 Turisti" value={(pocetTuristov ?? 0).toLocaleString("sk-SK") + "/h"} />
+    <Stat label="🎿 Turisti" value={Math.round(dennyPocetTuristov ?? 0).toLocaleString("sk-SK")} onClick={onKliknuteTuristi} aktivny={turistiRozbaleni} />
     <Stat
         label="📅 Dátum"
         value={`${hDatum.toLocaleDateString("sk-SK")} ${String(hDatum.getHours()).padStart(2, "0")}:${String(hDatum.getMinutes()).padStart(2, "0")}`}
