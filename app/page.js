@@ -173,8 +173,7 @@ spokojnostCelkova,
   const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
   const hDatumTeraz = hernyDatum(new Date());
   const mapaObrazok = jeZimnyMesiac(hDatumTeraz.getMonth()) ? "/mapa-plna-zima.png" : "/mapa-plna-leto.png";
-  const hranicaAktualnejSezony = hranicaSezony(hDatumTeraz);
-  const dalsiaSezonaInfo = zaciatokDalsejSezony(hDatumTeraz);
+  const sezonnyPrehladInfo = sezonnyPrehlad(hDatumTeraz);
   const jeTerazMedzisezona = jeMedzisezona(hDatumTeraz);
 
   return (
