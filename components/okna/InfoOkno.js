@@ -35,11 +35,11 @@ const HOTOVE = [
   "Medzisezóna (1.-7. október) — stredisko je počas nej zatvorené, žiadny príjem",
 ];
 const PLANOVANE = [
-  "Rozlíšenie medzisezóny v zobrazení dátumu (momentálne ukazuje len zima/leto)",
+  "Anti-cheat pre ligu — prestíž pod hranicou (napr. 10) sa nebude počítať do súčtu ligy, rieši multi-účty aj dlho neaktívnych hráčov",
+  "Denný počet turistov v hornom paneli (kliknuteľný rozpis podľa jednotlivých budov, sčíta sa cez celý herný deň)",
   "Nový transparentný vzorec spokojnosti (jednotlivé postihy namiesto skrytého násobenia)",
   "Oprava panela Lanovky — má ukazovať skutočnú vyťaženosť dopytom, nie efektivitu zamestnancov",
   "Ľadovec — vlastný (lacnejší) ratrak systém, obmedzené/žiadne leto (ochrana ľadovca pre budúce generácie)",
-  "Časovač na pozadí — ekonomika a ligový pool budú bežať aj bez otvorenej appky",
   "Ubytovacia spokojnosť — kapacita penziónov/hotelov vs. skutočný dopyt na prespanie",
   "Klikacie body priamo na mape (stavanie kliknutím na konkrétne miesto)",
   "Náhodné incidenty (poruchy, sťažnosti)",
