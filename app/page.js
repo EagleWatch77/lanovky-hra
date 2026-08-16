@@ -22,6 +22,7 @@ import LanovkyPanel from "../components/LanovkyPanel";
 import PrestizRozpis from "../components/PrestizRozpis";
 import SpokojnostRozpis from "../components/SpokojnostRozpis";
 import SezonaInfo from "../components/SezonaInfo";
+import TuristiRozpis from "../components/TuristiRozpis";
 import PocasiePanel from "../components/PocasiePanel";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac, sezonnyPrehlad, jeMedzisezona } from "../lib/katalog";
