@@ -329,9 +329,15 @@ spokojnostCelkova,
         </div>
       )}
 
-      {spokojnostRozbalena && (
+   {spokojnostRozbalena && (
         <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
           <SpokojnostRozpis spokojnostRozpis={spokojnostRozpis} />
+        </div>
+      )}
+
+      {datumRozbaleny && (
+        <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
+          <SezonaInfo hranicaAktualnej={hranicaAktualnejSezony} dalsiaSezona={dalsiaSezonaInfo} jeMedzisezona={jeTerazMedzisezona} />
         </div>
       )}
 
