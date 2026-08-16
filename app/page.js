@@ -310,20 +310,20 @@ export default function PrehladPage() {
 
       {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
       <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)", padding: "6px 12px" }}>
-  <TopBar
+<TopBar
           stanica={stanica}
           budovy={budovy}
           efektivitaBudovy={efektivitaBudovy}
-          onKliknutePrestiz={() => setPrestizRozbalena((r) => !r)}
-          prestizRozbalena={prestizRozbalena}
+          onKliknutePrestiz={() => prepnutPanel("prestiz")}
+          prestizRozbalena={otvorenyPanel === "prestiz"}
           dennyPocetTuristov={dennyPocetTuristov}
           spokojnostCelkova={spokojnostCelkova}
-          onKliknuteSpokojnost={() => setSpokojnostRozbalena((r) => !r)}
-          spokojnostRozbalena={spokojnostRozbalena}
-          onKliknuteDatum={() => setDatumRozbaleny((r) => !r)}
-          datumRozbaleny={datumRozbaleny}
-          onKliknuteTuristi={() => setTuristiRozbaleni((r) => !r)}
-          turistiRozbaleni={turistiRozbaleni}
+          onKliknuteSpokojnost={() => prepnutPanel("spokojnost")}
+          spokojnostRozbalena={otvorenyPanel === "spokojnost"}
+          onKliknuteDatum={() => prepnutPanel("datum")}
+          datumRozbaleny={otvorenyPanel === "datum"}
+          onKliknuteTuristi={() => prepnutPanel("turisti")}
+          turistiRozbaleni={otvorenyPanel === "turisti"}
         />
       </div>
 
