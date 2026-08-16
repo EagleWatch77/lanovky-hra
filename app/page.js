@@ -339,9 +339,15 @@ export default function PrehladPage() {
         </div>
       )}
 
-   {datumRozbaleny && (
+ {datumRozbaleny && (
         <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
           <SezonaInfo prehlad={sezonnyPrehladInfo} jeMedzisezonaTeraz={jeTerazMedzisezona} />
+        </div>
+      )}
+
+      {turistiRozbaleni && (
+        <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
+          <TuristiRozpis dennyPocetTuristov={dennyPocetTuristov} rozpisTuristovPodBudov={rozpisTuristovPodBudov} />
         </div>
       )}
 
