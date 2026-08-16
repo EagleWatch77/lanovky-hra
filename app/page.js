@@ -171,7 +171,11 @@ spokojnostCelkova,
   const podpriemernaEfektivita = hotoveBudovy.filter((b) => efektivitaBudovy(b) < 1).length;
 
   const notifikacie = vytvorNotifikacie(budovy, efektivitaBudovy, stanica);
-  const mapaObrazok = jeZimnyMesiac(hernyDatum(new Date()).getMonth()) ? "/mapa-plna-zima.png" : "/mapa-plna-leto.png";
+  const hDatumTeraz = hernyDatum(new Date());
+  const mapaObrazok = jeZimnyMesiac(hDatumTeraz.getMonth()) ? "/mapa-plna-zima.png" : "/mapa-plna-leto.png";
+  const hranicaAktualnejSezony = hranicaSezony(hDatumTeraz);
+  const dalsiaSezonaInfo = zaciatokDalsejSezony(hDatumTeraz);
+  const jeTerazMedzisezona = jeMedzisezona(hDatumTeraz);
 
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
