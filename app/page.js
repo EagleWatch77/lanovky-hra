@@ -309,7 +309,7 @@ export default function PrehladPage() {
       />
 
       {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
-    <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(0,0,0,0.6)", padding: "6px 12px" }}>
+    <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "2px solid rgba(0,0,0,0.6)", padding: "6px 12px" }}>
 <TopBar
           stanica={stanica}
           budovy={budovy}
@@ -351,7 +351,7 @@ export default function PrehladPage() {
       )}
 
       {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-      <div style={{ position: "absolute", top: 12, right: 95, zIndex: 3, width: 180, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "1px solid rgba(0,0,0,0.6)", padding: "6px 8px" }}>
+      <div style={{ position: "absolute", top: 12, right: 95, zIndex: 3, width: 180, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "2px solid rgba(0,0,0,0.6)", padding: "6px 8px" }}>
         <TopBarPrava
           notifikacie={notifikacie}
           onOtvorNastavenia={() => setOkno("nastavenia")}
