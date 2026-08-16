@@ -28,9 +28,12 @@ const HOTOVE = [
   "Rebríček hráčov podľa prestíže, verejné profily hráčov",
   "Financie — denný/týždenný/mesačný/sezónny prehľad zárobkov a výdavkov podľa kategórie",
   "Nastavenia — zmena názvu, emailu, hesla, zmazanie dát",
-  "Mapa strediska na pozadí (mení sa zima/leto), navigácia cez okná priamo nad mapou",
+"Mapa strediska na pozadí (mení sa zima/leto), navigácia cez okná priamo nad mapou",
+  "Časovač na pozadí — ekonomika sa počíta pre všetkých hráčov automaticky raz za hodinu, aj bez otvorenej appky",
+  "Herný čas s hodinami/minútami v hornom paneli",
+  "Kliknuteľný dátum v paneli — ukáže hranice aktuálnej aj ďalšej sezóny, vrátane medzisezóny",
+  "Medzisezóna (1.-7. október) — stredisko je počas nej zatvorené, žiadny príjem",
 ];
-
 const PLANOVANE = [
   "Rozlíšenie medzisezóny v zobrazení dátumu (momentálne ukazuje len zima/leto)",
   "Nový transparentný vzorec spokojnosti (jednotlivé postihy namiesto skrytého násobenia)",
