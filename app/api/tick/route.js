@@ -4,9 +4,12 @@ import { spracujStanicu } from "../../../lib/vypocetEkonomiky";
 export const maxDuration = 60;
 
 export async function GET(request) {
+const { searchParams } = new URL(request.url);
+  const klucZUrl = searchParams.get("key");
   const authHeader = request.headers.get("authorization");
   const ocakavane = `Bearer ${process.env.TICK_SECRET}`;
-  if (!process.env.TICK_SECRET || authHeader !== ocakavane) {
+  const jeAutorizovane = authHeader === ocakavane || klucZUrl === process.env.TICK_SECRET;
+  if (!process.env.TICK_SECRET || !jeAutorizovane) {
     return Response.json({ error: "Neautorizované" }, { status: 401 });
   }
 
