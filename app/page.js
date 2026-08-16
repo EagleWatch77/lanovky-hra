@@ -21,6 +21,7 @@ import SpravyOkno from "../components/okna/SpravyOkno";
 import LanovkyPanel from "../components/LanovkyPanel";
 import PrestizRozpis from "../components/PrestizRozpis";
 import SpokojnostRozpis from "../components/SpokojnostRozpis";
+import SezonaInfo from "../components/SezonaInfo";
 import PocasiePanel from "../components/PocasiePanel";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac } from "../lib/katalog";
