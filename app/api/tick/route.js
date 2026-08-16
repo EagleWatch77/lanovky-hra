@@ -14,9 +14,9 @@ const ocistenyTajnyKluc = (process.env.TICK_SECRET || "").trim();
     return Response.json({ error: "Neautorizované" }, { status: 401 });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
+const supabase = createClient(
+    (process.env.NEXT_PUBLIC_SUPABASE_URL || "").trim(),
+    (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim()
   );
 
   const { data: vsetkyStanice, error } = await supabase.from("stanice").select("id");
