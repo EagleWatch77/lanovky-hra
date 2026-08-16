@@ -19,7 +19,7 @@ export default function SpokojnostRozpis({ spokojnostRozpis }) {
         boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
       }}
     >
-      <h3 style={{ margin: "0 0 10px 0", fontSize: 14, color: "#e8edf2" }}>😊 Rozklad spokojnosti (Lúka)</h3>
+      <h3 style={{ margin: "0 0 10px 0", fontSize: 14, color: "#e8edf2" }}>😊 Rozklad spokojnosti</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {riadky.map((riadok) => (
           <div key={riadok.nazov}>
