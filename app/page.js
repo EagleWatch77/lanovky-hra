@@ -344,8 +344,7 @@ export default function PrehladPage() {
           <SezonaInfo prehlad={sezonnyPrehladInfo} jeMedzisezonaTeraz={jeTerazMedzisezona} />
         </div>
       )}
-
-      {turistiRozbaleni && (
+{otvorenyPanel === "turisti" && (
         <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
           <TuristiRozpis dennyPocetTuristov={dennyPocetTuristov} rozpisTuristovPodBudov={rozpisTuristovPodBudov} />
         </div>
