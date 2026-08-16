@@ -51,7 +51,7 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
       <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} />
     <Stat label="😊 Spokojnosť" value={Math.round((spokojnostCelkova ?? 1) * 100) + " %"} onClick={onKliknuteSpokojnost} aktivny={spokojnostRozbalena} />
       <Stat label="🎿 Turisti" value={(pocetTuristov ?? 0).toLocaleString("sk-SK") + "/h"} />
-      <Stat label="📅 Dátum" value={hDatum.toLocaleDateString("sk-SK")} />
+      <Stat label="📅 Dátum" value={hDatum.toLocaleDateString("sk-SK")} onClick={onKliknuteDatum} aktivny={datumRozbaleny} />
       <Stat label={sezona === "ZIMA" ? "❄️ Sezóna" : "☀️ Sezóna"} value={sezona} />
     </div>
   );
