@@ -14,7 +14,18 @@ const ocistenyTajnyKluc = (process.env.TICK_SECRET || "").trim();
     return Response.json({ error: "Neautorizované" }, { status: 401 });
   }
 
-const supabase = createClient(
+const { searchParams: sp2 } = new URL(request.url);
+  if (sp2.get("debug") === "1") {
+    const kluc = (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
+    return Response.json({
+      dlzkaKlucaZnakov: kluc.length,
+      zaciatok: kluc.slice(0, 10),
+      koniec: kluc.slice(-10),
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    });
+  }
+
+  const supabase = createClient(
     (process.env.NEXT_PUBLIC_SUPABASE_URL || "").trim(),
     (process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim()
   );
