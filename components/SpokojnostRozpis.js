@@ -25,8 +25,8 @@ export default function SpokojnostRozpis({ spokojnostRozpis }) {
         {riadky.map((riadok) => (
           <div key={riadok.nazov} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
             <span style={{ color: "#e8edf2" }}>{riadok.nazov}</span>
-            <span style={{ color: riadok.hodnota >= 0 ? "#4ade80" : "#f2994a", fontWeight: 600 }}>
-              {riadok.hodnota >= 0 ? "+" : ""}
+          <span style={{ color: riadok.hodnota > 0 ? "#4ade80" : riadok.hodnota < 0 ? "#f2994a" : "#9fb0bf", fontWeight: 600 }}>
+              {riadok.hodnota > 0 ? "+" : ""}
               {riadok.hodnota} %
             </span>
           </div>
