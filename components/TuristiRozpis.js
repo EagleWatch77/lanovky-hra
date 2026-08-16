@@ -19,18 +19,14 @@ export default function TuristiRozpis({ dennyPocetTuristov, rozpisTuristovPodBud
       {rozpis.length === 0 && (
         <div style={{ fontSize: 12, color: "#657685", marginBottom: 10 }}>Zatiaľ nemáš postavenú žiadnu lanovku.</div>
       )}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {rozpis.map((r, i) => (
           <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
             <span style={{ color: "#e8edf2" }}>{r.nazov}</span>
-            <span style={{ color: "#9fb0bf" }}>
-              {r.turistiZaHodinu}/h <span style={{ color: "#657685" }}>(kap. {r.kapacita}/h)</span>
-            </span>
+            <span style={{ color: "#9fb0bf" }}>{r.kapacita}/h</span>
           </div>
         ))}
       </div>
-
       <div style={{ borderTop: "1px solid #223040", marginTop: 10, paddingTop: 8, display: "flex", justifyContent: "space-between" }}>
         <span style={{ color: "#9fb0bf", fontSize: 13 }}>Dnes spolu</span>
         <span style={{ color: "#4ade80", fontWeight: 700, fontSize: 15 }}>
