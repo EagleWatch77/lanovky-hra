@@ -8,7 +8,8 @@ const { searchParams } = new URL(request.url);
   const klucZUrl = searchParams.get("key");
   const authHeader = request.headers.get("authorization");
   const ocakavane = `Bearer ${process.env.TICK_SECRET}`;
-  const jeAutorizovane = authHeader === ocakavane || klucZUrl === process.env.TICK_SECRET;
+const ocistenyTajnyKluc = (process.env.TICK_SECRET || "").trim();
+  const jeAutorizovane = authHeader === `Bearer ${ocistenyTajnyKluc}` || (klucZUrl || "").trim() === ocistenyTajnyKluc;
   if (!process.env.TICK_SECRET || !jeAutorizovane) {
     return Response.json({ error: "Neautorizované" }, { status: 401 });
   }
