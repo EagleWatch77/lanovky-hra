@@ -30,8 +30,6 @@ import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 import { LOGA, PREDVOLENE_LOGO, ikonaPodlaKluca } from "../lib/loga";
 
-
-
 export default function PrehladPage() {
   const {
     session,
@@ -130,7 +128,7 @@ export default function PrehladPage() {
             style={inputStyle}
           />
 
-              <label style={{ fontSize: 13, color: "#9fb0bf" }}>Vyber logo strediska</label>
+          <label style={{ fontSize: 13, color: "#9fb0bf" }}>Vyber logo strediska</label>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {LOGA.map((l) => {
               const jeVybrane = vybraneLogo === l.kluc;
@@ -186,6 +184,9 @@ export default function PrehladPage() {
   const mapaObrazok = jeZimnyMesiac(hDatumTeraz.getMonth()) ? "/mapa-plna-zima.png" : "/mapa-plna-leto.png";
   const sezonnyPrehladInfo = sezonnyPrehlad(hDatumTeraz);
   const jeTerazMedzisezona = jeMedzisezona(hDatumTeraz);
+
+  // Logo strediska podľa uloženého kľúča (staré emoji => predvolená ikona)
+  const LogoIkona = ikonaPodlaKluca(stanica.logo);
 
   // Spoločný štýl hornej lišty
   const listaStyl = {
@@ -340,7 +341,17 @@ export default function PrehladPage() {
 
       {/* ===== HORNÁ LIŠTA cez celú šírku ===== */}
       <div style={listaStyl}>
-       <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0, paddingLeft: 4 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+          {/* Logo + názov strediska v rohu */}
+          <div style={{ display: "flex", alignItems: "center", gap: 9, paddingLeft: 4, flexShrink: 0 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(160deg,#4aa3ee,#2f92e6)", boxShadow: "0 6px 14px rgba(47,146,230,0.35)", flexShrink: 0 }}>
+              <LogoIkona size={22} strokeWidth={2} color="#ffffff" />
+            </div>
+            <div style={{ fontFamily: "var(--font-sora), system-ui, sans-serif", fontWeight: 700, fontSize: 15, color: "#1b2c42", whiteSpace: "nowrap", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis" }}>
+              {stanica.nazov}
+            </div>
+          </div>
+
           <TopBar
             stanica={stanica}
             budovy={budovy}
