@@ -1,5 +1,11 @@
 "use client";
 import { hernyDatum } from "../lib/hernyCas";
+import { Star, Coins, Smile, Users, Calendar, Snowflake, Sun } from "lucide-react";
+
+// ⚙️ PREPÍNAČ VZHĽADU IKON:
+//   "farebne"      = každá ikona má farbu svojej kategórie (zlatá minca, modrá hviezda...)
+//   "jednofarebne" = všetky ikony v jednej tmavomodrej (striedmejšie)
+const VZHLAD_IKON = "farebne";
 
 function vypocitajSezonu(datum) {
   const mesiac = datum.getMonth();
@@ -7,11 +13,7 @@ function vypocitajSezonu(datum) {
   return zimneMesiace.includes(mesiac) ? "ZIMA" : "LETO";
 }
 
-function Stat({ label, value, iconBg, onClick, aktivny }) {
-  const parts = label.split(" ");
-  const emoji = parts[0];
-  const nazov = parts.slice(1).join(" ");
-
+function Stat({ Ikona, farbaIkony, iconBg, nazov, value, onClick, aktivny }) {
   const chip = {
     display: "flex",
     alignItems: "center",
@@ -27,14 +29,13 @@ function Stat({ label, value, iconBg, onClick, aktivny }) {
     cursor: onClick ? "pointer" : "default",
   };
 
-  const ikona = {
+  const ikonaBox = {
     width: 22,
     height: 22,
     borderRadius: 7,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 13,
     background: iconBg,
     flexShrink: 0,
   };
@@ -49,14 +50,16 @@ function Stat({ label, value, iconBg, onClick, aktivny }) {
 
   const obsah = (
     <>
-      <span style={ikona}>{emoji}</span>
+      <span style={ikonaBox}>
+        <Ikona size={14} strokeWidth={2.2} color={farbaIkony} />
+      </span>
       <span style={cislo}>{value}</span>
     </>
   );
 
   if (onClick) {
     return (
-      <button onClick={onClick} title={nazov} style={{ ...chip, margin: 0 }}>
+      <button onClick={onClick} title={nazov} style={chip}>
         {obsah}
       </button>
     );
@@ -74,21 +77,61 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
   const sucetEfektivit = hotove.reduce((s, b) => s + efektivitaBudovy(b), 0);
   const priemernaEfektivita = hotove.length > 0 ? Math.round((sucetEfektivit / hotove.length) * 100) : 100;
   const sezona = vypocitajSezonu(hDatum);
+  const jedna = "#1b2c42"; // tmavomodrá pre jednofarebný režim
+  const f = (farebna) => (VZHLAD_IKON === "farebne" ? farebna : jedna);
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "nowrap" }}>
-      <Stat label="⭐ Prestíž" value={stanica.prestiz.toLocaleString("sk-SK")} iconBg="rgba(78,168,240,0.18)" onClick={onKliknutePrestiz} aktivny={prestizRozbalena} />
-      <Stat label="💰 Peniaze" value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"} iconBg="rgba(244,194,75,0.22)" />
-      <Stat label="😊 Spokojnosť" value={Math.round((spokojnostCelkova ?? 1) * 100) + " %"} iconBg="rgba(167,128,240,0.18)" onClick={onKliknuteSpokojnost} aktivny={spokojnostRozbalena} />
-      <Stat label="🎿 Turisti" value={Math.round(dennyPocetTuristov ?? 0).toLocaleString("sk-SK")} iconBg="rgba(79,203,113,0.18)" onClick={onKliknuteTuristi} aktivny={turistiRozbaleni} />
       <Stat
-        label="📅 Dátum"
-        value={`${hDatum.toLocaleDateString("sk-SK")} ${String(hDatum.getHours()).padStart(2, "0")}:${String(hDatum.getMinutes()).padStart(2, "0")}`}
+        Ikona={Star}
+        farbaIkony={f("#2f8ae0")}
+        iconBg="rgba(78,168,240,0.18)"
+        nazov="Prestíž"
+        value={stanica.prestiz.toLocaleString("sk-SK")}
+        onClick={onKliknutePrestiz}
+        aktivny={prestizRozbalena}
+      />
+      <Stat
+        Ikona={Coins}
+        farbaIkony={f("#c9930f")}
+        iconBg="rgba(244,194,75,0.22)"
+        nazov="Peniaze"
+        value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"}
+      />
+      <Stat
+        Ikona={Smile}
+        farbaIkony={f("#8a5fd6")}
+        iconBg="rgba(167,128,240,0.18)"
+        nazov="Spokojnosť"
+        value={Math.round((spokojnostCelkova ?? 1) * 100) + " %"}
+        onClick={onKliknuteSpokojnost}
+        aktivny={spokojnostRozbalena}
+      />
+      <Stat
+        Ikona={Users}
+        farbaIkony={f("#2ca24e")}
+        iconBg="rgba(79,203,113,0.18)"
+        nazov="Turisti"
+        value={Math.round(dennyPocetTuristov ?? 0).toLocaleString("sk-SK")}
+        onClick={onKliknuteTuristi}
+        aktivny={turistiRozbaleni}
+      />
+      <Stat
+        Ikona={Calendar}
+        farbaIkony={f("#5a6f88")}
         iconBg="rgba(120,160,205,0.16)"
+        nazov="Dátum"
+        value={`${hDatum.toLocaleDateString("sk-SK")} ${String(hDatum.getHours()).padStart(2, "0")}:${String(hDatum.getMinutes()).padStart(2, "0")}`}
         onClick={onKliknuteDatum}
         aktivny={datumRozbaleny}
       />
-      <Stat label={sezona === "ZIMA" ? "❄️ Sezóna" : "☀️ Sezóna"} value={sezona} iconBg="rgba(78,197,245,0.18)" />
+      <Stat
+        Ikona={sezona === "ZIMA" ? Snowflake : Sun}
+        farbaIkony={f(sezona === "ZIMA" ? "#2a9fd6" : "#e0a021")}
+        iconBg="rgba(78,197,245,0.18)"
+        nazov="Sezóna"
+        value={sezona}
+      />
     </div>
   );
 }
