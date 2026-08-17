@@ -18,7 +18,6 @@ import NastaveniaOkno from "../components/okna/NastaveniaOkno";
 import AlianciaOkno from "../components/okna/AlianciaOkno";
 import AlianciaForumOkno from "../components/okna/AlianciaForumOkno";
 import SpravyOkno from "../components/okna/SpravyOkno";
-import LanovkyPanel from "../components/LanovkyPanel";
 import PrestizRozpis from "../components/PrestizRozpis";
 import SpokojnostRozpis from "../components/SpokojnostRozpis";
 import SezonaInfo from "../components/SezonaInfo";
