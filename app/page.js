@@ -216,7 +216,7 @@ export default function PrehladPage() {
    <img
         src={mapaObrazok}
         alt="Mapa strediska"
-        style={{ position: "absolute", top: 58, left: 0, right: 0, bottom: 0, width: "100%", height: "calc(100% - 58px)", objectFit: "cover", objectPosition: "center top" }}
+        style={{ position: "absolute", top: 58, left: 0, right: 0, bottom: 0, width: "100%", height: "calc(100% - 58px)", objectFit: "contain", objectPosition: "center top" }}
       />
 
       <NavSide
