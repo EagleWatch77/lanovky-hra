@@ -351,7 +351,7 @@ export default function PrehladPage() {
       )}
 
       {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-      <div style={{ position: "absolute", top: 12, right: 95, zIndex: 3, width: 180, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.06)", borderRadius: 12, border: "2px solid rgba(0,0,0,0.6)", padding: "6px 8px" }}>
+    <div style={{ position: "absolute", top: 12, right: 95, zIndex: 3, width: 180, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.74)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderRadius: 14, border: "1px solid rgba(120,160,205,0.22)", boxShadow: "0 4px 14px rgba(60,110,160,0.12)", padding: "6px 8px" }}>
         <TopBarPrava
           notifikacie={notifikacie}
           onOtvorNastavenia={() => setOkno("nastavenia")}
