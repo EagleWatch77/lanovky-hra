@@ -3,7 +3,6 @@ import { cardStyle, buttonStyle, inputStyle, tokens, appBackground } from "../li
 import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
 import { useState } from "react";
-import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
 import TopBar from "../components/TopBar";
 import TopBarPrava from "../components/TopBarPrava";
