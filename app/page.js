@@ -181,7 +181,7 @@ export default function PrehladPage() {
   const jeTerazMedzisezona = jeMedzisezona(hDatumTeraz);
 
   return (
-    <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05090d" }}>
+    <div style={{ position: "fixed", inset: 0, overflow: "hidden", ...appBackground }}>
       <NavSide
         onOtvorBudovy={() => setOkno("budovy")}
         onOtvorKonkurencia={() => setOkno("konkurencia")}
