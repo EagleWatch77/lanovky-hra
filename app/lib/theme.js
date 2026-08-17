@@ -119,3 +119,34 @@ export const appBackground = {
     "radial-gradient(1100px 520px at 78% -8%, rgba(120,190,245,0.28), transparent 60%)," +
     "linear-gradient(180deg,#e7f2fb,#f3f9fe 60%)",
 };
+
+import {
+  Mountain, MountainSnow, Snowflake, CableCar, TramFront, Tent,
+  Trees, TreePine, Home, Trophy, Ticket, Flag, Wind, Compass, Medal,
+} from "lucide-react";
+
+export const LOGA = [
+  { kluc: "hory",    Ikona: MountainSnow, popis: "Zasnežené hory" },
+  { kluc: "vrchol",  Ikona: Mountain,     popis: "Štít" },
+  { kluc: "vlocka",  Ikona: Snowflake,    popis: "Vločka" },
+  { kluc: "lanovka", Ikona: CableCar,     popis: "Kabínková lanovka" },
+  { kluc: "vlek",    Ikona: TramFront,    popis: "Vlek / sedačka" },
+  { kluc: "chata",   Ikona: Home,         popis: "Chata" },
+  { kluc: "stan",    Ikona: Tent,         popis: "Stan / kemp" },
+  { kluc: "les",     Ikona: Trees,        popis: "Les" },
+  { kluc: "strom",   Ikona: TreePine,     popis: "Smrek" },
+  { kluc: "trofej",  Ikona: Trophy,       popis: "Trofej" },
+  { kluc: "medaila", Ikona: Medal,        popis: "Medaila" },
+  { kluc: "listok",  Ikona: Ticket,       popis: "Skipas" },
+  { kluc: "zastava", Ikona: Flag,         popis: "Zástavka na trati" },
+  { kluc: "vietor",  Ikona: Wind,         popis: "Vietor" },
+  { kluc: "kompas",  Ikona: Compass,      popis: "Kompas" },
+];
+
+export const PREDVOLENE_LOGO = "hory";
+
+export function ikonaPodlaKluca(kluc) {
+  const najdene = LOGA.find((l) => l.kluc === kluc);
+  if (najdene) return najdene.Ikona;
+  return LOGA.find((l) => l.kluc === PREDVOLENE_LOGO).Ikona;
+}
