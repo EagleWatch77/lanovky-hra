@@ -368,7 +368,7 @@ export default function PrehladPage() {
       </div>
 
       {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
-      <button
+ <button
         onClick={() => setPanelOtvoreny((o) => !o)}
         title={panelOtvoreny ? "Skryť panel" : "Zobraziť panel"}
         style={{
@@ -378,10 +378,13 @@ export default function PrehladPage() {
           zIndex: 4,
           width: 30,
           height: 30,
-          borderRadius: 8,
-          background: "rgba(13,20,27,0.7)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          color: "#e8edf2",
+          borderRadius: 9,
+          background: "rgba(255,255,255,0.74)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+          border: "1px solid rgba(120,160,205,0.22)",
+          boxShadow: "0 4px 14px rgba(60,110,160,0.12)",
+          color: "#5a6f88",
           cursor: "pointer",
           fontSize: 15,
         }}
