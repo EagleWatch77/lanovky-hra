@@ -29,6 +29,7 @@ import { jeZimnyMesiac, sezonnyPrehlad, jeMedzisezona } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 import { LOGA, PREDVOLENE_LOGO, ikonaPodlaKluca } from "../lib/loga";
+import ZonaPanel from "../components/ZonaPanel";
 
 export default function PrehladPage() {
   const {
