@@ -28,8 +28,9 @@ import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac, sezonnyPrehlad, jeMedzisezona } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
+import { LOGA, PREDVOLENE_LOGO, ikonaPodlaKluca } from "../lib/loga";
 
-const LOGA = ["🏔️", "🚡", "⛷️", "🎿", "🏂", "🗻", "❄️", "🏨", "🎫", "🌲", "🏕️", "🚠", "🛷", "⛰️", "🥌", "🧊"];
+
 
 export default function PrehladPage() {
   const {
