@@ -213,10 +213,10 @@ export default function PrehladPage() {
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "radial-gradient(1100px 520px at 78% -8%, rgba(120,190,245,0.28), transparent 60%), linear-gradient(180deg,#e7f2fb,#f3f9fe 60%)" }}>
 
       {/* Mapa na celú obrazovku — čisto dekoratívna */}
-   <img
+ <img
         src={mapaObrazok}
         alt="Mapa strediska"
-        style={{ position: "absolute", top: 58, left: 0, right: 0, bottom: 0, width: "100%", height: "calc(100% - 58px)", objectFit: "contain", objectPosition: "center top" }}
+        style={{ position: "absolute", top: 58, left: 0, right: 0, bottom: 0, margin: "auto", maxWidth: "100%", maxHeight: "calc(100% - 58px)", width: "auto", height: "auto", objectFit: "contain" }}
       />
 
       <NavSide
