@@ -1,8 +1,7 @@
 "use client";
-import { cardStyle, buttonStyle, inputStyle, tokens, appBackground } from "../lib/styles";
+
 import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
-import { useState } from "react";
 import AuthForm from "../components/AuthForm";
 import TopBar from "../components/TopBar";
 import TopBarPrava from "../components/TopBarPrava";
@@ -28,6 +27,7 @@ import PocasiePanel from "../components/PocasiePanel";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac, sezonnyPrehlad, jeMedzisezona } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
+import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
 const LOGA = ["🏔️", "🚡", "⛷️", "🎿", "🏂", "🗻", "❄️", "🏨", "🎫", "🌲", "🏕️", "🚠", "🛷", "⛰️", "🥌", "🧊"];
 
@@ -180,7 +180,7 @@ export default function PrehladPage() {
   const jeTerazMedzisezona = jeMedzisezona(hDatumTeraz);
 
   return (
-    <div style={{ position: "fixed", inset: 0, overflow: "hidden", ...appBackground }}>
+    <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "radial-gradient(1100px 520px at 78% -8%, rgba(120,190,245,0.28), transparent 60%), linear-gradient(180deg,#e7f2fb,#f3f9fe 60%)" }}>
       <NavSide
         onOtvorBudovy={() => setOkno("budovy")}
         onOtvorKonkurencia={() => setOkno("konkurencia")}
