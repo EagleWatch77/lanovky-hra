@@ -1,20 +1,90 @@
 "use client";
-
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Building2, ShieldAlert, Wallet, Trophy, ClipboardList, Users, HardHat, Euro } from "lucide-react";
 
+// ⚙️ PREPÍNAČ VZHĽADU MENU:
+//   "stext"   = ikona + popisok pod ňou (ako v mockupe)
+//   "kompakt" = len ikony s tooltipom (úspornejšie)
+const VZHLAD_MENU = "stext";
+
 const NAV = [
-  { href: "/", label: "Prehľad", Icon: Home },
-  { href: "/budovy", label: "Budovy", Icon: Building2 },
-  { href: "/konkurencia", label: "Konkurencia", Icon: ShieldAlert },
-  { href: "/zamestnanci", label: "Zamestnanci", Icon: HardHat },
-  { href: "/ceny", label: "Ceny", Icon: Euro },
-  { href: "/financie", label: "Financie", Icon: Wallet },
-  { href: "/rebricek", label: "Rebríček", Icon: Trophy },
-  { href: "/aliancia", label: "Ski konzorcium", Icon: Users },
-  { href: "/co-je-hotove", label: "Info", Icon: ClipboardList },
+  { href: "/", label: "Prehľad", text: "Prehľad", Icon: Home },
+  { href: "/budovy", label: "Budovy", text: "Budovy", Icon: Building2 },
+  { href: "/konkurencia", label: "Konkurencia", text: "Súperi", Icon: ShieldAlert },
+  { href: "/zamestnanci", label: "Zamestnanci", text: "Personál", Icon: HardHat },
+  { href: "/ceny", label: "Ceny", text: "Ceny", Icon: Euro },
+  { href: "/financie", label: "Financie", text: "Financie", Icon: Wallet },
+  { href: "/rebricek", label: "Rebríček", text: "Rebríček", Icon: Trophy },
+  { href: "/aliancia", label: "Ski konzorcium", text: "Konzorcium", Icon: Users },
+  { href: "/co-je-hotove", label: "Info", text: "Info", Icon: ClipboardList },
 ];
+
+function Polozka({ Icon, label, text, aktivny, onClick, href }) {
+  const [hover, setHover] = useState(false);
+  const zbaleny = VZHLAD_MENU === "kompakt";
+
+  const styl = {
+    display: "flex",
+    flexDirection: zbaleny ? "row" : "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: zbaleny ? 0 : 4,
+    width: zbaleny ? 40 : 66,
+    minHeight: zbaleny ? 40 : 52,
+    padding: zbaleny ? 0 : "8px 4px",
+    borderRadius: 13,
+    border: "none",
+    cursor: "pointer",
+    textDecoration: "none",
+    boxSizing: "border-box",
+    background: aktivny
+      ? "linear-gradient(160deg,#4aa3ee,#2f92e6)"
+      : hover
+      ? "rgba(120,175,235,0.16)"
+      : "transparent",
+    color: aktivny ? "#ffffff" : "#5a6f88",
+    boxShadow: aktivny ? "0 8px 16px rgba(47,146,230,0.35)" : "none",
+    transition: "background 0.15s",
+  };
+
+  const textStyl = {
+    fontSize: 9.5,
+    fontWeight: 600,
+    fontFamily: "var(--font-inter), system-ui, sans-serif",
+    lineHeight: 1.15,
+    textAlign: "center",
+    color: aktivny ? "#ffffff" : "#5a6f88",
+  };
+
+  const obsah = (
+    <>
+      <Icon size={20} strokeWidth={2} />
+      {!zbaleny && <span style={textStyl}>{text}</span>}
+    </>
+  );
+
+  const spolocne = {
+    onMouseEnter: () => setHover(true),
+    onMouseLeave: () => setHover(false),
+    title: label,
+    style: styl,
+  };
+
+  if (onClick) {
+    return (
+      <button onClick={onClick} {...spolocne}>
+        {obsah}
+      </button>
+    );
+  }
+  return (
+    <Link href={href} {...spolocne}>
+      {obsah}
+    </Link>
+  );
+}
 
 export default function NavSide({
   onOtvorBudovy,
@@ -27,7 +97,6 @@ export default function NavSide({
   onOtvorCeny,
 }) {
   const pathname = usePathname();
-
   const OKNA = {
     "/budovy": onOtvorBudovy,
     "/konkurencia": onOtvorKonkurencia,
@@ -49,60 +118,29 @@ export default function NavSide({
         zIndex: 40,
         display: "flex",
         flexDirection: "column",
-        gap: 6,
-        padding: 6,
-        borderRadius: 14,
-        background: "rgba(255,255,255,0.25)",
-        backdropFilter: "blur(10px)",
-        border: "1px solid rgba(255,255,255,0.5)",
-        boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+        gap: 5,
+        padding: 8,
+        borderRadius: 18,
+        background: "rgba(255,255,255,0.74)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        border: "1px solid rgba(120,160,205,0.22)",
+        boxShadow: "0 10px 30px rgba(52,100,150,0.16)",
       }}
     >
       {NAV.map((n) => {
         const aktivny = pathname === n.href;
         const onOtvor = OKNA[n.href];
-        if (onOtvor) {
-          return (
-            <button
-              key={n.href}
-              onClick={onOtvor}
-              title={n.label}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 34,
-                height: 34,
-                borderRadius: 9,
-                background: "transparent",
-                border: "none",
-                color: "#1e293b",
-                cursor: "pointer",
-              }}
-            >
-              <n.Icon size={17} strokeWidth={1.8} />
-            </button>
-          );
-        }
         return (
-          <Link
+          <Polozka
             key={n.href}
-            href={n.href}
-            title={n.label}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 34,
-              height: 34,
-              borderRadius: 9,
-              background: aktivny ? "rgba(255,255,255,0.6)" : "transparent",
-              color: "#1e293b",
-              textDecoration: "none",
-            }}
-          >
-            <n.Icon size={17} strokeWidth={1.8} />
-          </Link>
+            Icon={n.Icon}
+            label={n.label}
+            text={n.text}
+            aktivny={aktivny}
+            onClick={onOtvor}
+            href={onOtvor ? undefined : n.href}
+          />
         );
       })}
     </div>
