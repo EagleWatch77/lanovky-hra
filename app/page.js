@@ -1,6 +1,6 @@
 "use client";
 import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
-import { tokens, appBackground } from "../lib/theme";
+import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 import { useState } from "react";
 import { useGameState } from "../lib/useGameState";
 import AuthForm from "../components/AuthForm";
