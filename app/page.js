@@ -99,7 +99,7 @@ export default function PrehladPage() {
 
   const [novyNazov, setNovyNazov] = useState("");
   const [noveMenoHraca, setNoveMenoHraca] = useState("");
-  const [vybraneLogo, setVybraneLogo] = useState("🏔️");
+  const [vybraneLogo, setVybraneLogo] = useState(PREDVOLENE_LOGO);
   const [panelOtvoreny, setPanelOtvoreny] = useState(true);
   const [okno, setOkno] = useState(null);
   const [otvorenyPanel, setOtvorenyPanel] = useState(null); // null | "prestiz" | "spokojnost" | "datum" | "turisti"
