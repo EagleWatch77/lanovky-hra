@@ -179,8 +179,37 @@ export default function PrehladPage() {
   const sezonnyPrehladInfo = sezonnyPrehlad(hDatumTeraz);
   const jeTerazMedzisezona = jeMedzisezona(hDatumTeraz);
 
+  // Spoločný štýl hornej lišty
+  const listaStyl = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 58,
+    zIndex: 5,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+    padding: "0 14px",
+    boxSizing: "border-box",
+    background: "rgba(255,255,255,0.82)",
+    backdropFilter: "blur(14px)",
+    WebkitBackdropFilter: "blur(14px)",
+    borderBottom: "1px solid rgba(120,160,205,0.22)",
+    boxShadow: "0 4px 20px rgba(60,110,160,0.10)",
+  };
+
   return (
     <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "radial-gradient(1100px 520px at 78% -8%, rgba(120,190,245,0.28), transparent 60%), linear-gradient(180deg,#e7f2fb,#f3f9fe 60%)" }}>
+
+      {/* Mapa na celú obrazovku — čisto dekoratívna */}
+      <img
+        src={mapaObrazok}
+        alt="Mapa strediska"
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center bottom" }}
+      />
+
       <NavSide
         onOtvorBudovy={() => setOkno("budovy")}
         onOtvorKonkurencia={() => setOkno("konkurencia")}
@@ -301,79 +330,72 @@ export default function PrehladPage() {
         </WindowModal>
       )}
 
-      {/* Mapa na celú obrazovku — čisto dekoratívna */}
-      <img
-        src={mapaObrazok}
-        alt="Mapa strediska"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", objectPosition: "center" }}
-      />
+      {/* ===== HORNÁ LIŠTA cez celú šírku ===== */}
+      <div style={listaStyl}>
+        <div style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
+          <TopBar
+            stanica={stanica}
+            budovy={budovy}
+            efektivitaBudovy={efektivitaBudovy}
+            onKliknutePrestiz={() => prepnutPanel("prestiz")}
+            prestizRozbalena={otvorenyPanel === "prestiz"}
+            dennyPocetTuristov={dennyPocetTuristov}
+            spokojnostCelkova={spokojnostCelkova}
+            onKliknuteSpokojnost={() => prepnutPanel("spokojnost")}
+            spokojnostRozbalena={otvorenyPanel === "spokojnost"}
+            onKliknuteDatum={() => prepnutPanel("datum")}
+            datumRozbaleny={otvorenyPanel === "datum"}
+            onKliknuteTuristi={() => prepnutPanel("turisti")}
+            turistiRozbaleni={otvorenyPanel === "turisti"}
+          />
+        </div>
 
-      {/* Plávajúci zhluk vľavo hore — logo, názov, štatistiky, priehľadnejší nech je vidno mapu */}
-   <div style={{ position: "absolute", top: 12, left: 100, zIndex: 3, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.74)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderRadius: 14, border: "1px solid rgba(120,160,205,0.22)", boxShadow: "0 4px 14px rgba(60,110,160,0.12)", padding: "6px 12px" }}>
-<TopBar
-          stanica={stanica}
-          budovy={budovy}
-          efektivitaBudovy={efektivitaBudovy}
-          onKliknutePrestiz={() => prepnutPanel("prestiz")}
-          prestizRozbalena={otvorenyPanel === "prestiz"}
-          dennyPocetTuristov={dennyPocetTuristov}
-          spokojnostCelkova={spokojnostCelkova}
-          onKliknuteSpokojnost={() => prepnutPanel("spokojnost")}
-          spokojnostRozbalena={otvorenyPanel === "spokojnost"}
-          onKliknuteDatum={() => prepnutPanel("datum")}
-          datumRozbaleny={otvorenyPanel === "datum"}
-          onKliknuteTuristi={() => prepnutPanel("turisti")}
-          turistiRozbaleni={otvorenyPanel === "turisti"}
-        />
+        <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+          <TopBarPrava
+            notifikacie={notifikacie}
+            onOtvorNastavenia={() => setOkno("nastavenia")}
+            onOtvorSpravy={() => setOkno("spravy")}
+            pocetNeprecitanych={spravy.filter((s) => !s.precitana && s.od_stanica_id !== stanica.id).length}
+            onLogout={handleLogout}
+            maKonzorcium={!!stanica.aliancia_id}
+            onOtvorForum={() => {
+              setOkno("forum");
+              oznacitForumPrecitane();
+            }}
+            pocetNeprecitanychVoFore={pocetNeprecitanychVoFore}
+          />
+        </div>
       </div>
 
-{otvorenyPanel === "prestiz" && (
-        <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
+      {/* Rozbaľovacie panely pod lištou (po kliknutí na čísla) */}
+      {otvorenyPanel === "prestiz" && (
+        <div style={{ position: "absolute", top: 64, left: 100, zIndex: 6 }}>
           <PrestizRozpis prestizRozpis={prestizRozpis} />
         </div>
       )}
-
-  {otvorenyPanel === "spokojnost" && (
-        <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
+      {otvorenyPanel === "spokojnost" && (
+        <div style={{ position: "absolute", top: 64, left: 100, zIndex: 6 }}>
           <SpokojnostRozpis spokojnostRozpis={spokojnostRozpis} />
         </div>
       )}
-
-{otvorenyPanel === "datum" && (
-        <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
+      {otvorenyPanel === "datum" && (
+        <div style={{ position: "absolute", top: 64, left: 100, zIndex: 6 }}>
           <SezonaInfo prehlad={sezonnyPrehladInfo} jeMedzisezonaTeraz={jeTerazMedzisezona} />
         </div>
       )}
-{otvorenyPanel === "turisti" && (
-        <div style={{ position: "absolute", top: 66, left: 100, zIndex: 3 }}>
+      {otvorenyPanel === "turisti" && (
+        <div style={{ position: "absolute", top: 64, left: 100, zIndex: 6 }}>
           <TuristiRozpis dennyPocetTuristov={dennyPocetTuristov} rozpisTuristovPodBudov={rozpisTuristovPodBudov} />
         </div>
       )}
 
-      {/* Plávajúci zhluk vpravo hore — notifikácie, nastavenia, odhlásiť */}
-    <div style={{ position: "absolute", top: 12, right: 95, zIndex: 3, width: 180, height: 46, boxSizing: "border-box", display: "flex", alignItems: "center", background: "rgba(255,255,255,0.74)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderRadius: 14, border: "1px solid rgba(120,160,205,0.22)", boxShadow: "0 4px 14px rgba(60,110,160,0.12)", padding: "6px 8px" }}>
-        <TopBarPrava
-          notifikacie={notifikacie}
-          onOtvorNastavenia={() => setOkno("nastavenia")}
-          onOtvorSpravy={() => setOkno("spravy")}
-          pocetNeprecitanych={spravy.filter((s) => !s.precitana && s.od_stanica_id !== stanica.id).length}
-          onLogout={handleLogout}
-          maKonzorcium={!!stanica.aliancia_id}
-          onOtvorForum={() => {
-            setOkno("forum");
-            oznacitForumPrecitane();
-          }}
-          pocetNeprecitanychVoFore={pocetNeprecitanychVoFore}
-        />
-      </div>
-
       {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
- <button
+      <button
         onClick={() => setPanelOtvoreny((o) => !o)}
         title={panelOtvoreny ? "Skryť panel" : "Zobraziť panel"}
         style={{
           position: "absolute",
-          top: 66,
+          top: 70,
           right: panelOtvoreny ? 272 : 132,
           zIndex: 4,
           width: 30,
@@ -392,8 +414,8 @@ export default function PrehladPage() {
         {panelOtvoreny ? "›" : "‹"}
       </button>
 
-      {/* Plávajúci info panel — počasie vždy viditeľné (bez šípok, keď je zbalený), zvyšok len keď je rozbalený */}
-      <div style={{ position: "absolute", top: 66, right: 12, width: panelOtvoreny ? 250 : 110, maxHeight: "calc(100vh - 82px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
+      {/* Plávajúci info panel — počasie vždy viditeľné */}
+      <div style={{ position: "absolute", top: 70, right: 12, width: panelOtvoreny ? 250 : 110, maxHeight: "calc(100vh - 84px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
         <PocasiePanel kompaktne={!panelOtvoreny} />
         {panelOtvoreny && <LanovkyPanel budovy={budovy} efektivitaBudovy={efektivitaBudovy} />}
       </div>
