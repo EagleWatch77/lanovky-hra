@@ -332,7 +332,7 @@ export default function PrehladPage() {
 
       {/* ===== HORNÁ LIŠTA cez celú šírku ===== */}
       <div style={listaStyl}>
-        <div style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
+       <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0, paddingLeft: 4 }}>
           <TopBar
             stanica={stanica}
             budovy={budovy}
