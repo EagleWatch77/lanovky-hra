@@ -130,26 +130,33 @@ export default function PrehladPage() {
             style={inputStyle}
           />
 
-          <label style={{ fontSize: 13, color: "#9fb0bf" }}>Vyber logo strediska</label>
+              <label style={{ fontSize: 13, color: "#9fb0bf" }}>Vyber logo strediska</label>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {LOGA.map((l) => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => setVybraneLogo(l)}
-                style={{
-                  fontSize: 24,
-                  width: 44,
-                  height: 44,
-                  borderRadius: 8,
-                  border: vybraneLogo === l ? "2px solid #2f9e6e" : "1px solid #2a3744",
-                  background: vybraneLogo === l ? "rgba(47,158,110,0.2)" : "#0f1720",
-                  cursor: "pointer",
-                }}
-              >
-                {l}
-              </button>
-            ))}
+            {LOGA.map((l) => {
+              const jeVybrane = vybraneLogo === l.kluc;
+              return (
+                <button
+                  key={l.kluc}
+                  type="button"
+                  onClick={() => setVybraneLogo(l.kluc)}
+                  title={l.popis}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 44,
+                    height: 44,
+                    borderRadius: 8,
+                    border: jeVybrane ? "2px solid #2f9e6e" : "1px solid #2a3744",
+                    background: jeVybrane ? "rgba(47,158,110,0.2)" : "#0f1720",
+                    color: jeVybrane ? "#3ad08a" : "#cfe0ef",
+                    cursor: "pointer",
+                  }}
+                >
+                  <l.Ikona size={22} strokeWidth={1.9} />
+                </button>
+              );
+            })}
           </div>
           <input
             type="text"
