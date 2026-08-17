@@ -28,7 +28,6 @@ import PocasiePanel from "../components/PocasiePanel";
 import { hernyDatum } from "../lib/hernyCas";
 import { jeZimnyMesiac, sezonnyPrehlad, jeMedzisezona } from "../lib/katalog";
 import { vytvorNotifikacie } from "../lib/notifikacie";
-import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 
 const LOGA = ["🏔️", "🚡", "⛷️", "🎿", "🏂", "🗻", "❄️", "🏨", "🎫", "🌲", "🏕️", "🚠", "🛷", "⛰️", "🥌", "🧊"];
 
