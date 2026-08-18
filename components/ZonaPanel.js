@@ -5,11 +5,12 @@ import { hernyDatum } from "../lib/hernyCas";
 import { CableCar, Building2, Users, Star, Lock, Image as ImageIcon, ArrowRight } from "lucide-react";
 
 // Obrázky zón
+// Obrázky zón podľa sezóny. Ak letný chýba, použije sa zimný.
 const OBRAZKY_ZON = {
-  luka: "/zona-luka.jpg",
-  udolie: "/zona-udolie.jpg",
-  hory: "/zona-hory.jpg",
-  ladovec: "/zona-ladovec.jpg",
+  luka: { zima: "/zona-luka.jpg", leto: "/zona-luka2.jpg" },
+  udolie: { zima: "/zona-udolie.jpg", leto: null },
+  hory: { zima: "/zona-hory.jpg", leto: null },
+  ladovec: { zima: "/zona-ladovec.jpg", leto: null },
 };
 
 // Pevná výška panela — aby pri prepínaní zón nepodskakoval
