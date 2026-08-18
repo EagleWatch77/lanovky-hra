@@ -12,7 +12,12 @@ const OBRAZKY_ZON = {
 };
 
 export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
-  const [aktivnaZona, setAktivnaZona] = useState("luka");
+  const [index, setIndex] = useState(0);
+  const aktivnaZona = PORADIE_ZON[index];
+
+  function dalsiaZona() {
+    setIndex((i) => (i + 1) % PORADIE_ZON.length);
+  }
 
   function jeOdomknuta(kluc) {
     if (kluc === "luka") return true;
@@ -86,67 +91,33 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
 
   return (
     <div style={karta}>
-      {/* Prepínač zón */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 11 }}>
-        {PORADIE_ZON.map((kluc) => {
-          const z = ZONY[kluc];
-          const aktivna = kluc === aktivnaZona;
-          const dostupna = jeOdomknuta(kluc);
-          return (
-            <button
-              key={kluc}
-              onClick={() => setAktivnaZona(kluc)}
-              title={dostupna ? z.nazov : `${z.nazov} — zatiaľ zamknuté`}
-              style={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "8px 2px",
-                borderRadius: 10,
-                border: "none",
-                cursor: "pointer",
-                fontSize: 15,
-                lineHeight: 1,
-                background: aktivna ? "linear-gradient(160deg,#4aa3ee,#2f92e6)" : "rgba(120,160,205,0.10)",
-                opacity: dostupna ? 1 : 0.45,
-                boxShadow: aktivna ? "0 6px 14px rgba(47,146,230,0.3)" : "none",
-              }}
-            >
-              {z.ikona}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Názov zóny v strede */}
-      <div style={{ textAlign: "center", marginBottom: 10 }}>
+      {/* Hlavička: názov vľavo, stav vpravo */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
         <div
           style={{
             fontFamily: "var(--font-sora), system-ui, sans-serif",
             fontWeight: 800,
-            fontSize: 19,
+            fontSize: 18,
             letterSpacing: "0.02em",
             color: "#1b2c42",
             lineHeight: 1.1,
+            whiteSpace: "nowrap",
           }}
         >
           {zona.nazov}
         </div>
-        <div style={{ marginTop: 5 }}>
-          {odomknuta ? (
-            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#1f8a49", background: "#e3f6ea", border: "1px solid rgba(51,189,99,0.3)", padding: "3px 9px", borderRadius: 8 }}>
-              AKTÍVNA
-            </span>
-          ) : (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#8a94a3", background: "rgba(120,160,205,0.12)", padding: "3px 9px", borderRadius: 8 }}>
-              <Lock size={10} /> ZAMKNUTÁ
-            </span>
-          )}
-        </div>
+        {odomknuta ? (
+          <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#1f8a49", background: "#e3f6ea", border: "1px solid rgba(51,189,99,0.3)", padding: "3px 9px", borderRadius: 8, flexShrink: 0 }}>
+            AKTÍVNA
+          </span>
+        ) : (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#8a94a3", background: "rgba(120,160,205,0.12)", padding: "3px 9px", borderRadius: 8, flexShrink: 0 }}>
+            <Lock size={10} /> ZAMKNUTÁ
+          </span>
+        )}
       </div>
 
-      {/* Obrázok zóny */}
+      {/* Obrázok zóny so šípkou na prepínanie */}
       <div
         style={{
           height: 130,
@@ -180,6 +151,35 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
             <span style={{ fontSize: 10 }}>Obrázok zatiaľ chýba</span>
           </div>
         )}
+
+        {/* Šípka na ďalšiu zónu */}
+        <button
+          onClick={dalsiaZona}
+          title="Ďalšia zóna"
+          style={{
+            position: "absolute",
+            right: 8,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: 28,
+            height: 28,
+            borderRadius: 9,
+            border: "1px solid rgba(120,160,205,0.28)",
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            color: "#5a6f88",
+            fontSize: 15,
+            lineHeight: 1,
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(60,110,160,0.18)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          »
+        </button>
       </div>
 
       {odomknuta ? (
