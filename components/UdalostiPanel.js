@@ -104,10 +104,7 @@ export default function UdalostiPanel() {
                 display: "flex",
                 alignItems: "flex-start",
                 gap: 9,
-                padding: "8px 9px",
-                borderRadius: 11,
-                background: "rgba(120,160,205,0.06)",
-                border: "1px solid rgba(120,160,205,0.14)",
+         padding: "2px 0",
               }}
             >
               <span
