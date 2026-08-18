@@ -22,6 +22,10 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravov
     setIndex((i) => (i + 1) % PORADIE_ZON.length);
   }
 
+  function predoslaZona() {
+    setIndex((i) => (i - 1 + PORADIE_ZON.length) % PORADIE_ZON.length);
+  }
+
   function jeOdomknuta(kluc) {
     if (kluc === "luka") return true;
     if (kluc === "udolie") return !!stanica.udolie_odomknute;
