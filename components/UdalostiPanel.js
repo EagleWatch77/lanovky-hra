@@ -41,7 +41,11 @@ export default function UdalostiPanel() {
     height: VYSKA_PANELA,
     boxSizing: "border-box",
     overflow: "hidden",
+    position: "relative",
   };
+
+  const prvaUdalost = UDALOSTI[0];
+  const obrazok = prvaUdalost ? OBRAZKY[prvaUdalost.typ] : null;
 
   return (
     <div style={karta}>
