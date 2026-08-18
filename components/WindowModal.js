@@ -26,7 +26,7 @@ export default function WindowModal({ title, onClose, children, width = 480 }) {
         style={{
           width,
           maxWidth: "100%",
-          maxHeight: "85vh",
+          height: "80vh",
           display: "flex",
           flexDirection: "column",
           background: "rgba(255,255,255,0.92)",
