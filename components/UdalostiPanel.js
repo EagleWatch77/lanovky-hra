@@ -166,7 +166,7 @@ export default function UdalostiPanel({ onOtvorZamestnanci }) {
 <button
           onClick={onOtvorZamestnanci}
           style={{
-            width: "100%",
+            alignSelf: "flex-start",
             marginTop: 10,
             padding: "9px 12px",
             borderRadius: 10,
