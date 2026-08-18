@@ -447,7 +447,7 @@ export default function PrehladPage() {
       )}
 
       {/* Plávajúci info panel — počasie vždy viditeľné */}
-      <div style={{ position: "absolute", top: 70, right: 12, width: panelOtvoreny ? 250 : 110, maxHeight: "calc(100vh - 84px)", overflowY: "auto", zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ position: "absolute", top: 70, right: 12, width: panelOtvoreny ? 250 : 110, zIndex: 3, display: "flex", flexDirection: "column", gap: 8 }}>
         <PocasiePanel kompaktne={!panelOtvoreny} />
         {panelOtvoreny && <ZonaPanel stanica={stanica} budovy={budovy} efektivitaBudovy={efektivitaBudovy} onSpravovatZonu={() => setOkno("budovy")} />}
        
