@@ -145,7 +145,7 @@ export default function UdalostiPanel() {
                   >
                     {u.nadpis}
                   </span>
-                  </span>
+                  
                   <span
                     style={{
                       fontFamily: "var(--font-sora), system-ui, sans-serif",
