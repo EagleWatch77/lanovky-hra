@@ -46,7 +46,25 @@ export default function UdalostiPanel({ stanica, onOtvorZamestnanci }) {
     position: "relative",
   };
 
-  const [index, setIndex] = useState(0);
+   const [index, setIndex] = useState(0);
+
+  // Skutočné udalosti podľa stavu strediska
+  const UDALOSTI = [];
+  if (stanica) {
+    const hDatum = hernyDatum(new Date());
+    const jeDecember = hDatum.getMonth() === 11;
+    const maNavrh = stanica.odbory_navrh_rok === hDatum.getFullYear();
+    const jeRozhodnute = !!stanica.odbory_rozhodnutie;
+
+    if (stanica.udolie_odomknute && jeDecember && maNavrh && !jeRozhodnute) {
+      UDALOSTI.push({
+        typ: "odbory",
+        nadpis: "Odbory žiadajú zvýšenie",
+        text: `Zamestnanci požadujú +${stanica.odbory_navrh_percento} % k platom od nového roka. Rozhodni sa do konca decembra.`,
+        cas: "december",
+      });
+    }
+  }
   const viacUdalosti = UDALOSTI.length > 1;
 
   function dalsia() {
