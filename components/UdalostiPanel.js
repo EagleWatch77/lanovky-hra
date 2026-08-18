@@ -131,7 +131,12 @@ export default function UdalostiPanel({ stanica, onOtvorZamestnanci }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-       {[aktualna].map((u, i) => {
+        {!aktualna && (
+          <div style={{ fontSize: 12, color: "#8a94a3", padding: "10px 0", lineHeight: 1.45 }}>
+            Žiadne nové udalosti.
+          </div>
+        )}
+        {aktualna && [aktualna].map((u, i) => {
           const s = STYLY[u.typ] || STYLY.novinka;
           const Ikona = s.Ikona;
           return (
