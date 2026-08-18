@@ -1,13 +1,14 @@
 "use client";
 import { useState } from "react";
-import { ZONY, PORADIE_ZON, LANOVKY_TYPY, KATEGORIE } from "../lib/katalog";
-import { CableCar, Building2, Users, Coins, Wrench, Star, Lock, ChevronRight } from "lucide-react";
+import { ZONY, PORADIE_ZON, LANOVKY_TYPY } from "../lib/katalog";
+import { CableCar, Building2, Users, Wrench, Star, Lock, Image as ImageIcon } from "lucide-react";
 
-const POPISY_ZON = {
-  luka: "Vstupná zóna strediska. Mierne svahy, parkovisko a bufet — tu začína cesta každého návštevníka.",
-  udolie: "Srdce strediska s hotelmi, servisom a zázemím pre úpravu zjazdoviek.",
-  hory: "Vyššie položená zóna s prístupom na vrchol. Náročnejší terén, vyššia prestíž.",
-  ladovec: "Ľadovcová zóna s celoročným snehom. Prémiové prostredie pre náročných.",
+// Obrázky zón — doplň ďalšie, keď ich vytvoríš
+const OBRAZKY_ZON = {
+  luka: "/zona-zima.png",
+  udolie: null,
+  hory: null,
+  ladovec: null,
 };
 
 export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
@@ -23,31 +24,27 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
   const zona = ZONY[aktivnaZona];
   const odomknuta = jeOdomknuta(aktivnaZona);
   const limity = zona.limity || {};
+  const obrazok = OBRAZKY_ZON[aktivnaZona];
 
   // --- REÁLNE čísla z budov ---
   const vZone = budovy.filter((b) => b.zona === aktivnaZona && b.stav !== "zrusene");
   const hotove = vZone.filter((b) => b.stav === "hotovo");
   const voVystavbe = vZone.filter((b) => b.stav === "vo_vystavbe");
 
-  // Lanovky: koľko postavených vs. koľko slotov na lanovky v zóne
   const lanovkoveKluce = Object.keys(limity).filter((k) => LANOVKY_TYPY[k]);
   const lanovkySloty = lanovkoveKluce.reduce((s, k) => s + limity[k], 0);
   const lanovkyPostavene = vZone.filter((b) => b.kategoria === "lanovka").length;
 
-  // Budovy celkovo: obsadené sloty vs. všetky sloty zóny
   const vsetkySloty = Object.values(limity).reduce((a, b) => a + b, 0);
 
-  // Kapacita lanoviek (osôb/h) — z hotových
   const kapacita = hotove
     .filter((b) => b.kategoria === "lanovka")
     .reduce((s, b) => s + (LANOVKY_TYPY[b.typ]?.kapacita || 0), 0);
 
-  // Priemerná efektivita (obsadenosť personálom) v zóne
   const priemEfekt = hotove.length
     ? Math.round((hotove.reduce((s, b) => s + efektivitaBudovy(b), 0) / hotove.length) * 100)
     : 0;
 
-  // Hviezdičky podľa efektivity (zatiaľ zástupné za "spokojnosť zóny")
   const hviezdy = Math.max(0, Math.min(5, Math.round(priemEfekt / 20)));
 
   const karta = {
@@ -90,7 +87,7 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
   return (
     <div style={karta}>
       {/* Prepínač zón */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
+      <div style={{ display: "flex", gap: 4, marginBottom: 11 }}>
         {PORADIE_ZON.map((kluc) => {
           const z = ZONY[kluc];
           const aktivna = kluc === aktivnaZona;
@@ -103,43 +100,86 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
               style={{
                 flex: 1,
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
-                gap: 2,
-                padding: "7px 2px",
+                justifyContent: "center",
+                padding: "8px 2px",
                 borderRadius: 10,
                 border: "none",
                 cursor: "pointer",
+                fontSize: 15,
+                lineHeight: 1,
                 background: aktivna ? "linear-gradient(160deg,#4aa3ee,#2f92e6)" : "rgba(120,160,205,0.10)",
-                color: aktivna ? "#fff" : dostupna ? "#5a6f88" : "#aebccd",
+                opacity: dostupna ? 1 : 0.45,
                 boxShadow: aktivna ? "0 6px 14px rgba(47,146,230,0.3)" : "none",
               }}
             >
-              <span style={{ fontSize: 14, lineHeight: 1, opacity: dostupna ? 1 : 0.5 }}>{z.ikona}</span>
-              <span style={{ fontSize: 9.5, fontWeight: 600 }}>{z.nazov}</span>
+              {z.ikona}
             </button>
           );
         })}
       </div>
 
-      {/* Hlavička zóny */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-        <div style={{ fontFamily: "var(--font-sora), system-ui, sans-serif", fontWeight: 800, fontSize: 17, color: "#1b2c42" }}>
+      {/* Názov zóny v strede */}
+      <div style={{ textAlign: "center", marginBottom: 10 }}>
+        <div
+          style={{
+            fontFamily: "var(--font-sora), system-ui, sans-serif",
+            fontWeight: 800,
+            fontSize: 19,
+            letterSpacing: "0.02em",
+            color: "#1b2c42",
+            lineHeight: 1.1,
+          }}
+        >
           {zona.nazov}
         </div>
-        {odomknuta ? (
-          <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#1f8a49", background: "#e3f6ea", border: "1px solid rgba(51,189,99,0.3)", padding: "4px 8px", borderRadius: 8 }}>
-            AKTÍVNA
-          </span>
-        ) : (
-          <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#8a94a3", background: "rgba(120,160,205,0.12)", padding: "4px 8px", borderRadius: 8 }}>
-            <Lock size={10} /> ZAMKNUTÁ
-          </span>
-        )}
+        <div style={{ marginTop: 5 }}>
+          {odomknuta ? (
+            <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#1f8a49", background: "#e3f6ea", border: "1px solid rgba(51,189,99,0.3)", padding: "3px 9px", borderRadius: 8 }}>
+              AKTÍVNA
+            </span>
+          ) : (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#8a94a3", background: "rgba(120,160,205,0.12)", padding: "3px 9px", borderRadius: 8 }}>
+              <Lock size={10} /> ZAMKNUTÁ
+            </span>
+          )}
+        </div>
       </div>
 
-      <div style={{ fontSize: 11.5, color: "#5a6f88", lineHeight: 1.45, marginBottom: 6 }}>
-        {POPISY_ZON[aktivnaZona]}
+      {/* Obrázok zóny */}
+      <div
+        style={{
+          height: 130,
+          borderRadius: 13,
+          overflow: "hidden",
+          border: "1px solid rgba(120,160,205,0.22)",
+          boxShadow: "0 4px 14px rgba(60,110,160,0.12)",
+          marginBottom: 10,
+          background: "linear-gradient(180deg,#d9ecf9,#eaf3fa)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        {obrazok ? (
+          <img
+            src={obrazok}
+            alt={zona.nazov}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+              filter: odomknuta ? "none" : "grayscale(0.7) brightness(0.9)",
+            }}
+          />
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, color: "#aebccd" }}>
+            <ImageIcon size={22} strokeWidth={1.8} />
+            <span style={{ fontSize: 10 }}>Obrázok zatiaľ chýba</span>
+          </div>
+        )}
       </div>
 
       {odomknuta ? (
@@ -186,14 +226,9 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
               <span style={{ color: "#d3ddea" }}>{"★".repeat(5 - hviezdy)}</span>
             </span>
           </div>
-
-          {/* Zatiaľ bez prepočtu — pripravené na napojenie */}
-          <div style={{ marginTop: 8, padding: "8px 10px", borderRadius: 10, background: "rgba(120,160,205,0.08)", fontSize: 10.5, color: "#8a94a3", lineHeight: 1.4 }}>
-            Denný príjem a spokojnosť za zónu zatiaľ nie sú prepočítané samostatne — doplníme neskôr.
-          </div>
         </>
       ) : (
-        <div style={{ padding: "18px 10px", textAlign: "center", fontSize: 12, color: "#8a94a3" }}>
+        <div style={{ padding: "16px 10px", textAlign: "center", fontSize: 12, color: "#8a94a3" }}>
           Táto zóna sa zatiaľ neodomkla.
         </div>
       )}
