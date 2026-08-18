@@ -6,7 +6,7 @@ import { CableCar, Building2, Users, Wrench, Star, Lock, Image as ImageIcon } fr
 // Obrázky zón — doplň ďalšie, keď ich vytvoríš
 const OBRAZKY_ZON = {
   luka: "/zona-zima.png",
-  udolie: null,
+  udolie: "/zona-udolie.png",
   hory: null,
   ladovec: null,
 };
