@@ -78,6 +78,14 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
   const sucetEfektivit = hotove.reduce((s, b) => s + efektivitaBudovy(b), 0);
   const priemernaEfektivita = hotove.length > 0 ? Math.round((sucetEfektivit / hotove.length) * 100) : 100;
   const sezona = vypocitajSezonu(hDatum);
+
+  // Aktuálne počasie (rovnaký výber úseku ako v PocasiePanel)
+  const pocasieVsetko = vypocitajDenoePocasie(hDatum);
+  const aktualnaHodina = new Date().getHours();
+  let indexUseku = 2;
+  if (aktualnaHodina < 10) indexUseku = 0;
+  else if (aktualnaHodina < 14) indexUseku = 1;
+  const pocasieTeraz = pocasieVsetko[indexUseku];
   const jedna = "#1b2c42"; // tmavomodrá pre jednofarebný režim
   const f = (farebna) => (VZHLAD_IKON === "farebne" ? farebna : jedna);
 
