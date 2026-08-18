@@ -102,6 +102,7 @@ export default function PrehladPage() {
   const [vybraneLogo, setVybraneLogo] = useState(PREDVOLENE_LOGO);
   const panelOtvoreny = true;
   const [okno, setOkno] = useState(null);
+  const [zamestnanciZalozka, setZamestnanciZalozka] = useState("prehlad");
   const [otvorenyPanel, setOtvorenyPanel] = useState(null); // null | "prestiz" | "spokojnost" | "datum" | "turisti"
   function prepnutPanel(nazov) {
     setOtvorenyPanel((p) => (p === nazov ? null : nazov));
