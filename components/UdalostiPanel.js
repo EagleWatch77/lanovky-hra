@@ -205,7 +205,8 @@ export default function UdalostiPanel({ stanica, onOtvorZamestnanci }) {
           );
         })}
       </div>
-<button
+{aktualna?.typ === "odbory" && (
+        <button
           onClick={onOtvorZamestnanci}
           style={{
             alignSelf: "flex-start",
