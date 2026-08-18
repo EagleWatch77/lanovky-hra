@@ -158,7 +158,7 @@ export default function UdalostiPanel() {
                     {u.cas}
                   </span>
                 </div>
-                <div style={{ fontSize: 10.5, color: "#5a6f88", lineHeight: 1.35, marginTop: 2 }}>
+                    <div style={{ fontSize: 12, color: "#5a6f88", lineHeight: 1.45, marginTop: 5 }}>
                   {u.text}
                 </div>
               </div>
