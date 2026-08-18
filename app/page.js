@@ -420,8 +420,8 @@ export default function PrehladPage() {
 {/* Udalosti, misie a rebríček — dole vedľa seba, zarovnané na spodnú hranu */}
       {panelOtvoreny && (
         <div style={{ position: "absolute", bottom: 12, right: 274, width: 710, zIndex: 3, display: "flex", alignItems: "flex-end", gap: 10 }}>
-          <div style={{ flex: 1 }}>
-            <UdalostiPanel />
+         <div style={{ flex: 1 }}>
+            <RebricekPanel stanica={stanica} onOtvorRebricek={() => setOkno("rebricek")} />
           </div>
           <div style={{ flex: 1 }}>
             <MisiePanel />
