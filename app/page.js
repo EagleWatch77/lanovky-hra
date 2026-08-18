@@ -434,17 +434,15 @@ export default function PrehladPage() {
       >
         {panelOtvoreny ? "›" : "‹"}
       </button>
-{/* Týždenné misie — naľavo od pravého stĺpca */}
+{/* Misie a rebríček — dole vedľa seba, zarovnané na spodnú hranu */}
       {panelOtvoreny && (
-        <div style={{ position: "absolute", top: 70, right: 274, width: 230, zIndex: 3 }}>
-          <MisiePanel />
-        </div>
-      )}
-
-      {/* Rebríček — vľavo od pravého stĺpca, zarovnaný na spodnú hranu */}
-      {panelOtvoreny && (
-        <div style={{ position: "absolute", bottom: 12, right: 274, width: 230, zIndex: 3 }}>
-          <RebricekPanel stanica={stanica} onOtvorRebricek={() => setOkno("rebricek")} />
+        <div style={{ position: "absolute", bottom: 12, right: 274, width: 470, zIndex: 3, display: "flex", alignItems: "flex-end", gap: 10 }}>
+          <div style={{ flex: 1 }}>
+            <MisiePanel />
+          </div>
+          <div style={{ flex: 1 }}>
+            <RebricekPanel stanica={stanica} onOtvorRebricek={() => setOkno("rebricek")} />
+          </div>
         </div>
       )}
 
