@@ -436,7 +436,7 @@ export default function PrehladPage() {
 
       {/* Rebríček — zarovnaný na spodnú hranu */}
       <div style={{ position: "absolute", bottom: 12, right: 12, width: 250, zIndex: 3 }}>
-         <UdalostiPanel />
+       <UdalostiPanel onOtvorZamestnanci={() => setOkno("zamestnanci")} />
       </div>
         
     </div>
