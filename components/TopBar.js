@@ -136,10 +136,19 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
       />
       <Stat
         Ikona={sezona === "ZIMA" ? Snowflake : Sun}
-        farbaIkony={f(sezona === "ZIMA" ? "#2a9fd6" : "#e0a021")}
+        farbaIkony={sezona === "ZIMA" ? "#2a9fd6" : "#e0a021"}
         iconBg="rgba(78,197,245,0.18)"
         nazov="Sezóna"
         value={sezona}
+      />
+      <Stat
+        Ikona={Cloud}
+        farbaIkony={pocasieTeraz?.lanovkyZatvorene ? "#d64545" : "#5a8fbf"}
+        iconBg="rgba(120,160,205,0.16)"
+        nazov={`Počasie — ${pocasieTeraz?.nazov ?? ""}`}
+        value={`${pocasieTeraz?.teplota ?? "–"}° · ${pocasieTeraz?.vietor ?? "–"} m/s`}
+        onClick={onKliknutePocasie}
+        aktivny={pocasieRozbalene}
       />
     </div>
   );
