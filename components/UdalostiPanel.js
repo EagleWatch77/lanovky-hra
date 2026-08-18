@@ -223,8 +223,9 @@ export default function UdalostiPanel({ stanica, onOtvorZamestnanci }) {
             boxShadow: "0 8px 16px rgba(47,146,230,0.32)",
           }}
         >
-          Prejsť na odbory
+         Prejsť na odbory
         </button>
+        )}
       </div>
     </div>
   );
