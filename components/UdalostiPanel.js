@@ -7,7 +7,7 @@ const UDALOSTI = [
   {
     typ: "odbory",
     nadpis: "Odbory žiadajú zvýšenie",
-    text: "Zamestnanci požadujú +5 % k platom pred koncom roka.",
+    text: "Zamestnanci požadujú zvýšenie platov od nového roka.",
     cas: "2 d",
   },
 ];
