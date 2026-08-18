@@ -45,8 +45,18 @@ export default function UdalostiPanel({ onOtvorZamestnanci }) {
     position: "relative",
   };
 
-  const prvaUdalost = UDALOSTI[0];
-  const obrazok = prvaUdalost ? OBRAZKY[prvaUdalost.typ] : null;
+  const [index, setIndex] = useState(0);
+  const viacUdalosti = UDALOSTI.length > 1;
+
+  function dalsia() {
+    setIndex((i) => (i + 1) % UDALOSTI.length);
+  }
+  function predosla() {
+    setIndex((i) => (i - 1 + UDALOSTI.length) % UDALOSTI.length);
+  }
+
+  const aktualna = UDALOSTI[index];
+  const obrazok = aktualna ? OBRAZKY[aktualna.typ] : null;
 
   return (
     <div style={karta}>
