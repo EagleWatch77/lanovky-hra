@@ -138,14 +138,13 @@ export default function UdalostiPanel() {
                     style={{
                       fontFamily: "var(--font-sora), system-ui, sans-serif",
                       fontWeight: 700,
-                      fontSize: 11.5,
+                      fontSize: 14,
+                      lineHeight: 1.25,
                       color: "#1b2c42",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
                     }}
                   >
                     {u.nadpis}
+                  </span>
                   </span>
                   <span
                     style={{
