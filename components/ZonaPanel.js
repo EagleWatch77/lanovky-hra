@@ -1,15 +1,18 @@
 "use client";
 import { useState } from "react";
 import { ZONY, PORADIE_ZON, LANOVKY_TYPY } from "../lib/katalog";
-import { CableCar, Building2, Users, Wrench, Star, Lock, Image as ImageIcon } from "lucide-react";
+import { CableCar, Building2, Users, Star, Lock, Image as ImageIcon } from "lucide-react";
 
-// Obrázky zón — doplň ďalšie, keď ich vytvoríš
+// Obrázky zón
 const OBRAZKY_ZON = {
   luka: "/zona-zima.png",
   udolie: "/zona-udolie.png",
   hory: "/zona-hory.png",
   ladovec: "/zona-ladovec.png",
 };
+
+// Pevná výška panela — aby pri prepínaní zón nepodskakoval
+const VYSKA_PANELA = 340;
 
 export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
   const [index, setIndex] = useState(0);
@@ -34,7 +37,6 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
   // --- REÁLNE čísla z budov ---
   const vZone = budovy.filter((b) => b.zona === aktivnaZona && b.stav !== "zrusene");
   const hotove = vZone.filter((b) => b.stav === "hotovo");
-  const voVystavbe = vZone.filter((b) => b.stav === "vo_vystavbe");
 
   const lanovkoveKluce = Object.keys(limity).filter((k) => LANOVKY_TYPY[k]);
   const lanovkySloty = lanovkoveKluce.reduce((s, k) => s + limity[k], 0);
@@ -60,6 +62,10 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
     borderRadius: 18,
     boxShadow: "0 10px 30px rgba(52,100,150,0.16)",
     padding: 12,
+    height: VYSKA_PANELA,
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
   };
 
   const riadok = {
@@ -92,7 +98,7 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
   return (
     <div style={karta}>
       {/* Hlavička: názov vľavo, stav vpravo */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 10, flexShrink: 0 }}>
         <div
           style={{
             fontFamily: "var(--font-sora), system-ui, sans-serif",
@@ -121,11 +127,12 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
       <div
         style={{
           height: 130,
+          flexShrink: 0,
           borderRadius: 13,
           overflow: "hidden",
           border: "1px solid rgba(120,160,205,0.22)",
           boxShadow: "0 4px 14px rgba(60,110,160,0.12)",
-          marginBottom: 10,
+          marginBottom: 8,
           background: "linear-gradient(180deg,#d9ecf9,#eaf3fa)",
           display: "flex",
           alignItems: "center",
@@ -152,7 +159,6 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
           </div>
         )}
 
-        {/* Šípka na ďalšiu zónu */}
         <button
           onClick={dalsiaZona}
           title="Ďalšia zóna"
@@ -182,56 +188,43 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
         </button>
       </div>
 
-      {odomknuta ? (
-        <>
-          <div style={riadok}>
-            <span style={ikonaBox}><CableCar size={14} /></span>
-            <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Lanovky a vleky</span>
-            <span style={hodnota}>{lanovkyPostavene} / {lanovkySloty}</span>
-          </div>
-
-          <div style={riadok}>
-            <span style={ikonaBox}><Building2 size={14} /></span>
-            <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Obsadené sloty</span>
-            <span style={hodnota}>{vZone.length} / {vsetkySloty}</span>
-          </div>
-
-          <div style={riadok}>
-            <span style={ikonaBox}><Users size={14} /></span>
-            <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Kapacita prepravy</span>
-            <span style={hodnota}>{kapacita} os./h</span>
-          </div>
-
-          <div style={riadok}>
-            <span style={ikonaBox}><Wrench size={14} /></span>
-            <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Obsadenosť personálom</span>
-            <span style={{ ...hodnota, color: priemEfekt >= 100 ? "#2ca24e" : priemEfekt >= 60 ? "#c9930f" : "#d64545" }}>
-              {priemEfekt} %
-            </span>
-          </div>
-
-          {voVystavbe.length > 0 && (
+      {/* Štatistiky */}
+      <div style={{ flex: 1, overflow: "hidden" }}>
+        {odomknuta ? (
+          <>
             <div style={riadok}>
-              <span style={{ ...ikonaBox, background: "#fff4e0", color: "#c9830f" }}><Building2 size={14} /></span>
-              <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Vo výstavbe</span>
-              <span style={{ ...hodnota, color: "#c9830f" }}>{voVystavbe.length}</span>
+              <span style={ikonaBox}><CableCar size={14} /></span>
+              <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Lanovky a vleky</span>
+              <span style={hodnota}>{lanovkyPostavene} / {lanovkySloty}</span>
             </div>
-          )}
 
-          <div style={{ ...riadok, borderBottom: "none" }}>
-            <span style={ikonaBox}><Star size={14} /></span>
-            <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Hodnotenie zóny</span>
-            <span style={{ fontSize: 13, letterSpacing: 1 }}>
-              <span style={{ color: "#efb23c" }}>{"★".repeat(hviezdy)}</span>
-              <span style={{ color: "#d3ddea" }}>{"★".repeat(5 - hviezdy)}</span>
-            </span>
+            <div style={riadok}>
+              <span style={ikonaBox}><Building2 size={14} /></span>
+              <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Obsadené sloty</span>
+              <span style={hodnota}>{vZone.length} / {vsetkySloty}</span>
+            </div>
+
+            <div style={riadok}>
+              <span style={ikonaBox}><Users size={14} /></span>
+              <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Kapacita prepravy</span>
+              <span style={hodnota}>{kapacita} os./h</span>
+            </div>
+
+            <div style={{ ...riadok, borderBottom: "none" }}>
+              <span style={ikonaBox}><Star size={14} /></span>
+              <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Hodnotenie zóny</span>
+              <span style={{ fontSize: 13, letterSpacing: 1 }}>
+                <span style={{ color: "#efb23c" }}>{"★".repeat(hviezdy)}</span>
+                <span style={{ color: "#d3ddea" }}>{"★".repeat(5 - hviezdy)}</span>
+              </span>
+            </div>
+          </>
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", fontSize: 12, color: "#8a94a3", textAlign: "center", padding: "0 10px" }}>
+            Táto zóna sa zatiaľ neodomkla.
           </div>
-        </>
-      ) : (
-        <div style={{ padding: "16px 10px", textAlign: "center", fontSize: 12, color: "#8a94a3" }}>
-          Táto zóna sa zatiaľ neodomkla.
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
