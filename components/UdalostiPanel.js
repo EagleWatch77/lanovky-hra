@@ -167,10 +167,7 @@ export default function UdalostiPanel() {
           );
         })}
       </div>
-
-      <div style={{ marginTop: 8, fontSize: 9.5, color: "#aebccd", lineHeight: 1.35 }}>
-        Udalosti zatiaľ nie sú napojené na reálne dáta.
-      </div>
+</div>
     </div>
   );
 }
