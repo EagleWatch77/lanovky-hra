@@ -31,7 +31,7 @@ const OBRAZKY = {
   novinka: null,
 };
 
-export default function UdalostiPanel({ onOtvorZamestnanci }) {
+export default function UdalostiPanel({ stanica, onOtvorZamestnanci }) {
   const karta = {
     background: "rgba(255,255,255,0.74)",
     backdropFilter: "blur(14px)",
