@@ -306,7 +306,7 @@ export default function PrehladPage() {
 
       {okno === "zamestnanci" && (
         <WindowModal title="👷 Zamestnanci" onClose={() => setOkno(null)} width={480}>
-          <ZamestnanciOkno stanica={stanica} budovy={budovy} rozhodnutieOdbory={rozhodnutieOdbory} />
+         <ZamestnanciOkno stanica={stanica} budovy={budovy} rozhodnutieOdbory={rozhodnutieOdbory} uvodnaZalozka={zamestnanciZalozka} />
         </WindowModal>
       )}
 
