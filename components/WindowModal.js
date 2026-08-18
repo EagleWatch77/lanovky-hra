@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
-export default function WindowModal({ title, onClose, children, width = 480 }) {
+export default function WindowModal({ title, onClose, children, width }) {
+  width = 620;
   const [hoverZavriet, setHoverZavriet] = useState(false);
 
   return (
