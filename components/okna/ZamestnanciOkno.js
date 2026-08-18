@@ -5,8 +5,8 @@ import { KATEGORIE, zamestnanciPotrebni, PLAT_ZA_HODINU } from "../../lib/katalo
 import { hernyDatum } from "../../lib/hernyCas";
 import { cardStyle, buttonStyle, inputStyle } from "../../lib/styles";
 
-export default function ZamestnanciOkno({ stanica, budovy, rozhodnutieOdbory }) {
-  const [zalozka, setZalozka] = useState("prehlad");
+export default function ZamestnanciOkno({ stanica, budovy, rozhodnutieOdbory, uvodnaZalozka = "prehlad" }) {
+  const [zalozka, setZalozka] = useState(uvodnaZalozka);
   const [vlastnePercento, setVlastnePercento] = useState("");
 
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
