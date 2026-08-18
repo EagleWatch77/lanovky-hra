@@ -3,17 +3,6 @@ import { useState } from "react";
 import { hernyDatum } from "../lib/hernyCas";
 import { Bell, Users, Trophy, Snowflake, Megaphone } from "lucide-react";
 
-// ZATIAĽ ZÁSTUPNÉ UDALOSTI — neskôr napojíme na reálne herné eventy.
-// typ určuje farbu a ikonu: "odbory" | "milnik" | "sezona" | "novinka"
-const UDALOSTI = [
-  {
-    typ: "odbory",
-    nadpis: "Odbory žiadajú zvýšenie",
-    text: "Zamestnanci požadujú zvýšenie platov od nového roka.",
-    cas: "2 d",
-  },
-];
-
 const STYLY = {
   odbory: { Ikona: Users, farba: "#c9830f", pozadie: "#fff4e0" },
   milnik: { Ikona: Trophy, farba: "#2ca24e", pozadie: "#e3f6ea" },
