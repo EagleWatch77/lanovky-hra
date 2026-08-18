@@ -30,6 +30,7 @@ import { cardStyle, buttonStyle, inputStyle } from "../lib/styles";
 import { LOGA, PREDVOLENE_LOGO, ikonaPodlaKluca } from "../lib/loga";
 import ZonaPanel from "../components/ZonaPanel";
 import RebricekPanel from "../components/RebricekPanel";
+import MisiePanel from "../components/MisiePanel";
 
 export default function PrehladPage() {
   const {
