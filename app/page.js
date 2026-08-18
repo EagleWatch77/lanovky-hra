@@ -229,7 +229,7 @@ export default function PrehladPage() {
         onOtvorRebricek={() => setOkno("rebricek")}
         onOtvorInfo={() => setOkno("info")}
         onOtvorAliancia={() => setOkno("aliancia")}
-        onOtvorZamestnanci={() => setOkno("zamestnanci")}
+     onOtvorZamestnanci={() => { setZamestnanciZalozka("prehlad"); setOkno("zamestnanci"); }}
         onOtvorCeny={() => setOkno("ceny")}
       />
 
