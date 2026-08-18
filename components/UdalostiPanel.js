@@ -21,6 +21,14 @@ const STYLY = {
 
 const VYSKA_PANELA = 210;
 
+// Obrázky podľa typu udalosti — doplň ďalšie, keď ich vytvoríš
+const OBRAZKY = {
+  odbory: "/udalosti-odbory.png",
+  milnik: null,
+  sezona: null,
+  novinka: null,
+};
+
 export default function UdalostiPanel() {
   const karta = {
     background: "rgba(255,255,255,0.74)",
