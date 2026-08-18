@@ -16,14 +16,21 @@ const kartaStyl = {
 };
 
 const sipkaStyl = (disabled) => ({
+  width: 22,
+  height: 22,
+  flexShrink: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   background: "transparent",
   border: "none",
-  fontSize: 18,
+  borderRadius: 7,
+  fontSize: 14,
+  lineHeight: 1,
   color: "#5a6f88",
   cursor: disabled ? "default" : "pointer",
-  opacity: disabled ? 0.3 : 1,
-  padding: "0 4px",
-  lineHeight: 1,
+  opacity: disabled ? 0.25 : 1,
+  padding: 0,
 });
 
 export default function PocasiePanel({ kompaktne = false }) {
@@ -38,28 +45,32 @@ export default function PocasiePanel({ kompaktne = false }) {
   else if (aktualnaHodina < 14) indexUseku = 1;
   const pocasie = kompaktne ? [pocasieVsetko[indexUseku]] : pocasieVsetko;
 
+  // Krátky dátum, aby sa zmestil na jeden riadok
+  const kratkyDatum = zobrazovanyDatum.toLocaleDateString("sk-SK", { weekday: "short", day: "numeric", month: "numeric" });
+
   return (
     <div style={kartaStyl}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6, marginBottom: 9 }}>
         {!kompaktne && (
           <button onClick={() => setOffsetDni((d) => Math.max(-MAX_DNI, d - 1))} disabled={offsetDni <= -MAX_DNI} style={sipkaStyl(offsetDni <= -MAX_DNI)}>
             «
           </button>
         )}
-        <h3
+        <div
           style={{
-            margin: 0,
+            flex: 1,
+            textAlign: "center",
+            fontFamily: "var(--font-sora), system-ui, sans-serif",
+            fontWeight: 700,
             fontSize: 13,
             color: "#1b2c42",
-            fontWeight: 700,
-            fontFamily: "var(--font-sora), system-ui, sans-serif",
-            textAlign: "center",
-            flex: 1,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
-          {efektivnyOffset === 0 && "Dnes — "}
-          {zobrazovanyDatum.toLocaleDateString("sk-SK", { weekday: "long", day: "numeric", month: "long" })}
-        </h3>
+          {efektivnyOffset === 0 ? "Dnes" : kratkyDatum}
+        </div>
         {!kompaktne && (
           <button onClick={() => setOffsetDni((d) => Math.min(MAX_DNI, d + 1))} disabled={offsetDni >= MAX_DNI} style={sipkaStyl(offsetDni >= MAX_DNI)}>
             »
@@ -73,48 +84,69 @@ export default function PocasiePanel({ kompaktne = false }) {
             key={p.cas}
             style={{
               flex: 1,
+              minWidth: 0,
               textAlign: "center",
-              padding: "12px 6px",
-              borderLeft: i > 0 ? "1px solid rgba(120,160,205,0.25)" : "none",
+              padding: "2px 3px",
+              borderLeft: i > 0 ? "1px solid rgba(120,160,205,0.18)" : "none",
             }}
           >
-            <div style={{ fontSize: 12, color: "#5a6f88", fontWeight: 600 }}>{p.cas}</div>
-            <div style={{ fontSize: 32, margin: "6px 0" }}>{p.ikona}</div>
-            <div style={{ fontSize: 13, color: "#1b2c42", fontWeight: 600 }}>{p.nazov}</div>
-            <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4, color: "#1b2c42", fontFamily: "var(--font-sora), system-ui, sans-serif" }}>
-              {p.teplota}°C
+            <div style={{ fontSize: 10.5, color: "#8a94a3", fontWeight: 600 }}>{p.cas}</div>
+            <div style={{ fontSize: 24, margin: "3px 0", lineHeight: 1 }}>{p.ikona}</div>
+            <div
+              style={{
+                fontSize: 9.5,
+                color: "#5a6f88",
+                fontWeight: 600,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              title={p.nazov}
+            >
+              {p.nazov}
             </div>
-            <div style={{ fontSize: 11, color: p.lanovkyZatvorene ? "#d64545" : "#5a6f88", fontWeight: 600, marginTop: 2 }}>
-              💨 {p.vietor} m/s{p.lanovkyZatvorene && " ⚠️"}
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                marginTop: 3,
+                color: "#1b2c42",
+                fontFamily: "var(--font-sora), system-ui, sans-serif",
+              }}
+            >
+              {p.teplota}°
+            </div>
+            <div style={{ fontSize: 9.5, color: p.lanovkyZatvorene ? "#d64545" : "#8a94a3", fontWeight: 600, marginTop: 2 }}>
+              {p.vietor} m/s{p.lanovkyZatvorene && " ⚠"}
             </div>
           </div>
         ))}
       </div>
 
       {(pocasieVsetko[0]?.jeBurka || pocasieVsetko[0]?.jeSilnyVietor) && (
-        <p
+        <div
           style={{
             color: "#c0392b",
-            fontSize: 12,
+            fontSize: 10.5,
             fontWeight: 600,
-            marginTop: 10,
-            marginBottom: 0,
+            lineHeight: 1.35,
+            marginTop: 9,
             background: "rgba(214,69,69,0.10)",
             border: "1px solid rgba(214,69,69,0.25)",
             borderRadius: 10,
-            padding: "8px 10px",
+            padding: "7px 9px",
           }}
         >
           {pocasieVsetko[0].jeBurka
-            ? "⛈️ Búrka — lanovky dnes zarobia o 25 % menej."
-            : "💨 Silný vietor — lanovky dnes zarobia o 66 % menej."}
-        </p>
+            ? "Búrka — lanovky dnes zarobia o 25 % menej."
+            : "Silný vietor — lanovky dnes zarobia o 66 % menej."}
+        </div>
       )}
 
       {!kompaktne && offsetDni !== 0 && (
-        <p style={{ color: "#5a6f88", fontSize: 11, marginTop: 8, marginBottom: 0 }}>
-          Iba dnešné počasie ovplyvňuje tvoj príjem — toto je len náhľad.
-        </p>
+        <div style={{ color: "#aebccd", fontSize: 9.5, marginTop: 8, lineHeight: 1.35 }}>
+          Iba dnešné počasie ovplyvňuje príjem — toto je náhľad.
+        </div>
       )}
     </div>
   );
