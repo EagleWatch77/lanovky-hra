@@ -164,6 +164,34 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravov
         )}
 
         <button
+          onClick={predoslaZona}
+          title="Predošlá zóna"
+          style={{
+            position: "absolute",
+            left: 8,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: 28,
+            height: 28,
+            borderRadius: 9,
+            border: "1px solid rgba(120,160,205,0.28)",
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            color: "#5a6f88",
+            fontSize: 15,
+            lineHeight: 1,
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(60,110,160,0.18)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          «
+        </button>
+
+        <button
           onClick={dalsiaZona}
           title="Ďalšia zóna"
           style={{
