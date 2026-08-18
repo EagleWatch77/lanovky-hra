@@ -18,6 +18,7 @@ const OBRAZKY = {
   milnik: null,
   sezona: null,
   novinka: null,
+  ziadne: "/udalosti-nicnove.png",
 };
 
 export default function UdalostiPanel({ stanica, onOtvorZamestnanci }) {
