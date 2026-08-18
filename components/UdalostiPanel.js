@@ -10,18 +10,6 @@ const UDALOSTI = [
     text: "Zamestnanci požadujú +5 % k platom pred koncom roka.",
     cas: "2 d",
   },
-  {
-    typ: "milnik",
-    nadpis: "Nový míľnik",
-    text: "Dosiahol si 1 900 bodov prestíže.",
-    cas: "dnes",
-  },
-  {
-    typ: "sezona",
-    nadpis: "Blíži sa zimná sezóna",
-    text: "Priprav zjazdovky a zasnežovanie na nápor lyžiarov.",
-    cas: "8 d",
-  },
 ];
 
 const STYLY = {
