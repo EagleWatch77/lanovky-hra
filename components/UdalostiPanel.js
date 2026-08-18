@@ -30,6 +30,9 @@ export default function UdalostiPanel() {
     borderRadius: 18,
     boxShadow: "0 10px 30px rgba(52,100,150,0.16)",
     padding: 12,
+    height: VYSKA_PANELA,
+    boxSizing: "border-box",
+    overflow: "hidden",
   };
 
   return (
