@@ -19,6 +19,8 @@ const STYLY = {
   novinka: { Ikona: Megaphone, farba: "#8a5fd6", pozadie: "#f1ebfd" },
 };
 
+const VYSKA_PANELA = 150;
+
 export default function UdalostiPanel() {
   const karta = {
     background: "rgba(255,255,255,0.74)",
