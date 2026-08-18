@@ -49,6 +49,23 @@ export default function UdalostiPanel() {
 
   return (
     <div style={karta}>
+      {obrazok && (
+        <img
+          src={obrazok}
+          alt=""
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center right",
+            opacity: 0.85,
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      <div style={{ position: "relative", zIndex: 1 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 9 }}>
         <div
           style={{
