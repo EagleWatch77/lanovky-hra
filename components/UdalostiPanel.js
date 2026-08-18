@@ -100,7 +100,25 @@ export default function UdalostiPanel({ onOtvorZamestnanci }) {
             color: "#5a6f88",
           }}
         >
-          {UDALOSTI.length}
+              {viacUdalosti && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 2 }}>
+              <button
+                onClick={predosla}
+                title="Predošlá udalosť"
+                style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", borderRadius: 6, color: "#5a6f88", fontSize: 13, lineHeight: 1, cursor: "pointer", padding: 0 }}
+              >
+                «
+              </button>
+              <span style={{ fontSize: 10 }}>{index + 1}/{UDALOSTI.length}</span>
+              <button
+                onClick={dalsia}
+                title="Ďalšia udalosť"
+                style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", background: "transparent", border: "none", borderRadius: 6, color: "#5a6f88", fontSize: 13, lineHeight: 1, cursor: "pointer", padding: 0 }}
+              >
+                »
+              </button>
+            </span>
+          )}
         </span>
       </div>
 
