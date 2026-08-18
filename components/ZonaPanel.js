@@ -12,7 +12,7 @@ const OBRAZKY_ZON = {
 };
 
 // Pevná výška panela — aby pri prepínaní zón nepodskakoval
-const VYSKA_PANELA = 396;
+const VYSKA_PANELA = 430;
 
 export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravovatZonu }) {
   const [index, setIndex] = useState(0);
