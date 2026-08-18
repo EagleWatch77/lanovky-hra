@@ -5,10 +5,10 @@ import { CableCar, Building2, Users, Star, Lock, Image as ImageIcon, ArrowRight 
 
 // Obrázky zón
 const OBRAZKY_ZON = {
-  luka: "/zona-zima.png",
-  udolie: "/zona-udolie.png",
-  hory: "/zona-hory.png",
-  ladovec: "/zona-ladovec.png",
+  luka: "/zona-luka.jpg",
+  udolie: "/zona-udolie.jpg",
+  hory: "/zona-hory.jpg",
+  ladovec: "/zona-ladovec.jpg",
 };
 
 // Pevná výška panela — aby pri prepínaní zón nepodskakoval
