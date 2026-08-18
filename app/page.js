@@ -450,9 +450,7 @@ export default function PrehladPage() {
           <div style={{ flex: 1 }}>
             <MisiePanel />
           </div>
-          <div style={{ flex: 1 }}>
-            <RebricekPanel stanica={stanica} onOtvorRebricek={() => setOkno("rebricek")} />
-          </div>
+         
         </div>
       )}
 
