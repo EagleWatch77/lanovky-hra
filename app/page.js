@@ -417,30 +417,6 @@ export default function PrehladPage() {
         </div>
       )}
 
-      {/* Tlačidlo na zbalenie/rozbalenie info panelu */}
-      <button
-        onClick={() => setPanelOtvoreny((o) => !o)}
-        title={panelOtvoreny ? "Skryť panel" : "Zobraziť panel"}
-        style={{
-          position: "absolute",
-          top: 70,
-          right: panelOtvoreny ? 272 : 132,
-          zIndex: 4,
-          width: 30,
-          height: 30,
-          borderRadius: 9,
-          background: "rgba(255,255,255,0.74)",
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-          border: "1px solid rgba(120,160,205,0.22)",
-          boxShadow: "0 4px 14px rgba(60,110,160,0.12)",
-          color: "#5a6f88",
-          cursor: "pointer",
-          fontSize: 15,
-        }}
-      >
-        {panelOtvoreny ? "›" : "‹"}
-      </button>
 {/* Udalosti, misie a rebríček — dole vedľa seba, zarovnané na spodnú hranu */}
       {panelOtvoreny && (
         <div style={{ position: "absolute", bottom: 12, right: 274, width: 710, zIndex: 3, display: "flex", alignItems: "flex-end", gap: 10 }}>
