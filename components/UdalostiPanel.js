@@ -65,7 +65,7 @@ export default function UdalostiPanel({ stanica, onOtvorZamestnanci }) {
   }
 
   const aktualna = UDALOSTI[index];
-  const obrazok = aktualna ? OBRAZKY[aktualna.typ] : null;
+ const obrazok = aktualna ? OBRAZKY[aktualna.typ] : OBRAZKY.ziadne;
 
   return (
     <div style={karta}>
