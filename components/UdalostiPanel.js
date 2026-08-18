@@ -105,7 +105,7 @@ export default function UdalostiPanel({ onOtvorZamestnanci }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-        {UDALOSTI.map((u, i) => {
+       {[aktualna].map((u, i) => {
           const s = STYLY[u.typ] || STYLY.novinka;
           const Ikona = s.Ikona;
           return (
