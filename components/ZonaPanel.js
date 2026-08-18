@@ -38,7 +38,9 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravov
   const zona = ZONY[aktivnaZona];
   const odomknuta = jeOdomknuta(aktivnaZona);
   const limity = zona.limity || {};
-  const obrazok = OBRAZKY_ZON[aktivnaZona];
+  const jeZima = jeZimnyMesiac(hernyDatum(new Date()).getMonth());
+  const sadaObrazkov = OBRAZKY_ZON[aktivnaZona] || {};
+  const obrazok = (jeZima ? sadaObrazkov.zima : sadaObrazkov.leto) || sadaObrazkov.zima;
 
   // --- REÁLNE čísla z budov ---
   const vZone = budovy.filter((b) => b.zona === aktivnaZona && b.stav !== "zrusene");
