@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Bell, Users, Trophy, Snowflake, Megaphone } from "lucide-react";
 
 // ZATIAĽ ZÁSTUPNÉ UDALOSTI — neskôr napojíme na reálne herné eventy.
