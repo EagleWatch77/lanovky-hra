@@ -163,7 +163,26 @@ export default function UdalostiPanel({ onOtvorZamestnanci }) {
           );
         })}
       </div>
-</div>
+<button
+          onClick={onOtvorZamestnanci}
+          style={{
+            width: "100%",
+            marginTop: 10,
+            padding: "9px 12px",
+            borderRadius: 10,
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "var(--font-inter), system-ui, sans-serif",
+            fontWeight: 700,
+            fontSize: 12,
+            color: "#fff",
+            background: "linear-gradient(180deg,#4aa3ee,#2f92e6)",
+            boxShadow: "0 8px 16px rgba(47,146,230,0.32)",
+          }}
+        >
+          Prejsť na odbory
+        </button>
+      </div>
     </div>
   );
 }
