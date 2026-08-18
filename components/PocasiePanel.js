@@ -142,12 +142,6 @@ export default function PocasiePanel({ kompaktne = false }) {
             : "Silný vietor — lanovky dnes zarobia o 66 % menej."}
         </div>
       )}
-
-      {!kompaktne && offsetDni !== 0 && (
-        <div style={{ color: "#aebccd", fontSize: 9.5, marginTop: 8, lineHeight: 1.35 }}>
-          Iba dnešné počasie ovplyvňuje príjem — toto je náhľad.
-        </div>
-      )}
     </div>
   );
 }
