@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ZONY, PORADIE_ZON, LANOVKY_TYPY } from "../lib/katalog";
-import { CableCar, Building2, Users, Star, Lock, Image as ImageIcon } from "lucide-react";
+import { CableCar, Building2, Users, Star, Lock, Image as ImageIcon, ArrowRight } from "lucide-react";
 
 // Obrázky zón
 const OBRAZKY_ZON = {
@@ -12,9 +12,9 @@ const OBRAZKY_ZON = {
 };
 
 // Pevná výška panela — aby pri prepínaní zón nepodskakoval
-const VYSKA_PANELA = 340;
+const VYSKA_PANELA = 396;
 
-export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
+export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravovatZonu }) {
   const [index, setIndex] = useState(0);
   const aktivnaZona = PORADIE_ZON[index];
 
@@ -72,7 +72,7 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
     display: "flex",
     alignItems: "center",
     gap: 10,
-    padding: "9px 2px",
+    padding: "8px 2px",
     borderBottom: "1px solid rgba(120,160,205,0.18)",
   };
 
@@ -225,6 +225,34 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy }) {
           </div>
         )}
       </div>
+
+      {/* Tlačidlo Spravovať zónu */}
+      <button
+        onClick={onSpravovatZonu}
+        style={{
+          flexShrink: 0,
+          marginTop: 10,
+          width: "100%",
+          padding: "12px 14px",
+          borderRadius: 12,
+          border: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          fontFamily: "var(--font-sora), system-ui, sans-serif",
+          fontWeight: 700,
+          fontSize: 13,
+          letterSpacing: "0.02em",
+          color: "#fff",
+          background: "linear-gradient(180deg,#42d675,#33bd63)",
+          boxShadow: "0 8px 18px rgba(51,189,99,0.32)",
+        }}
+      >
+        Spravovať zónu
+        <ArrowRight size={15} strokeWidth={2.4} />
+      </button>
     </div>
   );
 }
