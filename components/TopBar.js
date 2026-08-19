@@ -73,7 +73,9 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
   const hotove = budovy.filter((b) => b.stav === "hotovo");
   const sucetEfektivit = hotove.reduce((s, b) => s + efektivitaBudovy(b), 0);
   const priemernaEfektivita = hotove.length > 0 ? Math.round((sucetEfektivit / hotove.length) * 100) : 100;
-  const sezona = vypocitajSezonu(hDatum);
+  const jeMedzi = jeMedzisezona(hDatum);
+  const jeZima = jeZimnyMesiac(hDatum.getMonth());
+  const sezona = jeMedzi ? "MEDZISEZÓNA" : jeZima ? "ZIMA" : "LETO";
 
   // Aktuálne počasie (rovnaký výber úseku ako v PocasiePanel)
   const pocasieVsetko = vypocitajDenoePocasie(hDatum);
