@@ -494,11 +494,22 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
               fontWeight: 700,
               fontSize: 13,
               color: "#fff",
-              background: "linear-gradient(180deg,#42d675,#33bd63)",
+        background: "linear-gradient(180deg,#42d675,#33bd63)",
               boxShadow: "0 8px 18px rgba(51,189,99,0.30)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 7,
             }}
           >
-            Uložiť prevádzkovú dobu
+            {dobaUlozena ? (
+              <>
+                <Check size={15} strokeWidth={2.6} />
+                Uložené
+              </>
+            ) : (
+              "Uložiť prevádzkovú dobu"
+            )}
           </button>
         </div>
       )}
