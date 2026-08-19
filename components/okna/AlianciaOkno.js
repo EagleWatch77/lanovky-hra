@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mail, Users, Search, Handshake, Crown, LogOut, Star, Check, Clock, UserPlus, Send } from "lucide-react";
+import { Mail, Users, Search, Handshake, Crown, LogOut, Star, Check, Clock, UserPlus, Send, Trophy, Medal, Flame, Mountain, Snowflake, Lock } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 
 const karta = {
