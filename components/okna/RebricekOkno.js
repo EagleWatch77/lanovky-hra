@@ -140,7 +140,7 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
                     alignItems: "center",
                     gap: 10,
                     padding: "10px 12px",
-                    cursor: jeToJa ? "default" : "pointer",
+                    cursor: "pointer",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
