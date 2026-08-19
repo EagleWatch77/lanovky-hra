@@ -133,7 +133,7 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
                 }}
               >
                 <div
-                  onClick={() => !jeToJa && setOtvorenyId(rozbaleny ? null : r.id)}
+                 onClick={() => onOtvorProfil && onOtvorProfil(r.id, poradie)}
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
