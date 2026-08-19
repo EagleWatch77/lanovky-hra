@@ -265,6 +265,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
               dostupne={pocetLanoviek > 0}
               textAkNie="Postav prvú lanovku, aby mal skipas zmysel."
             />
+            <CooldownText hodin={zostavaHodin(stanica.cena_skipasu_zmenena_at)} />
           </div>
 
           {/* PARKOVNÉ A UBYTOVANIE */}
