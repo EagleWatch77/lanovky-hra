@@ -247,6 +247,12 @@ export default function AlianciaOkno({
           )}
         </button>
         {mojeKonzorcium && (
+          <button onClick={() => setZalozka("trofeje")} style={zalozkaStyl("trofeje")}>
+            <Trophy size={14} strokeWidth={2.2} />
+            Trofeje
+          </button>
+        )}
+        {mojeKonzorcium && (
           <button onClick={() => setZalozka("opustit")} style={zalozkaStyl("opustit", true)}>
             <LogOut size={14} strokeWidth={2.2} />
             Opustiť
