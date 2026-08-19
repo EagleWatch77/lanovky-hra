@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { KATEGORIE, zaciatokAktualnejSezony } from "../../lib/katalog";
 import { hernyDatum, realDatumZHerneho } from "../../lib/hernyCas";
-import { Scale, CalendarRange, TrendingUp, TrendingDown, Snowflake, Sun } from "lucide-react";
+import { Scale, CalendarRange, TrendingUp, TrendingDown, Snowflake, Sun, LayoutDashboard } from "lucide-react";
 
 const VYDAVKOVE_TYPY = ["stavba", "naklady_platy", "naklady_najatie", "zamestnanec"];
 
@@ -232,6 +232,7 @@ function RocnikKarta({ transakcie, hDatum }) {
 export default function FinancieOkno({ stanica }) {
   const [transakcie, setTransakcie] = useState([]);
   const [nacitavaSa, setNacitavaSa] = useState(true);
+  const [zalozka, setZalozka] = useState("prehlad");
 
   useEffect(() => {
     if (stanica) nacitaj();
@@ -264,35 +265,78 @@ export default function FinancieOkno({ stanica }) {
   const prijmoveKategorie = Object.keys(KATEGORIE).filter((k) => KATEGORIE[k].maCenu);
   const vsetkyKategorie = Object.keys(KATEGORIE);
 
+  function zalozkaStyl(kluc) {
+    const aktivna = zalozka === kluc;
+    return {
+      display: "flex",
+      alignItems: "center",
+      gap: 6,
+      padding: "8px 14px",
+      borderRadius: 11,
+      border: "none",
+      cursor: "pointer",
+      fontFamily: "var(--font-inter), system-ui, sans-serif",
+      fontWeight: 600,
+      fontSize: 12.5,
+      background: aktivna ? "linear-gradient(160deg,#4aa3ee,#2f92e6)" : "rgba(120,160,205,0.10)",
+      color: aktivna ? "#fff" : "#5a6f88",
+      boxShadow: aktivna ? "0 6px 14px rgba(47,146,230,0.28)" : "none",
+    };
+  }
+
   if (nacitavaSa) return <p style={{ color: "#8a94a3", fontSize: 13 }}>Načítavam…</p>;
 
   return (
     <div>
-      <CistyVysledok obdobia={obdobia} transakcie={transakcie} />
-      <RocnikKarta transakcie={transakcie} hDatum={hDatum} />
-      <Tabulka
-        nadpis="Príjmy podľa kategórie"
-        Ikona={TrendingUp}
-        farbaIkony="#2ca24e"
-        riadky={prijmoveKategorie}
-        obdobia={obdobia}
-        transakcie={transakcie}
-        typy={["prijem"]}
-        farba="#2ca24e"
-      />
-      <Tabulka
-        nadpis="Výdavky podľa kategórie"
-        Ikona={TrendingDown}
-        farbaIkony="#d64545"
-        riadky={vsetkyKategorie}
-        obdobia={obdobia}
-        transakcie={transakcie}
-        typy={VYDAVKOVE_TYPY}
-        farba="#d64545"
-      />
-      <p style={{ color: "#aebccd", fontSize: 10.5, marginTop: -4, lineHeight: 1.45 }}>
-        Výdavky zahŕňajú stavbu a náklady na priebežný plat. „Sezóna" je počítaná podľa herného kalendára.
-      </p>
+      <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
+        <button onClick={() => setZalozka("prehlad")} style={zalozkaStyl("prehlad")}>
+          <LayoutDashboard size={14} strokeWidth={2.2} /> Prehľad
+        </button>
+        <button onClick={() => setZalozka("prijmy")} style={zalozkaStyl("prijmy")}>
+          <TrendingUp size={14} strokeWidth={2.2} /> Príjmy
+        </button>
+        <button onClick={() => setZalozka("vydavky")} style={zalozkaStyl("vydavky")}>
+          <TrendingDown size={14} strokeWidth={2.2} /> Výdavky
+        </button>
+      </div>
+
+      {zalozka === "prehlad" && (
+        <div>
+          <CistyVysledok obdobia={obdobia} transakcie={transakcie} />
+          <RocnikKarta transakcie={transakcie} hDatum={hDatum} />
+        </div>
+      )}
+
+      {zalozka === "prijmy" && (
+        <Tabulka
+          nadpis="Príjmy podľa kategórie"
+          Ikona={TrendingUp}
+          farbaIkony="#2ca24e"
+          riadky={prijmoveKategorie}
+          obdobia={obdobia}
+          transakcie={transakcie}
+          typy={["prijem"]}
+          farba="#2ca24e"
+        />
+      )}
+
+      {zalozka === "vydavky" && (
+        <div>
+          <Tabulka
+            nadpis="Výdavky podľa kategórie"
+            Ikona={TrendingDown}
+            farbaIkony="#d64545"
+            riadky={vsetkyKategorie}
+            obdobia={obdobia}
+            transakcie={transakcie}
+            typy={VYDAVKOVE_TYPY}
+            farba="#d64545"
+          />
+          <p style={{ color: "#aebccd", fontSize: 10.5, marginTop: -4, lineHeight: 1.45 }}>
+            Výdavky zahŕňajú stavbu a náklady na priebežný plat. „Sezóna" je počítaná podľa herného kalendára.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
