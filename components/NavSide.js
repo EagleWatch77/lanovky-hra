@@ -11,7 +11,7 @@ const VZHLAD_MENU = "stext";
 
 const NAV = [
   { href: "/", label: "Prehľad", text: "Prehľad", Icon: Home },
-  { href: "/konkurencia", label: "Konkurencia", text: "Súperi", Icon: ShieldAlert },
+ { href: "/konkurencia", label: "Konkurencia", text: "Konkurencia", Icon: ShieldAlert },
   { href: "/zamestnanci", label: "Zamestnanci", text: "Personál", Icon: HardHat },
   { href: "/ceny", label: "Ceny", text: "Ceny", Icon: Euro },
   { href: "/financie", label: "Financie", text: "Financie", Icon: Wallet },
