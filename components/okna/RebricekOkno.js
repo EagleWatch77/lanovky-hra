@@ -41,7 +41,7 @@ function farbaPoradia(poradie) {
   return { farba: "#aebccd", pozadie: "rgba(120,160,205,0.10)" };
 }
 
-export default function RebricekOkno({ stanica, poslatSpravu }) {
+export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
   const [zalozka, setZalozka] = useState("hraci");
   const [rebricek, setRebricek] = useState([]);
   const [nacitavaSa, setNacitavaSa] = useState(true);
