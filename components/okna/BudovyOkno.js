@@ -17,6 +17,8 @@ import {
   konkurencnyMultiplikator,
   skutocnaReferencnaCena,
   globalnyCenovyMultiplikator,
+  znackyPreTyp,
+  kapacitaBudovy,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
 import {
