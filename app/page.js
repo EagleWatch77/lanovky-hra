@@ -13,6 +13,7 @@ import ZamestnanciOkno from "../components/okna/ZamestnanciOkno";
 import CenyOkno from "../components/okna/CenyOkno";
 import FinancieOkno from "../components/okna/FinancieOkno";
 import RebricekOkno from "../components/okna/RebricekOkno";
+import HracProfilOkno from "../components/okna/HracProfilOkno";
 import InfoOkno from "../components/okna/InfoOkno";
 import NastaveniaOkno from "../components/okna/NastaveniaOkno";
 import AlianciaOkno from "../components/okna/AlianciaOkno";
