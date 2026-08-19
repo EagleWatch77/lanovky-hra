@@ -132,19 +132,24 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
         onClick={onKliknuteDatum}
         aktivny={datumRozbaleny}
       />
-      <Stat
-        Ikona={sezona === "ZIMA" ? Snowflake : Sun}
-        farbaIkony={sezona === "ZIMA" ? "#2a9fd6" : "#e0a021"}
-        iconBg="rgba(78,197,245,0.18)"
-        nazov="Sezóna"
-        value={sezona}
-      />
-      <Stat
-        Ikona={Cloud}
-        farbaIkony={pocasieTeraz?.lanovkyZatvorene ? "#d64545" : "#5a8fbf"}
-        iconBg="rgba(120,160,205,0.16)"
-        nazov={`Počasie — ${pocasieTeraz?.nazov ?? ""}`}
-        value={`${pocasieTeraz?.teplota ?? "–"}° · ${pocasieTeraz?.vietor ?? "–"} m/s`}
+<Stat
+        Ikona={jeMedzi ? CalendarOff : jeZima ? Snowflake : Sun}
+        farbaIkony={
+          pocasieTeraz?.lanovkyZatvorene
+            ? "#d64545"
+            : jeMedzi
+            ? "#8a94a3"
+            : jeZima
+            ? "#2a9fd6"
+            : "#e0a021"
+        }
+        iconBg={jeMedzi ? "rgba(120,160,205,0.16)" : jeZima ? "rgba(78,197,245,0.18)" : "rgba(240,169,78,0.18)"}
+        nazov={`${sezona} — ${pocasieTeraz?.nazov ?? ""}`}
+        value={
+          jeMedzi
+            ? "MEDZISEZÓNA"
+            : `${jeZima ? "Zima" : "Leto"} · ${pocasieTeraz?.teplota ?? "–"}° · ${pocasieTeraz?.vietor ?? "–"} m/s`
+        }
         onClick={onKliknutePocasie}
         aktivny={pocasieRozbalene}
       />
