@@ -10,7 +10,6 @@ import {
   globalnyCenovyMultiplikator,
   sezonaIndex,
   idealnaPrevadzkaHodin,
-  hodinyNaCas,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
 import { Euro, Clock, TrendingUp, TrendingDown } from "lucide-react";
@@ -31,6 +30,9 @@ const POPIS_CENY = {
   penzion: "cena za osobu/noc",
   hotel: "cena za osobu/noc",
 };
+
+// Poradie skupín v okne
+const PORADIE_KATEGORII = ["lanovka", "parkovisko", "bar", "servis", "penzion", "hotel"];
 
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
@@ -56,10 +58,50 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
   const idealDoba = idealnaPrevadzkaHodin(hDatum.getMonth(), stanica.hory_odomknute);
 
-  function pocetVZone(zonaKluc, kat, poradie) {
+  function zonaOdomknuta(zonaKluc) {
+    if (zonaKluc === "luka") return true;
+    if (zonaKluc === "udolie") return !!stanica.udolie_odomknute;
+    if (zonaKluc === "hory") return !!stanica.hory_odomknute;
+    return false;
+  }
+
+  function budovaVSlote(zonaKluc, kat, poradie) {
     return budovy
-      .filter((b) => b.zona === zonaKluc && b.kategoria === (kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat) && (kat === "vlek" || kat.startsWith("lanovka") ? b.typ === kat : true))
+      .filter(
+        (b) =>
+          b.zona === zonaKluc &&
+          b.kategoria === (kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat) &&
+          (kat === "vlek" || kat.startsWith("lanovka") ? b.typ === kat : true)
+      )
       .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))[poradie];
+  }
+
+  // Poskladá zoznam všetkých slotov s cenou, zoskupených podľa reálnej kategórie
+  const skupiny = {};
+  for (const zonaKluc of PORADIE_ZON) {
+    if (zonaKluc === "ladovec") continue;
+    const zona = ZONY[zonaKluc];
+    const odomknuta = zonaOdomknuta(zonaKluc);
+
+    for (const kat of Object.keys(zona.limity)) {
+      const realna = kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat;
+      if (!KATEGORIE[realna]?.maCenu) continue;
+
+      for (let poradie = 0; poradie < zona.limity[kat]; poradie++) {
+        const budova = odomknuta ? budovaVSlote(zonaKluc, kat, poradie) : null;
+        const nazov =
+          zona.popisky?.[kat] || KATEGORIE[realna]?.katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[realna]?.nazov;
+
+        if (!skupiny[realna]) skupiny[realna] = [];
+        skupiny[realna].push({
+          kluc: `${zonaKluc}-${kat}-${poradie}`,
+          nazov,
+          zonaNazov: zona.nazov,
+          budova,
+          realna,
+        });
+      }
+    }
   }
 
   function zalozkaStyl(kluc) {
@@ -94,64 +136,57 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
       {zalozka === "ceny" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {PORADIE_ZON.filter((zk) => zk !== "ladovec").map((zonaKluc) => {
-            const zona = ZONY[zonaKluc];
-            const zonaOdomknuta = zonaKluc === "luka" || (zonaKluc === "udolie" && stanica.udolie_odomknute) || (zonaKluc === "hory" && stanica.hory_odomknute);
-            const slotySCenou = Object.keys(zona.limity).filter((kat) => {
-              const realna = kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat;
-              return KATEGORIE[realna]?.maCenu;
-            });
-            if (slotySCenou.length === 0) return null;
+          {PORADIE_KATEGORII.filter((k) => skupiny[k]?.length).map((realna) => {
+            const popisCeny = POPIS_CENY[realna] || "cena";
+            const nazovSkupiny = KATEGORIE[realna]?.nazov || realna;
 
             return (
-              <div key={zonaKluc}>
+              <div key={realna}>
                 <h3
                   style={{
                     fontFamily: "var(--font-sora), system-ui, sans-serif",
                     fontSize: 11,
                     fontWeight: 700,
                     color: "#8a94a3",
-                    margin: "0 0 8px 0",
+                    margin: "0 0 3px 0",
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
                   }}
                 >
-                  {zona.nazov}
+                  {nazovSkupiny}
                 </h3>
+                <div style={{ fontSize: 10.5, color: "#aebccd", marginBottom: 8 }}>{popisCeny}</div>
+
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {slotySCenou.map((kat) =>
-                    Array.from({ length: zona.limity[kat] }).map((_, poradie) => {
-                      const riadokKluc = `${zonaKluc}-${kat}-${poradie}`;
-                      const realna = kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat;
-                      const budova = zonaOdomknuta ? pocetVZone(zonaKluc, kat, poradie) : null;
-                      const nazov = zona.popisky?.[kat] || KATEGORIE[realna]?.katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[realna]?.nazov;
-                      const jeHotovo = budova?.stav === "hotovo";
-                      const popisCeny = POPIS_CENY[realna] || "cena";
+                  {skupiny[realna].map((s) => {
+                    const budova = s.budova;
+                    const jeHotovo = budova?.stav === "hotovo";
 
-                      let odhad = null;
-                      if (jeHotovo) {
-                        const refCenaDnes = skutocnaReferencnaCena(budova.kategoria, budova.typ, hDatum, globalnyMult);
-                        odhad = odhadovanaCena(stanica.id, budova.kategoria, budova.typ, sezIndex, refCenaDnes);
-                      }
-                      const jeDrahsie = odhad && jeHotovo && budova.cena > odhad;
+                    let odhad = null;
+                    if (jeHotovo) {
+                      const refCenaDnes = skutocnaReferencnaCena(budova.kategoria, budova.typ, hDatum, globalnyMult);
+                      odhad = odhadovanaCena(stanica.id, budova.kategoria, budova.typ, sezIndex, refCenaDnes);
+                    }
+                    const jeDrahsie = odhad && jeHotovo && budova.cena > odhad;
 
-                      return (
-                        <div
-                          key={riadokKluc}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: 10,
-                            padding: "10px 12px",
-                            borderRadius: 12,
-                            background: jeHotovo ? "#ffffff" : "rgba(120,160,205,0.05)",
-                            border: jeHotovo ? "1px solid rgba(120,160,205,0.22)" : "1px solid rgba(120,160,205,0.12)",
-                            boxShadow: jeHotovo ? "0 3px 10px rgba(60,110,160,0.07)" : "none",
-                          }}
-                        >
-                          <div style={{ minWidth: 0 }}>
-                            <div
+                    return (
+                      <div
+                        key={s.kluc}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          gap: 10,
+                          padding: "10px 12px",
+                          borderRadius: 12,
+                          background: jeHotovo ? "#ffffff" : "rgba(120,160,205,0.05)",
+                          border: jeHotovo ? "1px solid rgba(120,160,205,0.22)" : "1px solid rgba(120,160,205,0.12)",
+                          boxShadow: jeHotovo ? "0 3px 10px rgba(60,110,160,0.07)" : "none",
+                        }}
+                      >
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                            <span
                               style={{
                                 fontFamily: "var(--font-sora), system-ui, sans-serif",
                                 fontWeight: 700,
@@ -159,51 +194,70 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
                                 color: jeHotovo ? "#1b2c42" : "#aebccd",
                               }}
                             >
-                              {nazov}
-                            </div>
-                            <div style={{ fontSize: 10, color: "#aebccd", marginTop: 1 }}>{popisCeny}</div>
-                            {jeHotovo ? (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 4,
-                                  fontSize: 11,
-                                  fontWeight: 600,
-                                  color: jeDrahsie ? "#c9830f" : "#2ca24e",
-                                  marginTop: 3,
-                                }}
-                              >
-                                {jeDrahsie ? <TrendingUp size={12} strokeWidth={2.4} /> : <TrendingDown size={12} strokeWidth={2.4} />}
-                                odhad ~{odhad} €
-                              </div>
-                            ) : (
-                              <div style={{ fontSize: 11, color: "#aebccd", marginTop: 3 }}>
-                                {budova?.stav === "vo_vystavbe" ? "vo výstavbe" : "zatiaľ nepostavené"}
-                              </div>
-                            )}
+                              {s.nazov}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: 9.5,
+                                fontWeight: 700,
+                                letterSpacing: "0.06em",
+                                color: "#8a94a3",
+                                background: "rgba(120,160,205,0.12)",
+                                padding: "2px 7px",
+                                borderRadius: 7,
+                                textTransform: "uppercase",
+                              }}
+                            >
+                              {s.zonaNazov}
+                            </span>
                           </div>
-                          <input
-                            type="number"
-                            min="1"
-                            disabled={!jeHotovo}
-                            defaultValue={jeHotovo ? budova.cena : ""}
-                            placeholder="—"
-                            onBlur={(e) => jeHotovo && zmenitCenu(budova, Number(e.target.value))}
-                            style={{
-                              ...vstup,
-                              width: 82,
-                              textAlign: "right",
-                              flexShrink: 0,
-                              opacity: jeHotovo ? 1 : 0.5,
-                              cursor: jeHotovo ? "text" : "not-allowed",
-                              background: jeHotovo ? "#fff" : "rgba(120,160,205,0.06)",
-                            }}
-                          />
+
+                          {jeHotovo ? (
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 4,
+                                fontSize: 11,
+                                fontWeight: 600,
+                                color: jeDrahsie ? "#c9830f" : "#2ca24e",
+                                marginTop: 4,
+                              }}
+                            >
+                              {jeDrahsie ? (
+                                <TrendingUp size={12} strokeWidth={2.4} />
+                              ) : (
+                                <TrendingDown size={12} strokeWidth={2.4} />
+                              )}
+                              odhad ~{odhad} €
+                            </div>
+                          ) : (
+                            <div style={{ fontSize: 11, color: "#aebccd", marginTop: 4 }}>
+                              {budova?.stav === "vo_vystavbe" ? "vo výstavbe" : "zatiaľ nepostavené"}
+                            </div>
+                          )}
                         </div>
-                      );
-                    })
-                  )}
+
+                        <input
+                          type="number"
+                          min="1"
+                          disabled={!jeHotovo}
+                          defaultValue={jeHotovo ? budova.cena : ""}
+                          placeholder="—"
+                          onBlur={(e) => jeHotovo && zmenitCenu(budova, Number(e.target.value))}
+                          style={{
+                            ...vstup,
+                            width: 82,
+                            textAlign: "right",
+                            flexShrink: 0,
+                            opacity: jeHotovo ? 1 : 0.5,
+                            cursor: jeHotovo ? "text" : "not-allowed",
+                            background: jeHotovo ? "#fff" : "rgba(120,160,205,0.06)",
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
