@@ -436,9 +436,14 @@ export default function PrehladPage() {
           <TuristiRozpis dennyPocetTuristov={dennyPocetTuristov} rozpisTuristovPodBudov={rozpisTuristovPodBudov} />
         </div>
       )}
-      {otvorenyPanel === "pocasie" && (
+{otvorenyPanel === "pocasie" && (
         <div style={{ position: "absolute", top: 64, left: 100, width: 280, zIndex: 6 }}>
           <PocasiePanel />
+        </div>
+      )}
+      {otvorenyPanel === "peniaze" && (
+        <div style={{ position: "absolute", top: 64, left: 100, zIndex: 6 }}>
+          <FinancieRozpis stanica={stanica} />
         </div>
       )}
 
