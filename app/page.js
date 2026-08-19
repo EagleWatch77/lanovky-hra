@@ -333,7 +333,7 @@ export default function PrehladPage() {
 
       {okno === "ceny" && (
         <WindowModal title="💶 Ceny" onClose={() => setOkno(null)} width={480}>
-          <CenyOkno stanica={stanica} budovy={budovy} zmenitCenu={zmenitCenu} zmenitPrevadzkovuDobu={zmenitPrevadzkovuDobu} />
+         <CenyOkno stanica={stanica} budovy={budovy} zmenitCenu={zmenitCenu} zmenitPrevadzkovuDobu={zmenitPrevadzkovuDobu} zmenitCenuSkipasu={zmenitCenuSkipasu} />
         </WindowModal>
       )}
 
