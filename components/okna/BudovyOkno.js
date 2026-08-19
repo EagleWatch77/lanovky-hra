@@ -587,6 +587,52 @@ function StavbaFormular({ zonaKluc, kat, onPostavit }) {
   const katalog = typFilter
     ? Object.fromEntries(Object.entries(katalogPlny).filter(([t]) => typFilter.includes(t)))
     : katalogPlny;
+
+  const [vyberTyp, setVyberTyp] = useState(Object.keys(katalog)[0]);
+  const jeLanovka = realna === "lanovka";
+  const dostupneZnacky = jeLanovka ? znackyPreTyp(vyberTyp) : {};
+  const [vyberZnacka, setVyberZnacka] = useState(jeLanovka ? Object.keys(dostupneZnacky)[0] : null);
+  const [sBobovouDrahou, setSBobovouDrahou] = useState(false);
+
+  const jeVlek = jeLanovka && vyberTyp === "vlek";
+  const znackaInfo = jeLanovka ? dostupneZnacky[vyberZnacka] : null;
+  const jePremiova = znackaInfo?.premiova;
+
+  const cenaSpolu = cenaBudovy(realna, vyberTyp, vyberZnacka) + (jeVlek && sBobovouDrahou ? 200000 : 0);
+
+  const parameter = {
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    fontSize: 11.5,
+    color: "#5a6f88",
+  };
+
+  return (
+    <div style={{ padding: "0 12px 12px", borderTop: "1px solid rgba(120,160,205,0.18)" }}>
+      {/* Výber typu */}
+      {Object.keys(katalog).length > 1 && (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", margin: "10px 0" }}>
+          {Object.keys(katalog).map((typ) => {
+            const vybraty = vyberTyp === typ;
+            return (
+              <button
+                key={typ}
+                onClick={() => setVyberTyp(typ)}
+                style={{
+                  padding: "8px 10px",
+                  borderRadius: 11,
+                  cursor: "pointer",
+                  textAlign: "left",
+                  background: vybraty ? "#eaf4fd" : "#fff",
+                  border: vybraty ? "1px solid #2f92e6" : "1px solid rgba(120,160,205,0.24)",
+                  boxShadow: vybraty ? "0 4px
+  const realna = realnaKategoria(kat);
+  const typFilter = typFilterPreSlot(zonaKluc, kat);
+  const katalogPlny = KATEGORIE[realna].katalog;
+  const katalog = typFilter
+    ? Object.fromEntries(Object.entries(katalogPlny).filter(([t]) => typFilter.includes(t)))
+    : katalogPlny;
   const [vyberTyp, setVyberTyp] = useState(Object.keys(katalog)[0]);
   const znackyKatalog = KATEGORIE[realna].znackyKatalog;
   const [vyberZnacka, setVyberZnacka] = useState(znackyKatalog ? Object.keys(znackyKatalog)[0] : null);
