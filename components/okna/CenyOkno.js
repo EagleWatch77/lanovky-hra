@@ -7,12 +7,13 @@ import {
   PORADIE_ZON,
   odhadovanaCena,
   skutocnaReferencnaCena,
+  referencnaCenaSkipasu,
   globalnyCenovyMultiplikator,
   sezonaIndex,
   idealnaPrevadzkaHodin,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
-import { Euro, Clock, TrendingUp, TrendingDown } from "lucide-react";
+import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check } from "lucide-react";
 
 const NAZVY_JEDNOTNE = {
   penzion: "Penzión",
@@ -23,7 +24,6 @@ const NAZVY_JEDNOTNE = {
 };
 
 const POPIS_CENY = {
-  lanovka: "cena lístka",
   bar: "priemerná útrata/osoba",
   servis: "priemerná útrata/osoba",
   parkovisko: "denné parkovné/miesto",
@@ -31,8 +31,8 @@ const POPIS_CENY = {
   hotel: "cena za osobu/noc",
 };
 
-// Poradie skupín v okne
-const PORADIE_KATEGORII = ["lanovka", "parkovisko", "bar", "servis", "penzion", "hotel"];
+// Poradie skupín (lanovky majú vlastnú kartu hore, tu nie sú)
+const PORADIE_KATEGORII = ["parkovisko", "bar", "servis", "penzion", "hotel"];
 
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
@@ -48,15 +48,36 @@ const vstup = {
   outline: "none",
 };
 
-export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu }) {
+export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu, zmenitCenuSkipasu }) {
   const [zalozka, setZalozka] = useState("ceny");
   const [zaciatok, setZaciatok] = useState(stanica.prevadzka_zaciatok || "08:30");
   const [koniec, setKoniec] = useState(stanica.prevadzka_koniec || "16:00");
-  const hDatum = hernyDatum(new Date());
-  const globalnyMult = globalnyCenovyMultiplikator(stanica, budovy.filter((b) => b.stav === "hotovo"));
-  const sezIndex = sezonaIndex(hDatum);
+  const [novyySkipas, setNovySkipas] = useState(stanica.cena_skipasu ?? 15);
+  const [skipasUlozeny, setSkipasUlozeny] = useState(false);
 
+  const hDatum = hernyDatum(new Date());
+  const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
+  const globalnyMult = globalnyCenovyMultiplikator(stanica, hotoveBudovy);
+  const sezIndex = sezonaIndex(hDatum);
   const idealDoba = idealnaPrevadzkaHodin(hDatum.getMonth(), stanica.hory_odomknute);
+
+  // --- Skipas ---
+  const pocetLanoviek = hotoveBudovy.filter((b) => b.kategoria === "lanovka").length;
+  const refSkipas = referencnaCenaSkipasu(hotoveBudovy, hDatum, globalnyMult);
+  const odhadSkipas = odhadovanaCena(stanica.id, "lanovka", "skipas", sezIndex, refSkipas);
+  const aktualnySkipas = stanica.cena_skipasu ?? 15;
+  const skipasDrahsi = odhadSkipas && aktualnySkipas > odhadSkipas;
+
+  function ulozitSkipas() {
+    const cislo = Number(novyySkipas);
+    if (Number.isNaN(cislo) || cislo < 1) {
+      alert("Zadaj platnú cenu (aspoň 1 €).");
+      return;
+    }
+    zmenitCenuSkipasu(cislo);
+    setSkipasUlozeny(true);
+    setTimeout(() => setSkipasUlozeny(false), 2500);
+  }
 
   function zonaOdomknuta(zonaKluc) {
     if (zonaKluc === "luka") return true;
@@ -67,16 +88,11 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
   function budovaVSlote(zonaKluc, kat, poradie) {
     return budovy
-      .filter(
-        (b) =>
-          b.zona === zonaKluc &&
-          b.kategoria === (kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat) &&
-          (kat === "vlek" || kat.startsWith("lanovka") ? b.typ === kat : true)
-      )
+      .filter((b) => b.zona === zonaKluc && b.kategoria === kat)
       .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))[poradie];
   }
 
-  // Poskladá zoznam všetkých slotov s cenou, zoskupených podľa reálnej kategórie
+  // Ostatné budovy s cenou (bez lanoviek), zoskupené podľa kategórie
   const skupiny = {};
   for (const zonaKluc of PORADIE_ZON) {
     if (zonaKluc === "ladovec") continue;
@@ -84,21 +100,19 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
     const odomknuta = zonaOdomknuta(zonaKluc);
 
     for (const kat of Object.keys(zona.limity)) {
-      const realna = kat === "vlek" || kat.startsWith("lanovka") ? "lanovka" : kat;
-      if (!KATEGORIE[realna]?.maCenu) continue;
+      if (kat === "vlek" || kat.startsWith("lanovka")) continue;
+      if (!KATEGORIE[kat]?.maCenu) continue;
 
       for (let poradie = 0; poradie < zona.limity[kat]; poradie++) {
         const budova = odomknuta ? budovaVSlote(zonaKluc, kat, poradie) : null;
-        const nazov =
-          zona.popisky?.[kat] || KATEGORIE[realna]?.katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[realna]?.nazov;
+        const nazov = zona.popisky?.[kat] || KATEGORIE[kat]?.katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[kat]?.nazov;
 
-        if (!skupiny[realna]) skupiny[realna] = [];
-        skupiny[realna].push({
+        if (!skupiny[kat]) skupiny[kat] = [];
+        skupiny[kat].push({
           kluc: `${zonaKluc}-${kat}-${poradie}`,
           nazov,
           zonaNazov: zona.nazov,
           budova,
-          realna,
         });
       }
     }
@@ -136,12 +150,110 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
       {zalozka === "ceny" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {PORADIE_KATEGORII.filter((k) => skupiny[k]?.length).map((realna) => {
-            const popisCeny = POPIS_CENY[realna] || "cena";
-            const nazovSkupiny = KATEGORIE[realna]?.nazov || realna;
+          {/* SKIPAS */}
+          <div
+            style={{
+              background: "#ffffff",
+              border: "1px solid rgba(120,160,205,0.22)",
+              boxShadow: "0 4px 14px rgba(60,110,160,0.10)",
+              borderRadius: 14,
+              padding: 14,
+            }}
+          >
+            <h3
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 7,
+                margin: "0 0 3px 0",
+                fontFamily: "var(--font-sora), system-ui, sans-serif",
+                fontWeight: 700,
+                fontSize: 13.5,
+                color: "#1b2c42",
+              }}
+            >
+              <Ticket size={15} color="#2f8ae0" strokeWidth={2.3} />
+              Skipas
+            </h3>
+            <div style={{ fontSize: 11, color: "#aebccd", marginBottom: 11 }}>
+              jedna cena pre všetky lanovky a vleky v stredisku
+            </div>
+
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <input
+                type="number"
+                min="1"
+                value={novyySkipas}
+                onChange={(e) => setNovySkipas(e.target.value)}
+                style={{ ...vstup, width: 92, textAlign: "right" }}
+              />
+              <span style={{ fontSize: 13, color: "#5a6f88", fontWeight: 600 }}>€</span>
+              <button
+                onClick={ulozitSkipas}
+                style={{
+                  marginLeft: "auto",
+                  padding: "10px 15px",
+                  borderRadius: 11,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-inter), system-ui, sans-serif",
+                  fontWeight: 700,
+                  fontSize: 12.5,
+                  color: "#fff",
+                  background: skipasUlozeny
+                    ? "linear-gradient(180deg,#42d675,#33bd63)"
+                    : "linear-gradient(180deg,#4aa3ee,#2f92e6)",
+                  boxShadow: "0 6px 14px rgba(47,146,230,0.26)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                {skipasUlozeny ? (
+                  <>
+                    <Check size={14} strokeWidth={2.6} />
+                    Uložené
+                  </>
+                ) : (
+                  "Uložiť cenu"
+                )}
+              </button>
+            </div>
+
+            {pocetLanoviek > 0 ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: skipasDrahsi ? "#c9830f" : "#2ca24e",
+                  marginTop: 10,
+                }}
+              >
+                {skipasDrahsi ? <TrendingUp size={13} strokeWidth={2.4} /> : <TrendingDown size={13} strokeWidth={2.4} />}
+                odhadovaná cena ~{odhadSkipas} €
+              </div>
+            ) : (
+              <div style={{ fontSize: 11.5, color: "#aebccd", marginTop: 10 }}>
+                Postav prvú lanovku, aby mal skipas zmysel.
+              </div>
+            )}
+
+            <p style={{ fontSize: 10.5, color: "#aebccd", marginTop: 8, marginBottom: 0, lineHeight: 1.45 }}>
+              Odhad rastie s tým, aké lanovky máš postavené a ktoré zóny máš odomknuté. Cenu môžeš meniť raz za herný
+              týždeň.
+            </p>
+          </div>
+
+          {/* OSTATNÉ SLUŽBY */}
+          {PORADIE_KATEGORII.filter((k) => skupiny[k]?.length).map((kat) => {
+            const popisCeny = POPIS_CENY[kat] || "cena";
+            const nazovSkupiny = KATEGORIE[kat]?.nazov || kat;
 
             return (
-              <div key={realna}>
+              <div key={kat}>
                 <h3
                   style={{
                     fontFamily: "var(--font-sora), system-ui, sans-serif",
@@ -158,7 +270,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
                 <div style={{ fontSize: 10.5, color: "#aebccd", marginBottom: 8 }}>{popisCeny}</div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {skupiny[realna].map((s) => {
+                  {skupiny[kat].map((s) => {
                     const budova = s.budova;
                     const jeHotovo = budova?.stav === "hotovo";
 
