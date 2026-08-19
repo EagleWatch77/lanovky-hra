@@ -1,6 +1,7 @@
 "use client";
 import { hernyDatum } from "../lib/hernyCas";
 import { vypocitajDenoePocasie } from "../lib/pocasie";
+import { jeZimnyMesiac, jeMedzisezona } from "../lib/katalog";
 import { Star, Coins, Smile, Users, Calendar, Snowflake, Sun, Cloud } from "lucide-react";
 
 // ⚙️ PREPÍNAČ VZHĽADU IKON:
