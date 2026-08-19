@@ -20,6 +20,7 @@ import AlianciaOkno from "../components/okna/AlianciaOkno";
 import AlianciaForumOkno from "../components/okna/AlianciaForumOkno";
 import SpravyOkno from "../components/okna/SpravyOkno";
 import PrestizRozpis from "../components/PrestizRozpis";
+import FinancieRozpis from "../components/FinancieRozpis";
 import SpokojnostRozpis from "../components/SpokojnostRozpis";
 import SezonaInfo from "../components/SezonaInfo";
 import TuristiRozpis from "../components/TuristiRozpis";
