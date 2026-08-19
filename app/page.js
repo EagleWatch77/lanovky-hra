@@ -56,6 +56,7 @@ export default function PrehladPage() {
     prepustitPreBudovu,
     zmenitCenu,
     zmenitPrevadzkovuDobu,
+    zmenitCenuSkipasu,
     pridatBobovuDrahu,
     prepnutZasnezovanie,
     podmienkyOdomknutiaUdolia,
