@@ -296,7 +296,14 @@ export default function PrehladPage() {
 
       {okno === "rebricek" && (
         <WindowModal title="🏆 Rebríček podľa prestíže" onClose={() => setOkno(null)} width={480}>
-          <RebricekOkno stanica={stanica} poslatSpravu={poslatSpravu} />
+         <RebricekOkno
+            stanica={stanica}
+            poslatSpravu={poslatSpravu}
+            onOtvorProfil={(id, poradie) => {
+              setProfilHraca({ id, poradie });
+              setOkno("profil");
+            }}
+          />
         </WindowModal>
       )}
 
