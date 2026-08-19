@@ -307,6 +307,17 @@ export default function PrehladPage() {
         </WindowModal>
       )}
 
+     {okno === "profil" && profilHraca && (
+        <WindowModal title="Profil hráča" onClose={() => setOkno("rebricek")}>
+          <HracProfilOkno
+            hracId={profilHraca.id}
+            poradie={profilHraca.poradie}
+            vlastnaStanica={stanica}
+            poslatSpravu={poslatSpravu}
+          />
+        </WindowModal>
+      )}
+
       {okno === "financie" && (
         <WindowModal title="💰 Financie" onClose={() => setOkno(null)} width={640}>
           <FinancieOkno stanica={stanica} />
