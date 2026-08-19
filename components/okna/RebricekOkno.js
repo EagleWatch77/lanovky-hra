@@ -2,37 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import { User, Handshake, Star, Send, Check, Mail } from "lucide-react";
-
-const vstup = {
-  padding: "8px 11px",
-  borderRadius: 10,
-  border: "1px solid rgba(120,160,205,0.28)",
-  background: "#fff",
-  color: "#1b2c42",
-  fontSize: 12.5,
-  fontFamily: "var(--font-inter), system-ui, sans-serif",
-  outline: "none",
-};
-
-const btn = {
-  border: "none",
-  borderRadius: 10,
-  fontFamily: "var(--font-inter), system-ui, sans-serif",
-  fontWeight: 700,
-  fontSize: 12,
-  cursor: "pointer",
-  padding: "8px 13px",
-  color: "#fff",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 6,
-  background: "linear-gradient(180deg,#4aa3ee,#2f92e6)",
-  boxShadow: "0 6px 14px rgba(47,146,230,0.26)",
-  whiteSpace: "nowrap",
-  flexShrink: 0,
-};
+import { User, Handshake, Star, ChevronRight } from "lucide-react";
 
 function farbaPoradia(poradie) {
   if (poradie === 1) return { farba: "#c9930f", pozadie: "#fdf4e0" };
@@ -45,10 +15,6 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
   const [zalozka, setZalozka] = useState("hraci");
   const [rebricek, setRebricek] = useState([]);
   const [nacitavaSa, setNacitavaSa] = useState(true);
-  const [otvorenyId, setOtvorenyId] = useState(null);
-  const [predmetSpravy, setPredmetSpravy] = useState("");
-  const [textSpravy, setTextSpravy] = useState("");
-  const [odoslane, setOdoslane] = useState(null);
 
   useEffect(() => {
     nacitaj();
@@ -59,16 +25,6 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
     const { data } = await supabase.from("rebricek").select("*").order("prestiz", { ascending: false });
     setRebricek(data || []);
     setNacitavaSa(false);
-  }
-
-  function odoslatSpravu(komuId) {
-    if (!textSpravy.trim()) return;
-    poslatSpravu(komuId, textSpravy, predmetSpravy);
-    setPredmetSpravy("");
-    setTextSpravy("");
-    setOtvorenyId(null);
-    setOdoslane(komuId);
-    setTimeout(() => setOdoslane(null), 3000);
   }
 
   function zalozkaStyl(kluc) {
@@ -101,6 +57,7 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
     konzorciaMapa[r.aliancia_nazov].pocetClenov += 1;
   }
   const konzorciaZoznam = Object.values(konzorciaMapa).sort((a, b) => b.prestiz - a.prestiz);
+  const mojeKonzorcium = stanica ? rebricek.find((r) => r.id === stanica.id)?.aliancia_nazov : null;
 
   return (
     <div>
@@ -118,88 +75,83 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
           {rebricek.map((r, i) => {
             const poradie = i + 1;
             const jeToJa = stanica && r.id === stanica.id;
-            const rozbaleny = otvorenyId === r.id;
             const p = farbaPoradia(poradie);
 
             return (
               <div
                 key={r.id}
+                onClick={() => onOtvorProfil && onOtvorProfil(r.id, poradie)}
                 style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 12px",
                   borderRadius: 12,
+                  cursor: "pointer",
                   background: jeToJa ? "#e9f8ee" : "#ffffff",
                   border: jeToJa ? "1px solid rgba(51,189,99,0.30)" : "1px solid rgba(120,160,205,0.22)",
                   boxShadow: "0 3px 10px rgba(60,110,160,0.07)",
-                  overflow: "hidden",
                 }}
               >
-                <div
-                 onClick={() => onOtvorProfil && onOtvorProfil(r.id, poradie)}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "10px 12px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                    <span
+                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                  <span
+                    style={{
+                      minWidth: 28,
+                      height: 24,
+                      padding: "0 6px",
+                      borderRadius: 8,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: p.pozadie,
+                      color: p.farba,
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 800,
+                      fontSize: 11.5,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {poradie}
+                  </span>
+                  <div style={{ minWidth: 0 }}>
+                    <div
                       style={{
-                        minWidth: 28,
-                        height: 24,
-                        padding: "0 6px",
-                        borderRadius: 8,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: p.pozadie,
-                        color: p.farba,
                         fontFamily: "var(--font-sora), system-ui, sans-serif",
-                        fontWeight: 800,
-                        fontSize: 11.5,
-                        flexShrink: 0,
+                        fontWeight: 700,
+                        fontSize: 13,
+                        color: jeToJa ? "#1f8a49" : "#1b2c42",
                       }}
                     >
-                      {poradie}
-                    </span>
-                    <div style={{ minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontFamily: "var(--font-sora), system-ui, sans-serif",
-                          fontWeight: 700,
-                          fontSize: 13,
-                          color: jeToJa ? "#1f8a49" : "#1b2c42",
-                        }}
-                      >
-                        {r.nazov}
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 9,
-                          fontSize: 11,
-                          color: "#aebccd",
-                          marginTop: 2,
-                        }}
-                      >
-                        {r.meno_hraca && (
-                          <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                            <User size={11} strokeWidth={2.3} />
-                            {r.meno_hraca}
-                          </span>
-                        )}
-                        {r.aliancia_nazov && (
-                          <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                            <Handshake size={11} strokeWidth={2.3} />
-                            {r.aliancia_nazov}
-                          </span>
-                        )}
-                      </div>
+                      {r.nazov}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 9,
+                        fontSize: 11,
+                        color: "#aebccd",
+                        marginTop: 2,
+                      }}
+                    >
+                      {r.meno_hraca && (
+                        <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                          <User size={11} strokeWidth={2.3} />
+                          {r.meno_hraca}
+                        </span>
+                      )}
+                      {r.aliancia_nazov && (
+                        <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                          <Handshake size={11} strokeWidth={2.3} />
+                          {r.aliancia_nazov}
+                        </span>
+                      )}
                     </div>
                   </div>
+                </div>
 
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                   <span
                     style={{
                       display: "flex",
@@ -209,62 +161,13 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
                       fontWeight: 700,
                       fontSize: 13,
                       color: "#1b2c42",
-                      flexShrink: 0,
                     }}
                   >
                     <Star size={13} color="#2f8ae0" strokeWidth={2.4} />
                     {r.prestiz.toLocaleString("sk-SK")}
                   </span>
+                  <ChevronRight size={15} color="#c5d2e0" strokeWidth={2.4} />
                 </div>
-
-               )}
-              </div>
-            );
-          })}
-                    {odoslane === r.id ? (
-                      <p
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 5,
-                          color: "#1f8a49",
-                          fontSize: 12.5,
-                          margin: 0,
-                        }}
-                      >
-                        <Check size={14} strokeWidth={2.6} />
-                        Správa odoslaná
-                      </p>
-                    ) : (
-                      <>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "#8a94a3" }}>
-                          <Mail size={13} strokeWidth={2.3} />
-                          Poslať správu hráčovi
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="Predmet…"
-                          value={predmetSpravy}
-                          onChange={(e) => setPredmetSpravy(e.target.value)}
-                          style={vstup}
-                        />
-                        <div style={{ display: "flex", gap: 6 }}>
-                          <input
-                            type="text"
-                            placeholder="Napíš správu…"
-                            value={textSpravy}
-                            onChange={(e) => setTextSpravy(e.target.value)}
-                            style={{ ...vstup, flex: 1, minWidth: 0 }}
-                          />
-                          <button onClick={() => odoslatSpravu(r.id)} style={btn}>
-                            <Send size={13} strokeWidth={2.4} />
-                            Odoslať
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
               </div>
             );
           })}
@@ -279,7 +182,7 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
           {konzorciaZoznam.map((k, i) => {
             const poradie = i + 1;
             const p = farbaPoradia(poradie);
-            const jeMoje = stanica && k.nazov === rebricek.find((r) => r.id === stanica.id)?.aliancia_nazov;
+            const jeMoje = mojeKonzorcium && k.nazov === mojeKonzorcium;
 
             return (
               <div
