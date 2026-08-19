@@ -272,6 +272,64 @@ export default function AlianciaOkno({
         </div>
       )}
 
+      {zalozka === "trofeje" && mojeKonzorcium && (
+        <div>
+          <p style={{ color: "#8a94a3", fontSize: 12, marginTop: 0, marginBottom: 12, lineHeight: 1.5 }}>
+            Spoločné úspechy konzorcia {mojeKonzorcium.nazov}. Získané trofeje sa zobrazia farebne.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {TROFEJE.map((t) => (
+              <div
+                key={t.nazov}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 11,
+                  padding: "11px 12px",
+                  borderRadius: 12,
+                  background: t.ziskana ? "#ffffff" : "rgba(120,160,205,0.06)",
+                  border: t.ziskana ? "1px solid rgba(120,160,205,0.22)" : "1px solid rgba(120,160,205,0.16)",
+                  boxShadow: t.ziskana ? "0 3px 10px rgba(60,110,160,0.08)" : "none",
+                }}
+              >
+                <span
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 11,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: t.ziskana ? `${t.farba}22` : "rgba(120,160,205,0.12)",
+                    color: t.ziskana ? t.farba : "#c5d2e0",
+                    flexShrink: 0,
+                  }}
+                >
+                  <t.Ikona size={18} strokeWidth={2.2} />
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      color: t.ziskana ? "#1b2c42" : "#8a94a3",
+                    }}
+                  >
+                    {t.nazov}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: "#aebccd", marginTop: 2, lineHeight: 1.4 }}>{t.popis}</div>
+                </div>
+                {!t.ziskana && <Lock size={14} color="#c5d2e0" strokeWidth={2.3} style={{ flexShrink: 0 }} />}
+              </div>
+            ))}
+          </div>
+          <p style={{ color: "#aebccd", fontSize: 10.5, marginTop: 12, lineHeight: 1.4 }}>
+            Trofeje zatiaľ nie sú napojené na reálne dáta.
+          </p>
+        </div>
+      )}
+
       {zalozka === "pozvanky" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {prijatePozvanky.length === 0 && (
