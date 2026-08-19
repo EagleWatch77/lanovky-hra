@@ -9,11 +9,6 @@ import { Star, Coins, Smile, Users, Calendar, Snowflake, Sun, Cloud } from "luci
 //   "jednofarebne" = všetky ikony v jednej tmavomodrej (striedmejšie)
 const VZHLAD_IKON = "farebne";
 
-function vypocitajSezonu(datum) {
-  const mesiac = datum.getMonth();
-  const zimneMesiace = [10, 11, 0, 1, 2, 3];
-  return zimneMesiace.includes(mesiac) ? "ZIMA" : "LETO";
-}
 
 function Stat({ Ikona, farbaIkony, iconBg, nazov, value, onClick, aktivny }) {
   const chip = {
