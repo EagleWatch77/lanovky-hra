@@ -393,6 +393,8 @@ export default function PrehladPage() {
             turistiRozbaleni={otvorenyPanel === "turisti"}
             onKliknutePocasie={() => prepnutPanel("pocasie")}
             pocasieRozbalene={otvorenyPanel === "pocasie"}
+            onKliknutePeniaze={() => prepnutPanel("peniaze")}
+            peniazeRozbalene={otvorenyPanel === "peniaze"}
           />
         </div>
 
