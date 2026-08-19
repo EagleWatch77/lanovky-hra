@@ -479,7 +479,11 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
           </div>
 
           <button
-            onClick={() => zmenitPrevadzkovuDobu(zaciatok, koniec)}
+            onClick={() => {
+              zmenitPrevadzkovuDobu(zaciatok, koniec);
+              setDobaUlozena(true);
+              setTimeout(() => setDobaUlozena(false), 2500);
+            }}
             style={{
               width: "100%",
               padding: "12px 14px",
