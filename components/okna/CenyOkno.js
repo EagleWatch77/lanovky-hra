@@ -84,7 +84,8 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
   const [cenaPenzion, setCenaPenzion] = useState(stanica.cena_penzion ?? 25);
   const [cenaHotel, setCenaHotel] = useState(stanica.cena_hotel ?? 70);
   const [cenyUlozene, setCenyUlozene] = useState(false);
-
+  const [dobaUlozena, setDobaUlozena] = useState(false);
+  
   const hDatum = hernyDatum(new Date());
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
   const globalnyMult = globalnyCenovyMultiplikator(stanica, hotoveBudovy);
