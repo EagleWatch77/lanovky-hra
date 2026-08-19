@@ -97,12 +97,14 @@ export default function TopBar({ stanica, budovy, efektivitaBudovy, onKliknutePr
         onClick={onKliknutePrestiz}
         aktivny={prestizRozbalena}
       />
-      <Stat
+     <Stat
         Ikona={Coins}
-        farbaIkony={f("#c9930f")}
+        farbaIkony="#c9930f"
         iconBg="rgba(244,194,75,0.22)"
         nazov="Peniaze"
         value={Math.round(stanica.peniaze).toLocaleString("sk-SK") + " €"}
+        onClick={onKliknutePeniaze}
+        aktivny={peniazeRozbalene}
       />
       <Stat
         Ikona={Smile}
