@@ -13,26 +13,7 @@ import {
   idealnaPrevadzkaHodin,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
-import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check } from "lucide-react";
-
-const NAZVY_JEDNOTNE = {
-  penzion: "Penzión",
-  parkovisko: "Parkovisko",
-  bar: "Apréski",
-  hotel: "Hotel",
-  servis: "Ski servis",
-};
-
-const POPIS_CENY = {
-  bar: "priemerná útrata/osoba",
-  servis: "priemerná útrata/osoba",
-  parkovisko: "denné parkovné/miesto",
-  penzion: "cena za osobu/noc",
-  hotel: "cena za osobu/noc",
-};
-
-// Poradie skupín (lanovky majú vlastnú kartu hore, tu nie sú)
-const PORADIE_KATEGORII = ["parkovisko", "bar", "servis", "penzion", "hotel"];
+import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check, Car, BedDouble, Beer } from "lucide-react";
 
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
@@ -48,12 +29,61 @@ const vstup = {
   outline: "none",
 };
 
-export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu, zmenitCenuSkipasu }) {
+const karta = {
+  background: "#ffffff",
+  border: "1px solid rgba(120,160,205,0.22)",
+  boxShadow: "0 4px 14px rgba(60,110,160,0.10)",
+  borderRadius: 14,
+  padding: 14,
+};
+
+const nadpisKarty = {
+  display: "flex",
+  alignItems: "center",
+  gap: 7,
+  margin: "0 0 3px 0",
+  fontFamily: "var(--font-sora), system-ui, sans-serif",
+  fontWeight: 700,
+  fontSize: 13.5,
+  color: "#1b2c42",
+};
+
+function Odhad({ cena, odhad, dostupne, textAkNie }) {
+  if (!dostupne) {
+    return <div style={{ fontSize: 11.5, color: "#aebccd", marginTop: 8 }}>{textAkNie}</div>;
+  }
+  const drahsie = odhad && cena > odhad;
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 5,
+        fontSize: 11.5,
+        fontWeight: 600,
+        color: drahsie ? "#c9830f" : "#2ca24e",
+        marginTop: 8,
+      }}
+    >
+      {drahsie ? <TrendingUp size={13} strokeWidth={2.4} /> : <TrendingDown size={13} strokeWidth={2.4} />}
+      odhadovaná cena ~{odhad} €
+    </div>
+  );
+}
+
+export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu, zmenitCenuSkipasu, zmenitCenyStrediska }) {
   const [zalozka, setZalozka] = useState("ceny");
   const [zaciatok, setZaciatok] = useState(stanica.prevadzka_zaciatok || "08:30");
   const [koniec, setKoniec] = useState(stanica.prevadzka_koniec || "16:00");
-  const [novyySkipas, setNovySkipas] = useState(stanica.cena_skipasu ?? 15);
+
+  const [novySkipas, setNovySkipas] = useState(stanica.cena_skipasu ?? 15);
   const [skipasUlozeny, setSkipasUlozeny] = useState(false);
+
+  const [parkLuka, setParkLuka] = useState(stanica.cena_parkovne_luka ?? 5);
+  const [parkUdolie, setParkUdolie] = useState(stanica.cena_parkovne_udolie ?? 5);
+  const [cenaPenzion, setCenaPenzion] = useState(stanica.cena_penzion ?? 25);
+  const [cenaHotel, setCenaHotel] = useState(stanica.cena_hotel ?? 70);
+  const [cenyUlozene, setCenyUlozene] = useState(false);
 
   const hDatum = hernyDatum(new Date());
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
@@ -65,11 +95,24 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
   const pocetLanoviek = hotoveBudovy.filter((b) => b.kategoria === "lanovka").length;
   const refSkipas = referencnaCenaSkipasu(hotoveBudovy, hDatum, globalnyMult);
   const odhadSkipas = odhadovanaCena(stanica.id, "lanovka", "skipas", sezIndex, refSkipas);
-  const aktualnySkipas = stanica.cena_skipasu ?? 15;
-  const skipasDrahsi = odhadSkipas && aktualnySkipas > odhadSkipas;
+
+  // --- Odhady ostatných ---
+  const refParkovne = skutocnaReferencnaCena("parkovisko", "parkovisko", hDatum, globalnyMult);
+  const odhadParkovne = odhadovanaCena(stanica.id, "parkovisko", "parkovisko", sezIndex, refParkovne);
+  const refPenzion = skutocnaReferencnaCena("penzion", "penzion", hDatum, globalnyMult);
+  const odhadPenzion = odhadovanaCena(stanica.id, "penzion", "penzion", sezIndex, refPenzion);
+  const refHotel = skutocnaReferencnaCena("hotel", "hotel", hDatum, globalnyMult);
+  const odhadHotel = odhadovanaCena(stanica.id, "hotel", "hotel", sezIndex, refHotel);
+
+  const maParkLuka = hotoveBudovy.some((b) => b.kategoria === "parkovisko" && b.zona === "luka");
+  const maParkUdolie = hotoveBudovy.some((b) => b.kategoria === "parkovisko" && b.zona === "udolie");
+  const maPenzion = hotoveBudovy.some((b) => b.kategoria === "penzion");
+  const maHotel = hotoveBudovy.some((b) => b.kategoria === "hotel");
+  const maBar = hotoveBudovy.some((b) => b.kategoria === "bar");
+  const maServis = hotoveBudovy.some((b) => b.kategoria === "servis");
 
   function ulozitSkipas() {
-    const cislo = Number(novyySkipas);
+    const cislo = Number(novySkipas);
     if (Number.isNaN(cislo) || cislo < 1) {
       alert("Zadaj platnú cenu (aspoň 1 €).");
       return;
@@ -79,44 +122,28 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
     setTimeout(() => setSkipasUlozeny(false), 2500);
   }
 
-  function zonaOdomknuta(zonaKluc) {
-    if (zonaKluc === "luka") return true;
-    if (zonaKluc === "udolie") return !!stanica.udolie_odomknute;
-    if (zonaKluc === "hory") return !!stanica.hory_odomknute;
-    return false;
-  }
-
-  function budovaVSlote(zonaKluc, kat, poradie) {
-    return budovy
-      .filter((b) => b.zona === zonaKluc && b.kategoria === kat)
-      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))[poradie];
-  }
-
-  // Ostatné budovy s cenou (bez lanoviek), zoskupené podľa kategórie
-  const skupiny = {};
-  for (const zonaKluc of PORADIE_ZON) {
-    if (zonaKluc === "ladovec") continue;
-    const zona = ZONY[zonaKluc];
-    const odomknuta = zonaOdomknuta(zonaKluc);
-
-    for (const kat of Object.keys(zona.limity)) {
-      if (kat === "vlek" || kat.startsWith("lanovka")) continue;
-      if (!KATEGORIE[kat]?.maCenu) continue;
-
-      for (let poradie = 0; poradie < zona.limity[kat]; poradie++) {
-        const budova = odomknuta ? budovaVSlote(zonaKluc, kat, poradie) : null;
-        const nazov = zona.popisky?.[kat] || KATEGORIE[kat]?.katalog[kat]?.nazov || NAZVY_JEDNOTNE[kat] || KATEGORIE[kat]?.nazov;
-
-        if (!skupiny[kat]) skupiny[kat] = [];
-        skupiny[kat].push({
-          kluc: `${zonaKluc}-${kat}-${poradie}`,
-          nazov,
-          zonaNazov: zona.nazov,
-          budova,
-        });
+  function ulozitCeny() {
+    const hodnoty = {
+      cena_parkovne_luka: Number(parkLuka),
+      cena_parkovne_udolie: Number(parkUdolie),
+      cena_penzion: Number(cenaPenzion),
+      cena_hotel: Number(cenaHotel),
+    };
+    for (const v of Object.values(hodnoty)) {
+      if (Number.isNaN(v) || v < 1) {
+        alert("Všetky ceny musia byť aspoň 1 €.");
+        return;
       }
     }
+    zmenitCenyStrediska(hodnoty);
+    setCenyUlozene(true);
+    setTimeout(() => setCenyUlozene(false), 2500);
   }
+
+  // Bary a servisy si zatiaľ držia vlastnú cenu
+  const ostatneBudovy = hotoveBudovy
+    .filter((b) => b.kategoria === "bar" || b.kategoria === "servis")
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
   function zalozkaStyl(kluc) {
     const aktivna = zalozka === kluc;
@@ -137,6 +164,15 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
     };
   }
 
+  const poleRiadok = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+    padding: "9px 0",
+    borderBottom: "1px solid rgba(120,160,205,0.16)",
+  };
+
   return (
     <div>
       <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
@@ -149,41 +185,22 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
       </div>
 
       {zalozka === "ceny" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {/* SKIPAS */}
-          <div
-            style={{
-              background: "#ffffff",
-              border: "1px solid rgba(120,160,205,0.22)",
-              boxShadow: "0 4px 14px rgba(60,110,160,0.10)",
-              borderRadius: 14,
-              padding: 14,
-            }}
-          >
-            <h3
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 7,
-                margin: "0 0 3px 0",
-                fontFamily: "var(--font-sora), system-ui, sans-serif",
-                fontWeight: 700,
-                fontSize: 13.5,
-                color: "#1b2c42",
-              }}
-            >
+          <div style={karta}>
+            <h3 style={nadpisKarty}>
               <Ticket size={15} color="#2f8ae0" strokeWidth={2.3} />
               Skipas
             </h3>
             <div style={{ fontSize: 11, color: "#aebccd", marginBottom: 11 }}>
-              jedna cena pre všetky lanovky a vleky v stredisku
+              jedna cena pre všetky lanovky a vleky
             </div>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <input
                 type="number"
                 min="1"
-                value={novyySkipas}
+                value={novySkipas}
                 onChange={(e) => setNovySkipas(e.target.value)}
                 style={{ ...vstup, width: 92, textAlign: "right" }}
               />
@@ -215,180 +232,208 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
                     Uložené
                   </>
                 ) : (
-                  "Uložiť cenu"
+                  "Uložiť"
                 )}
               </button>
             </div>
 
-            {pocetLanoviek > 0 ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  fontSize: 11.5,
-                  fontWeight: 600,
-                  color: skipasDrahsi ? "#c9830f" : "#2ca24e",
-                  marginTop: 10,
-                }}
-              >
-                {skipasDrahsi ? <TrendingUp size={13} strokeWidth={2.4} /> : <TrendingDown size={13} strokeWidth={2.4} />}
-                odhadovaná cena ~{odhadSkipas} €
-              </div>
-            ) : (
-              <div style={{ fontSize: 11.5, color: "#aebccd", marginTop: 10 }}>
-                Postav prvú lanovku, aby mal skipas zmysel.
-              </div>
-            )}
-
-            <p style={{ fontSize: 10.5, color: "#aebccd", marginTop: 8, marginBottom: 0, lineHeight: 1.45 }}>
-              Odhad rastie s tým, aké lanovky máš postavené a ktoré zóny máš odomknuté. Cenu môžeš meniť raz za herný
-              týždeň.
-            </p>
+            <Odhad
+              cena={stanica.cena_skipasu ?? 15}
+              odhad={odhadSkipas}
+              dostupne={pocetLanoviek > 0}
+              textAkNie="Postav prvú lanovku, aby mal skipas zmysel."
+            />
           </div>
 
-          {/* OSTATNÉ SLUŽBY */}
-          {PORADIE_KATEGORII.filter((k) => skupiny[k]?.length).map((kat) => {
-            const popisCeny = POPIS_CENY[kat] || "cena";
-            const nazovSkupiny = KATEGORIE[kat]?.nazov || kat;
+          {/* PARKOVNÉ A UBYTOVANIE */}
+          <div style={karta}>
+            <h3 style={nadpisKarty}>
+              <Car size={15} color="#2f8ae0" strokeWidth={2.3} />
+              Parkovné
+            </h3>
+            <div style={{ fontSize: 11, color: "#aebccd", marginBottom: 8 }}>denné parkovné za miesto</div>
 
-            return (
-              <div key={kat}>
-                <h3
-                  style={{
-                    fontFamily: "var(--font-sora), system-ui, sans-serif",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: "#8a94a3",
-                    margin: "0 0 3px 0",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                  }}
-                >
-                  {nazovSkupiny}
-                </h3>
-                <div style={{ fontSize: 10.5, color: "#aebccd", marginBottom: 8 }}>{popisCeny}</div>
+            <div style={poleRiadok}>
+              <div>
+                <div style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>Lúka</div>
+                {maParkLuka ? (
+                  <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>odhad ~{odhadParkovne} €</div>
+                ) : (
+                  <div style={{ fontSize: 11, color: "#aebccd", marginTop: 2 }}>zatiaľ nepostavené</div>
+                )}
+              </div>
+              <input
+                type="number"
+                min="1"
+                value={parkLuka}
+                onChange={(e) => setParkLuka(e.target.value)}
+                style={{ ...vstup, width: 82, textAlign: "right" }}
+              />
+            </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {skupiny[kat].map((s) => {
-                    const budova = s.budova;
-                    const jeHotovo = budova?.stav === "hotovo";
+            <div style={{ ...poleRiadok, borderBottom: "none" }}>
+              <div>
+                <div style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>Údolie</div>
+                {maParkUdolie ? (
+                  <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>odhad ~{odhadParkovne} €</div>
+                ) : (
+                  <div style={{ fontSize: 11, color: "#aebccd", marginTop: 2 }}>zatiaľ nepostavené</div>
+                )}
+              </div>
+              <input
+                type="number"
+                min="1"
+                value={parkUdolie}
+                onChange={(e) => setParkUdolie(e.target.value)}
+                style={{ ...vstup, width: 82, textAlign: "right" }}
+              />
+            </div>
+          </div>
 
-                    let odhad = null;
-                    if (jeHotovo) {
-                      const refCenaDnes = skutocnaReferencnaCena(budova.kategoria, budova.typ, hDatum, globalnyMult);
-                      odhad = odhadovanaCena(stanica.id, budova.kategoria, budova.typ, sezIndex, refCenaDnes);
-                    }
-                    const jeDrahsie = odhad && jeHotovo && budova.cena > odhad;
+          <div style={karta}>
+            <h3 style={nadpisKarty}>
+              <BedDouble size={15} color="#2f8ae0" strokeWidth={2.3} />
+              Ubytovanie
+            </h3>
+            <div style={{ fontSize: 11, color: "#aebccd", marginBottom: 8 }}>cena za osobu a noc</div>
 
-                    return (
+            <div style={poleRiadok}>
+              <div>
+                <div style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>Penzióny</div>
+                {maPenzion ? (
+                  <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>odhad ~{odhadPenzion} €</div>
+                ) : (
+                  <div style={{ fontSize: 11, color: "#aebccd", marginTop: 2 }}>zatiaľ nepostavené</div>
+                )}
+              </div>
+              <input
+                type="number"
+                min="1"
+                value={cenaPenzion}
+                onChange={(e) => setCenaPenzion(e.target.value)}
+                style={{ ...vstup, width: 82, textAlign: "right" }}
+              />
+            </div>
+
+            <div style={{ ...poleRiadok, borderBottom: "none" }}>
+              <div>
+                <div style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>Hotely</div>
+                {maHotel ? (
+                  <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>odhad ~{odhadHotel} €</div>
+                ) : (
+                  <div style={{ fontSize: 11, color: "#aebccd", marginTop: 2 }}>zatiaľ nepostavené</div>
+                )}
+              </div>
+              <input
+                type="number"
+                min="1"
+                value={cenaHotel}
+                onChange={(e) => setCenaHotel(e.target.value)}
+                style={{ ...vstup, width: 82, textAlign: "right" }}
+              />
+            </div>
+          </div>
+
+          <button
+            onClick={ulozitCeny}
+            style={{
+              width: "100%",
+              padding: "12px 14px",
+              borderRadius: 12,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontWeight: 700,
+              fontSize: 13,
+              color: "#fff",
+              background: cenyUlozene
+                ? "linear-gradient(180deg,#42d675,#33bd63)"
+                : "linear-gradient(180deg,#4aa3ee,#2f92e6)",
+              boxShadow: "0 8px 18px rgba(47,146,230,0.28)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 7,
+            }}
+          >
+            {cenyUlozene ? (
+              <>
+                <Check size={15} strokeWidth={2.6} />
+                Uložené
+              </>
+            ) : (
+              "Uložiť parkovné a ubytovanie"
+            )}
+          </button>
+
+          {/* BARY A SERVIS — vlastná cena na budovu */}
+          {ostatneBudovy.length > 0 && (
+            <div style={karta}>
+              <h3 style={nadpisKarty}>
+                <Beer size={15} color="#2f8ae0" strokeWidth={2.3} />
+                Občerstvenie a služby
+              </h3>
+              <div style={{ fontSize: 11, color: "#aebccd", marginBottom: 8 }}>priemerná útrata na osobu</div>
+
+              {ostatneBudovy.map((b, i) => {
+                const zona = ZONY[b.zona];
+                const nazov = zona?.popisky?.[b.kategoria] || KATEGORIE[b.kategoria]?.katalog[b.typ]?.nazov || KATEGORIE[b.kategoria]?.nazov;
+                const refCena = skutocnaReferencnaCena(b.kategoria, b.typ, hDatum, globalnyMult);
+                const odhad = odhadovanaCena(stanica.id, b.kategoria, b.typ, sezIndex, refCena);
+                const drahsie = odhad && b.cena > odhad;
+
+                return (
+                  <div
+                    key={b.id}
+                    style={{ ...poleRiadok, borderBottom: i < ostatneBudovy.length - 1 ? poleRiadok.borderBottom : "none" }}
+                  >
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>{nazov}</span>
+                        <span
+                          style={{
+                            fontSize: 9.5,
+                            fontWeight: 700,
+                            letterSpacing: "0.06em",
+                            color: "#8a94a3",
+                            background: "rgba(120,160,205,0.12)",
+                            padding: "2px 7px",
+                            borderRadius: 7,
+                            textTransform: "uppercase",
+                          }}
+                        >
+                          {zona?.nazov}
+                        </span>
+                      </div>
                       <div
-                        key={s.kluc}
                         style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          gap: 10,
-                          padding: "10px 12px",
-                          borderRadius: 12,
-                          background: jeHotovo ? "#ffffff" : "rgba(120,160,205,0.05)",
-                          border: jeHotovo ? "1px solid rgba(120,160,205,0.22)" : "1px solid rgba(120,160,205,0.12)",
-                          boxShadow: jeHotovo ? "0 3px 10px rgba(60,110,160,0.07)" : "none",
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: drahsie ? "#c9830f" : "#2ca24e",
+                          marginTop: 3,
                         }}
                       >
-                        <div style={{ minWidth: 0 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-                            <span
-                              style={{
-                                fontFamily: "var(--font-sora), system-ui, sans-serif",
-                                fontWeight: 700,
-                                fontSize: 13,
-                                color: jeHotovo ? "#1b2c42" : "#aebccd",
-                              }}
-                            >
-                              {s.nazov}
-                            </span>
-                            <span
-                              style={{
-                                fontSize: 9.5,
-                                fontWeight: 700,
-                                letterSpacing: "0.06em",
-                                color: "#8a94a3",
-                                background: "rgba(120,160,205,0.12)",
-                                padding: "2px 7px",
-                                borderRadius: 7,
-                                textTransform: "uppercase",
-                              }}
-                            >
-                              {s.zonaNazov}
-                            </span>
-                          </div>
-
-                          {jeHotovo ? (
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 4,
-                                fontSize: 11,
-                                fontWeight: 600,
-                                color: jeDrahsie ? "#c9830f" : "#2ca24e",
-                                marginTop: 4,
-                              }}
-                            >
-                              {jeDrahsie ? (
-                                <TrendingUp size={12} strokeWidth={2.4} />
-                              ) : (
-                                <TrendingDown size={12} strokeWidth={2.4} />
-                              )}
-                              odhad ~{odhad} €
-                            </div>
-                          ) : (
-                            <div style={{ fontSize: 11, color: "#aebccd", marginTop: 4 }}>
-                              {budova?.stav === "vo_vystavbe" ? "vo výstavbe" : "zatiaľ nepostavené"}
-                            </div>
-                          )}
-                        </div>
-
-                        <input
-                          type="number"
-                          min="1"
-                          disabled={!jeHotovo}
-                          defaultValue={jeHotovo ? budova.cena : ""}
-                          placeholder="—"
-                          onBlur={(e) => jeHotovo && zmenitCenu(budova, Number(e.target.value))}
-                          style={{
-                            ...vstup,
-                            width: 82,
-                            textAlign: "right",
-                            flexShrink: 0,
-                            opacity: jeHotovo ? 1 : 0.5,
-                            cursor: jeHotovo ? "text" : "not-allowed",
-                            background: jeHotovo ? "#fff" : "rgba(120,160,205,0.06)",
-                          }}
-                        />
+                        odhad ~{odhad} €
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+                    </div>
+                    <input
+                      type="number"
+                      min="1"
+                      defaultValue={b.cena}
+                      onBlur={(e) => zmenitCenu(b, Number(e.target.value))}
+                      style={{ ...vstup, width: 82, textAlign: "right" }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
       {zalozka === "prevadzka" && (
         <div>
-          <div
-            style={{
-              background: "#ffffff",
-              border: "1px solid rgba(120,160,205,0.22)",
-              boxShadow: "0 4px 14px rgba(60,110,160,0.10)",
-              borderRadius: 14,
-              padding: "14px 16px",
-              marginBottom: 16,
-            }}
-          >
+          <div style={{ ...karta, marginBottom: 16 }}>
             <div style={{ fontSize: 11.5, color: "#8a94a3", marginBottom: 5 }}>
               {NAZVY_MESIACOV[hDatum.getMonth()]} — tvoja prevádzková doba
             </div>
