@@ -17,6 +17,27 @@ import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check, Car, BedDouble, B
 
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
+const COOLDOWN_HODIN = 84; // 1 herný týždeň
+
+// Koľko hodín ešte zostáva do ďalšej možnej zmeny (0 = môžeš meniť)
+function zostavaHodin(zmeneneAt) {
+  if (!zmeneneAt) return 0;
+  const preslo = (new Date() - new Date(zmeneneAt)) / (1000 * 60 * 60);
+  return Math.max(0, Math.ceil(COOLDOWN_HODIN - preslo));
+}
+
+function CooldownText({ hodin }) {
+  if (hodin <= 0) return null;
+  const dni = Math.floor(hodin / 24);
+  const zvysok = hodin % 24;
+  const text = dni > 0 ? `${dni} d ${zvysok} h` : `${hodin} h`;
+  return (
+    <div style={{ fontSize: 11, color: "#c9830f", fontWeight: 600, marginTop: 8 }}>
+      Ďalšia zmena možná o {text}
+    </div>
+  );
+}
+
 const vstup = {
   padding: "9px 11px",
   borderRadius: 10,
