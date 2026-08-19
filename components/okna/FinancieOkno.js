@@ -4,9 +4,35 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { KATEGORIE, zaciatokAktualnejSezony } from "../../lib/katalog";
 import { hernyDatum, realDatumZHerneho } from "../../lib/hernyCas";
-import { cardStyle } from "../../lib/styles";
+import { Scale, CalendarRange, TrendingUp, TrendingDown, Snowflake, Sun } from "lucide-react";
 
 const VYDAVKOVE_TYPY = ["stavba", "naklady_platy", "naklady_najatie", "zamestnanec"];
+
+const karta = {
+  background: "#ffffff",
+  border: "1px solid rgba(120,160,205,0.22)",
+  borderRadius: 14,
+  boxShadow: "0 4px 14px rgba(60,110,160,0.10)",
+  padding: 14,
+  marginBottom: 12,
+};
+
+const nadpisKarty = {
+  display: "flex",
+  alignItems: "center",
+  gap: 7,
+  margin: "0 0 10px 0",
+  fontFamily: "var(--font-sora), system-ui, sans-serif",
+  fontWeight: 700,
+  fontSize: 13.5,
+  color: "#1b2c42",
+};
+
+const cisloStyl = {
+  fontFamily: "var(--font-sora), system-ui, sans-serif",
+  fontWeight: 700,
+  fontVariantNumeric: "tabular-nums",
+};
 
 function sucet(transakcie, kategoria, typy, odDatumu) {
   return transakcie
@@ -38,28 +64,47 @@ function zaciatokRocnikaHerny(hDatum) {
   return { zimaZaciatok, letoZaciatok };
 }
 
-function Tabulka({ nadpis, riadky, obdobia, transakcie, typy, farba }) {
+function Tabulka({ nadpis, Ikona, farbaIkony, riadky, obdobia, transakcie, typy, farba }) {
   return (
-    <div style={cardStyle}>
-      <h3 style={{ marginTop: 0, fontSize: 15 }}>{nadpis}</h3>
+    <div style={karta}>
+      <h3 style={nadpisKarty}>
+        <Ikona size={15} color={farbaIkony} strokeWidth={2.3} />
+        {nadpis}
+      </h3>
       <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5 }}>
           <thead>
-            <tr style={{ borderBottom: "1px solid #223040" }}>
-              <th style={{ textAlign: "left", padding: "6px 8px", color: "#9fb0bf" }}>Kategória</th>
+            <tr style={{ borderBottom: "1px solid rgba(120,160,205,0.24)" }}>
+              <th style={{ textAlign: "left", padding: "7px 8px", color: "#8a94a3", fontWeight: 600, fontSize: 11 }}>
+                Kategória
+              </th>
               {obdobia.map((o) => (
-                <th key={o.label} style={{ textAlign: "right", padding: "6px 8px", color: "#9fb0bf" }}>{o.label}</th>
+                <th
+                  key={o.label}
+                  style={{ textAlign: "right", padding: "7px 8px", color: "#8a94a3", fontWeight: 600, fontSize: 11 }}
+                >
+                  {o.label}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {riadky.map((kat) => (
-              <tr key={kat} style={{ borderBottom: "1px solid #1a2632" }}>
-                <td style={{ padding: "6px 8px" }}>{KATEGORIE[kat].ikona} {KATEGORIE[kat].nazov}</td>
+              <tr key={kat} style={{ borderBottom: "1px solid rgba(120,160,205,0.14)" }}>
+                <td style={{ padding: "7px 8px", color: "#1b2c42" }}>{KATEGORIE[kat].nazov}</td>
                 {obdobia.map((o) => {
                   const hodnota = Math.abs(Math.round(sucet(transakcie, kat, typy, o.od)));
                   return (
-                    <td key={o.label} style={{ textAlign: "right", padding: "6px 8px", color: hodnota > 0 ? farba : "#4a5866" }}>
+                    <td
+                      key={o.label}
+                      style={{
+                        textAlign: "right",
+                        padding: "7px 8px",
+                        ...cisloStyl,
+                        fontWeight: 600,
+                        color: hodnota > 0 ? farba : "#c5d2e0",
+                      }}
+                    >
                       {hodnota.toLocaleString("sk-SK")} €
                     </td>
                   );
@@ -67,11 +112,11 @@ function Tabulka({ nadpis, riadky, obdobia, transakcie, typy, farba }) {
               </tr>
             ))}
             <tr>
-              <td style={{ padding: "8px", fontWeight: 700 }}>Spolu</td>
+              <td style={{ padding: "9px 8px", fontWeight: 700, color: "#1b2c42", fontSize: 12.5 }}>Spolu</td>
               {obdobia.map((o) => {
                 const hodnota = Math.abs(Math.round(sucetVsetkychTypov(transakcie, typy, o.od)));
                 return (
-                  <td key={o.label} style={{ textAlign: "right", padding: "8px", fontWeight: 700, color: farba }}>
+                  <td key={o.label} style={{ textAlign: "right", padding: "9px 8px", ...cisloStyl, color: farba }}>
                     {hodnota.toLocaleString("sk-SK")} €
                   </td>
                 );
@@ -86,31 +131,36 @@ function Tabulka({ nadpis, riadky, obdobia, transakcie, typy, farba }) {
 
 function CistyVysledok({ obdobia, transakcie }) {
   return (
-    <div style={cardStyle}>
-      <h3 style={{ marginTop: 0, fontSize: 15 }}>⚖️ Čistý výsledok (príjmy − výdavky)</h3>
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-          <thead>
-            <tr style={{ borderBottom: "1px solid #223040" }}>
-              {obdobia.map((o) => (
-                <th key={o.label} style={{ textAlign: "right", padding: "6px 8px", color: "#9fb0bf" }}>{o.label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {obdobia.map((o) => {
-                const hodnota = Math.round(sucetVsetkychTypov(transakcie, ["prijem", ...VYDAVKOVE_TYPY], o.od));
-                const farba = hodnota > 0 ? "#4ade80" : hodnota < 0 ? "#f2994a" : "#9fb0bf";
-                return (
-                  <td key={o.label} style={{ textAlign: "right", padding: "8px", fontWeight: 700, color: farba }}>
-                    {hodnota > 0 ? "+" : ""}{hodnota.toLocaleString("sk-SK")} €
-                  </td>
-                );
-              })}
-            </tr>
-          </tbody>
-        </table>
+    <div style={karta}>
+      <h3 style={nadpisKarty}>
+        <Scale size={15} color="#2f8ae0" strokeWidth={2.3} />
+        Čistý výsledok
+      </h3>
+      <div style={{ display: "flex", gap: 8 }}>
+        {obdobia.map((o) => {
+          const hodnota = Math.round(sucetVsetkychTypov(transakcie, ["prijem", ...VYDAVKOVE_TYPY], o.od));
+          const farba = hodnota > 0 ? "#2ca24e" : hodnota < 0 ? "#d64545" : "#8a94a3";
+          const pozadie = hodnota > 0 ? "#e9f8ee" : hodnota < 0 ? "#fdeeee" : "rgba(120,160,205,0.08)";
+          return (
+            <div
+              key={o.label}
+              style={{
+                flex: 1,
+                textAlign: "center",
+                padding: "10px 6px",
+                borderRadius: 11,
+                background: pozadie,
+                minWidth: 0,
+              }}
+            >
+              <div style={{ fontSize: 10.5, color: "#8a94a3", fontWeight: 600, marginBottom: 4 }}>{o.label}</div>
+              <div style={{ ...cisloStyl, fontSize: 13.5, color: farba, whiteSpace: "nowrap" }}>
+                {hodnota > 0 ? "+" : ""}
+                {hodnota.toLocaleString("sk-SK")} €
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -127,27 +177,53 @@ function RocnikKarta({ transakcie, hDatum }) {
   const spolu = zimnaSuma + letnaSuma;
 
   const riadky = [
-    { label: "❄️ Zimná sezóna", hodnota: zimnaSuma },
-    { label: "☀️ Letná sezóna", hodnota: letnaSuma },
+    { label: "Zimná sezóna", hodnota: zimnaSuma, Ikona: Snowflake, farbaIkony: "#2a9fd6" },
+    { label: "Letná sezóna", hodnota: letnaSuma, Ikona: Sun, farbaIkony: "#e0a021" },
     { label: "Spolu za ročník", hodnota: spolu, tucne: true },
   ];
 
   return (
-    <div style={cardStyle}>
-      <h3 style={{ marginTop: 0, fontSize: 15 }}>📅 Ročník (zima + leto)</h3>
-      {riadky.map((r) => {
-        const farba = r.hodnota > 0 ? "#4ade80" : r.hodnota < 0 ? "#f2994a" : "#9fb0bf";
+    <div style={karta}>
+      <h3 style={nadpisKarty}>
+        <CalendarRange size={15} color="#8a5fd6" strokeWidth={2.3} />
+        Ročník (zima + leto)
+      </h3>
+      {riadky.map((r, i) => {
+        const farba = r.hodnota > 0 ? "#2ca24e" : r.hodnota < 0 ? "#d64545" : "#8a94a3";
         return (
-          <div key={r.label} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #223040" }}>
-            <span style={{ color: "#9fb0bf", fontWeight: r.tucne ? 700 : 400 }}>{r.label}</span>
-            <span style={{ color: farba, fontWeight: 700 }}>
-              {r.hodnota > 0 ? "+" : ""}{r.hodnota.toLocaleString("sk-SK")} €
+          <div
+            key={r.label}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 10,
+              padding: "9px 0",
+              borderBottom: i < riadky.length - 1 ? "1px solid rgba(120,160,205,0.16)" : "none",
+            }}
+          >
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 7,
+                fontSize: 12.5,
+                color: r.tucne ? "#1b2c42" : "#5a6f88",
+                fontWeight: r.tucne ? 700 : 500,
+              }}
+            >
+              {r.Ikona && <r.Ikona size={14} color={r.farbaIkony} strokeWidth={2.2} />}
+              {r.label}
+            </span>
+            <span style={{ ...cisloStyl, fontSize: 13, color: farba }}>
+              {r.hodnota > 0 ? "+" : ""}
+              {r.hodnota.toLocaleString("sk-SK")} €
             </span>
           </div>
         );
       })}
-      <p style={{ color: "#657685", fontSize: 11, marginTop: 8, marginBottom: 0 }}>
-        Ročník = jedna zimná + jedna letná sezóna dokopy (herný kalendár, spolu 6 reálnych mesiacov).
+      <p style={{ color: "#aebccd", fontSize: 10.5, marginTop: 9, marginBottom: 0, lineHeight: 1.4 }}>
+        Ročník = jedna zimná + jedna letná sezóna dokopy (spolu 6 reálnych mesiacov).
       </p>
     </div>
   );
@@ -188,30 +264,34 @@ export default function FinancieOkno({ stanica }) {
   const prijmoveKategorie = Object.keys(KATEGORIE).filter((k) => KATEGORIE[k].maCenu);
   const vsetkyKategorie = Object.keys(KATEGORIE);
 
-  if (nacitavaSa) return <p style={{ color: "#9fb0bf" }}>Načítavam...</p>;
+  if (nacitavaSa) return <p style={{ color: "#8a94a3", fontSize: 13 }}>Načítavam…</p>;
 
   return (
     <div>
       <CistyVysledok obdobia={obdobia} transakcie={transakcie} />
       <RocnikKarta transakcie={transakcie} hDatum={hDatum} />
       <Tabulka
-        nadpis="📈 Príjmy podľa kategórie"
+        nadpis="Príjmy podľa kategórie"
+        Ikona={TrendingUp}
+        farbaIkony="#2ca24e"
         riadky={prijmoveKategorie}
         obdobia={obdobia}
         transakcie={transakcie}
         typy={["prijem"]}
-        farba="#4ade80"
+        farba="#2ca24e"
       />
       <Tabulka
-        nadpis="📉 Výdavky podľa kategórie"
+        nadpis="Výdavky podľa kategórie"
+        Ikona={TrendingDown}
+        farbaIkony="#d64545"
         riadky={vsetkyKategorie}
         obdobia={obdobia}
         transakcie={transakcie}
         typy={VYDAVKOVE_TYPY}
-        farba="#f2994a"
+        farba="#d64545"
       />
-      <p style={{ color: "#657685", fontSize: 11, marginTop: -8 }}>
-        Výdavky zahŕňajú stavbu a náklady na priebežný plat. "Sezóna" je počítaná podľa herného kalendára (3 reálne mesiace).
+      <p style={{ color: "#aebccd", fontSize: 10.5, marginTop: -4, lineHeight: 1.45 }}>
+        Výdavky zahŕňajú stavbu a náklady na priebežný plat. „Sezóna" je počítaná podľa herného kalendára.
       </p>
     </div>
   );
