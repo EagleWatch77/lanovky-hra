@@ -4,6 +4,15 @@ import { useEffect, useState } from "react";
 import { Mail, Users, Search, Handshake, Crown, LogOut, Star, Check, Clock, UserPlus, Send, Trophy, Medal, Flame, Mountain, Snowflake, Lock } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
 
+// ZATIAĽ ZÁSTUPNÉ TROFEJE — neskôr napojíme na reálne úspechy konzorcia
+const TROFEJE = [
+  { Ikona: Trophy, nazov: "Víťaz ligy", popis: "Vyhrať ligu na konci herného roka", ziskana: false, farba: "#efb23c" },
+  { Ikona: Medal, nazov: "Prvá desiatka", popis: "Dostať sa do top 10 rebríčka konzorcií", ziskana: false, farba: "#2f8ae0" },
+  { Ikona: Mountain, nazov: "Dobyvatelia hôr", popis: "Všetci členovia majú odomknuté Hory", ziskana: false, farba: "#2ca24e" },
+  { Ikona: Snowflake, nazov: "Zimní králi", popis: "Spoločne prekonať 100 000 návštevníkov za sezónu", ziskana: false, farba: "#2a9fd6" },
+  { Ikona: Flame, nazov: "Silná partia", popis: "Mať 5 aktívnych členov naraz", ziskana: false, farba: "#ef9a3d" },
+];
+
 const karta = {
   background: "#ffffff",
   border: "1px solid rgba(120,160,205,0.22)",
