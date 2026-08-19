@@ -217,16 +217,10 @@ export default function RebricekOkno({ stanica, poslatSpravu, onOtvorProfil }) {
                   </span>
                 </div>
 
-                {rozbaleny && !jeToJa && (
-                  <div
-                    style={{
-                      padding: "10px 12px 12px",
-                      borderTop: "1px solid rgba(120,160,205,0.16)",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 6,
-                    }}
-                  >
+               )}
+              </div>
+            );
+          })}
                     {odoslane === r.id ? (
                       <p
                         style={{
