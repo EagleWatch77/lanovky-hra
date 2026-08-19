@@ -1,6 +1,6 @@
 "use client";
 
-import { cardStyle } from "../../lib/styles";
+import { CheckCircle2, CloudSun, ListTodo, Palette } from "lucide-react";
 
 const HOTOVE = [
   "Registrácia a prihlásenie hráčov, vlastný názov strediska",
@@ -18,34 +18,52 @@ const HOTOVE = [
   "Vlek v lete bez bobovej dráhy nezarába nič — Bobová dráha (200-450k €) umožňuje celoročnú prevádzku",
   "Ratrak (Údolie) — bez neho -10 % spokojnosť v zime, mzdy zamestnancov bežia celoročne",
   "Zasnežovanie — manuálny prepínač ZAP/VYP, previazané s vetrom (silný vietor = nefunguje aj keď zapnuté), elektrina 127 €/h len Nov-Feb",
-  "Medzisezóna (25.-31. máj, 1.-7. október) — stredisko je skutočne zatvorené, žiadny príjem, mzdy/údržba bežia ďalej",
+  "Medzisezóna (1.-7. október) — stredisko je skutočne zatvorené, žiadny príjem, mzdy/údržba bežia ďalej",
   "Sezónny reset prestíže — prestíž z turistov sa vynuluje raz za ročný cyklus (1 zima + 1 leto), rovnako pre všetkých hráčov naraz",
   "Údržba budov — % z hodnoty rastie s vekom strediska, každý 3. rok nárazovo vyššia, +50 % pre zónu Hory",
   "Ligový systém — spoločný pool turistov na zónu, delený podľa prestíže; nováčikovský bonus (3× klesá na 1× za 90 dní); ligy = 10 najbližšie registrovaných hráčov",
   "Úpadok prestíže pri dlhodobo nízkych peniazoch (pod 50 000 € dlhšie ako 3 týždne)",
   "Počasie — denne sa mení, vietor a búrky ovplyvňujú dopyt lanoviek/parkovísk/zasnežovania (pozri tabuľku nižšie)",
-  "Herný kalendár — beží 2× rýchlejšie ako reálny čas, dátum v hornom paneli je kliknuteľný (ukáže hranice aktuálnej a ďalšej sezóny)",
+  "Herný kalendár — beží 2× rýchlejšie ako reálny čas, dátum v hornom paneli je kliknuteľný",
   "Rebríček hráčov podľa prestíže, verejné profily hráčov",
   "Financie — denný/týždenný/mesačný/sezónny prehľad zárobkov a výdavkov podľa kategórie",
   "Nastavenia — zmena názvu, emailu, hesla, zmazanie dát",
-"Mapa strediska na pozadí (mení sa zima/leto), navigácia cez okná priamo nad mapou",
+  "Mapa strediska na pozadí (mení sa zima/leto), navigácia cez okná priamo nad mapou",
   "Časovač na pozadí — ekonomika sa počíta pre všetkých hráčov automaticky raz za hodinu, aj bez otvorenej appky",
-  "Herný čas s hodinami/minútami v hornom paneli",
-  "Kliknuteľný dátum v paneli — ukáže hranice aktuálnej aj ďalšej sezóny, vrátane medzisezóny",
-  "Medzisezóna (1.-7. október) — stredisko je počas nej zatvorené, žiadny príjem",
+  "Ski konzorciá — zakladanie, žiadosti o vstup, pozvánky, spoločná nástenka",
+  "Správy medzi hráčmi",
 ];
+
+const UI_HOTOVE = [
+  "Svetlá „ľadová\" téma naprieč hrou — biele frostové panely, jednotné farby a tiene",
+  "Fonty Sora (nadpisy a čísla) a Inter (text) načítané cez Next.js",
+  "Horná lišta cez celú šírku — logo strediska, názov, štatistiky, notifikácie a nastavenia",
+  "Logo strediska ako Lucide ikona (15 na výber pri zakladaní) namiesto emoji",
+  "Emoji nahradené Lucide ikonami v celej hre",
+  "Počasie presunuté do hornej lišty ako rozbaľovací panel",
+  "Panel zóny — obrázok zóny (mení sa podľa sezóny), prepínanie šípkami, štatistiky, tlačidlo Spravovať zónu",
+  "Panel rebríčka — ukazuje hráčov okolo teba a tvoje poradie",
+  "Panel týždenných misií (zatiaľ so zástupnými dátami)",
+  "Panel udalostí — napojený na skutočný stav hry, odbory sa zobrazia keď naozaj žiadajú",
+  "Mapa strediska cez celé pozadie, prispôsobená na rôzne monitory",
+  "Jednotná veľkosť a vzhľad všetkých okien",
+];
+
 const PLANOVANE = [
-  "Spokojnosť Infraštruktúra — prechod na skutočný pomer kapacita/dopyt (nie len 'máš/nemáš'), zahrnúť penzióny (Lúka), 2. parkovisko/hotel (Údolie), ski servis, apres-ski bar; konkurencia sa počíta ako pokrytie rovnako ako vlastná budova",
-  "Anti-cheat pre ligu — prestíž pod hranicou (napr. 10) sa nebude počítať do súčtu ligy, rieši multi-účty aj dlho neaktívnych hráčov",
-  "Oprava panela Lanovky — má ukazovať skutočnú vyťaženosť dopytom, nie efektivitu zamestnancov",
-  "Ľadovec — vlastný (lacnejší) ratrak systém, obmedzené/žiadne leto (ochrana ľadovca pre budúce generácie)",
-  "Spokojnosť relatívna k lige — zaujímavá myšlienka, spokojnosť čiastočne ovplyvnená tým, ako si vedieš oproti ostatným hráčom v lige",
-  "Klikacie body priamo na mape (stavanie kliknutím na konkrétne miesto)",
+  "Návod pre nových hráčov — manažér na okraji obrazovky, listovací sprievodca na 8 strán",
+  "Výrobcovia lanoviek — rôzne ceny, kapacity, rýchlosť, údržba, spotreba a spoľahlivosť",
+  "Ligy s postupom a zostupom na konci herného roka",
+  "Misie napojené na reálne dáta (zatiaľ zástupné)",
+  "Ďalšie typy udalostí — míľniky, sezónne udalosti, novinky",
+  "Letné obrázky zón Údolie, Hory a Ľadovec",
+  "Zvyšné okná do svetlej témy (Budovy, Nastavenia, Aliancia, Fórum, Správy, Rebríček)",
+  "Spokojnosť Infraštruktúra — prechod na skutočný pomer kapacita/dopyt (nie len „máš/nemáš\")",
+  "Anti-cheat pre ligu — prestíž pod hranicou sa nebude počítať do súčtu ligy",
+  "Ľadovec — vlastný (lacnejší) ratrak systém, obmedzené/žiadne leto",
   "Náhodné incidenty (poruchy, sťažnosti)",
-  "Ligový systém s postupom/zostupom medzi úrovňami",
-  "Aliancie a spoločné projekty",
-  "Južná strana strediska (rozšírenie)",
+  "Upratanie nepoužívaných súborov v projekte",
 ];
+
 const TYPY_POCASIA_TABULKA = [
   { nazov: "Slnečno", zima: "25%", leto: "35%" },
   { nazov: "Zamračené", zima: "30%", leto: "25%" },
@@ -55,38 +73,111 @@ const TYPY_POCASIA_TABULKA = [
   { nazov: "Búrka (len júl/august)", zima: "—", leto: "4%" },
 ];
 
+const karta = {
+  background: "#ffffff",
+  border: "1px solid rgba(120,160,205,0.22)",
+  borderRadius: 14,
+  boxShadow: "0 4px 14px rgba(60,110,160,0.10)",
+  padding: 14,
+  marginBottom: 12,
+};
+
+const nadpisKarty = {
+  display: "flex",
+  alignItems: "center",
+  gap: 7,
+  margin: "0 0 10px 0",
+  fontFamily: "var(--font-sora), system-ui, sans-serif",
+  fontWeight: 700,
+  fontSize: 13.5,
+  color: "#1b2c42",
+};
+
+const zoznam = {
+  color: "#5a6f88",
+  fontSize: 12.5,
+  lineHeight: 1.65,
+  paddingLeft: 18,
+  margin: 0,
+};
+
 export default function InfoOkno() {
   return (
     <div>
-      <div style={{ ...cardStyle, marginTop: 0 }}>
-        <h3 style={{ marginTop: 0 }}>✅ Čo už funguje</h3>
-        <ul style={{ color: "#e8edf2", fontSize: 14, lineHeight: 1.8, paddingLeft: 20 }}>
+      <div style={karta}>
+        <h3 style={nadpisKarty}>
+          <CheckCircle2 size={15} color="#2ca24e" strokeWidth={2.3} />
+          Čo už funguje
+        </h3>
+        <ul style={zoznam}>
           {HOTOVE.map((polozka, i) => (
-            <li key={i}>{polozka}</li>
+            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
           ))}
         </ul>
       </div>
 
-      <div style={cardStyle}>
-        <h3 style={{ marginTop: 0 }}>🌦️ Typy počasia</h3>
-        <p style={{ color: "#9fb0bf", fontSize: 13 }}>
-          Počasie sa mení každý deň, rovnaké pre všetkých hráčov. Silný vietor znižuje príjem lanoviek o 66 %, búrka o 25 % (len júl/august). Parkoviská reagujú na vietor inak podľa času. Zasnežovanie pri silnom vetre nefunguje vôbec, aj keď je zapnuté.
+      <div style={karta}>
+        <h3 style={nadpisKarty}>
+          <Palette size={15} color="#8a5fd6" strokeWidth={2.3} />
+          Rozhranie a vzhľad
+        </h3>
+        <ul style={zoznam}>
+          {UI_HOTOVE.map((polozka, i) => (
+            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div style={karta}>
+        <h3 style={nadpisKarty}>
+          <CloudSun size={15} color="#2f8ae0" strokeWidth={2.3} />
+          Typy počasia
+        </h3>
+        <p style={{ color: "#8a94a3", fontSize: 12, lineHeight: 1.55, marginTop: 0 }}>
+          Počasie sa mení každý deň, rovnaké pre všetkých hráčov. Silný vietor znižuje príjem lanoviek o 66 %, búrka
+          o 25 % (len júl/august). Zasnežovanie pri silnom vetre nefunguje vôbec, aj keď je zapnuté.
         </p>
-        <div style={{ overflowX: "auto", marginTop: 12 }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+        <div style={{ overflowX: "auto", marginTop: 10 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #223040" }}>
-                <th style={{ textAlign: "left", padding: "6px 8px", color: "#9fb0bf" }}>Typ počasia</th>
-                <th style={{ textAlign: "right", padding: "6px 8px", color: "#9fb0bf" }}>❄️ Zima</th>
-                <th style={{ textAlign: "right", padding: "6px 8px", color: "#9fb0bf" }}>☀️ Leto</th>
+              <tr style={{ borderBottom: "1px solid rgba(120,160,205,0.24)" }}>
+                <th style={{ textAlign: "left", padding: "7px 8px", color: "#8a94a3", fontWeight: 600, fontSize: 11 }}>
+                  Typ počasia
+                </th>
+                <th style={{ textAlign: "right", padding: "7px 8px", color: "#8a94a3", fontWeight: 600, fontSize: 11 }}>
+                  Zima
+                </th>
+                <th style={{ textAlign: "right", padding: "7px 8px", color: "#8a94a3", fontWeight: 600, fontSize: 11 }}>
+                  Leto
+                </th>
               </tr>
             </thead>
             <tbody>
               {TYPY_POCASIA_TABULKA.map((r) => (
-                <tr key={r.nazov} style={{ borderBottom: "1px solid #1a2632" }}>
-                  <td style={{ padding: "6px 8px" }}>{r.nazov}</td>
-                  <td style={{ textAlign: "right", padding: "6px 8px", color: "#e8edf2" }}>{r.zima}</td>
-                  <td style={{ textAlign: "right", padding: "6px 8px", color: "#e8edf2" }}>{r.leto}</td>
+                <tr key={r.nazov} style={{ borderBottom: "1px solid rgba(120,160,205,0.14)" }}>
+                  <td style={{ padding: "7px 8px", color: "#1b2c42" }}>{r.nazov}</td>
+                  <td
+                    style={{
+                      textAlign: "right",
+                      padding: "7px 8px",
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 600,
+                      color: r.zima === "—" ? "#c5d2e0" : "#1b2c42",
+                    }}
+                  >
+                    {r.zima}
+                  </td>
+                  <td
+                    style={{
+                      textAlign: "right",
+                      padding: "7px 8px",
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 600,
+                      color: r.leto === "—" ? "#c5d2e0" : "#1b2c42",
+                    }}
+                  >
+                    {r.leto}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -94,17 +185,21 @@ export default function InfoOkno() {
         </div>
       </div>
 
-      <div style={cardStyle}>
-        <h3 style={{ marginTop: 0 }}>🔜 Čo je v pláne</h3>
-        <ul style={{ color: "#9fb0bf", fontSize: 14, lineHeight: 1.8, paddingLeft: 20 }}>
+      <div style={karta}>
+        <h3 style={nadpisKarty}>
+          <ListTodo size={15} color="#ef9a3d" strokeWidth={2.3} />
+          Čo je v pláne
+        </h3>
+        <ul style={zoznam}>
           {PLANOVANE.map((polozka, i) => (
-            <li key={i}>{polozka}</li>
+            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
           ))}
         </ul>
       </div>
 
-      <p style={{ color: "#657685", fontSize: 12, marginTop: 8 }}>
-        Kompletný herný dizajnový dokument (GDD.md) obsahuje všetky detaily a čísla — nájdeš ho v GitHub repozitári projektu.
+      <p style={{ color: "#aebccd", fontSize: 11, marginTop: 4, lineHeight: 1.45 }}>
+        Kompletný herný dizajnový dokument (GDD.md) obsahuje všetky detaily a čísla — nájdeš ho v GitHub repozitári
+        projektu.
       </p>
     </div>
   );
