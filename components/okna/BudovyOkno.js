@@ -720,7 +720,7 @@ function StavbaFormular({ slot, kategoria, onPostavit }) {
                     boxShadow: vybraty ? "0 6px 14px rgba(47,146,230,0.28)" : "none",
                   }}
                 >
-                 >
+                
                   <span
                     style={{
                       width: 22,
