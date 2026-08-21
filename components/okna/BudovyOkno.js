@@ -481,10 +481,12 @@ export default function BudovyOkno({
         </div>
 
         {otvorenaStavba && (
-          <StavbaFormular
+        <StavbaFormular
             slot={slot}
             kategoria={kategoria}
             peniaze={stanica.peniaze}
+            zona={aktivnaZona}
+            stanica={stanica}
             onPostavit={(typ, znacka, sBobovouDrahou) => {
               postavitBudovu(kategoria, typ, znacka, aktivnaZona, sBobovouDrahou, slot);
               setStavbaPreKluc(null);
