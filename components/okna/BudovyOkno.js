@@ -836,8 +836,8 @@ const jeParkovisko = kategoria === "parkovisko";
                     boxShadow: vybraty ? "0 4px 12px rgba(47,146,230,0.18)" : "none",
                   }}
                 >
-                 <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
-                    {OBRAZKY_LANOVIEK[typ] && (
+               <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+                    {(OBRAZKY_LANOVIEK[typ] || OBRAZKY_PARKOVISK[typ]) && (
                       <span
                         style={{
                           width: 64,
