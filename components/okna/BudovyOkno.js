@@ -820,7 +820,30 @@ function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0 }) {
                     boxShadow: vybraty ? "0 4px 12px rgba(47,146,230,0.18)" : "none",
                   }}
                 >
-                  <div style={{ minWidth: 0 }}>
+                 <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+                    {OBRAZKY_LANOVIEK[typ] && (
+                      <span
+                        style={{
+                          width: 64,
+                          height: 64,
+                          borderRadius: 10,
+                          background: "#fff",
+                          border: "1px solid rgba(120,160,205,0.20)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <img
+                          src={OBRAZKY_LANOVIEK[typ]}
+                          alt=""
+                          style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                        />
+                      </span>
+                    )}
+                    <div style={{ minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
                       <span
                         style={{
