@@ -720,6 +720,26 @@ function StavbaFormular({ slot, kategoria, onPostavit }) {
                     boxShadow: vybraty ? "0 6px 14px rgba(47,146,230,0.28)" : "none",
                   }}
                 >
+                 >
+                  <span
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: 6,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: vybraty ? "rgba(255,255,255,0.22)" : "rgba(120,160,205,0.12)",
+                      flexShrink: 0,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {v.logo ? (
+                      <img src={v.logo} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                    ) : (
+                      <CableCar size={13} strokeWidth={2.3} color={vybraty ? "#fff" : "#8a94a3"} />
+                    )}
+                  </span>
                   {v.nazov}
                   {zamknuty && <Lock size={11} strokeWidth={2.5} />}
                 </button>
