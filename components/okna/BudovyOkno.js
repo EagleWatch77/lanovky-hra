@@ -20,6 +20,7 @@ import {
   globalnyCenovyMultiplikator,
   znackyPreTyp,
   typyPreSlot,
+  vyrobcoviaPreSlot,
   jeLanovkovySlot,
   LANOVKY_TYPY,
 } from "../../lib/katalog";
