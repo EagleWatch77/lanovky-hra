@@ -928,21 +928,39 @@ function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0 }) {
         </div>
       )}
 
-      <button
-        onClick={() => onPostavit(vyberTyp, znackaKluc, sBobovouDrahou)}
-        disabled={jePremiova || !vyberTyp}
-        style={{
-          ...btnZeleny,
-          width: "100%",
-          padding: "11px 14px",
-          fontSize: 12.5,
-          opacity: jePremiova || !vyberTyp ? 0.5 : 1,
-          cursor: jePremiova || !vyberTyp ? "not-allowed" : "pointer",
-        }}
-      >
-        <Check size={15} strokeWidth={2.6} />
-        Postaviť za {cenaSpolu.toLocaleString("sk-SK")} €
-      </button>
+   {(() => {
+        const chybaPenazi = peniaze < cenaSpolu;
+        const nedostupne = jePremiova || !vyberTyp || chybaPenazi;
+        return (
+          <>
+            <button
+              onClick={() => !nedostupne && onPostavit(vyberTyp, znackaKluc, sBobovouDrahou)}
+              disabled={nedostupne}
+              style={{
+                ...btnZeleny,
+                width: "100%",
+                padding: "11px 14px",
+                fontSize: 12.5,
+                background: nedostupne ? "#c5d2e0" : btnZeleny.background,
+                boxShadow: nedostupne ? "none" : btnZeleny.boxShadow,
+                cursor: nedostupne ? "not-allowed" : "pointer",
+              }}
+            >
+              {chybaPenazi && !jePremiova ? (
+                <>
+                  <Coins size={14} strokeWidth={2.5} />
+                  Chýba ti {(cenaSpolu - peniaze).toLocaleString("sk-SK")} €
+                </>
+              ) : (
+                <>
+                  <Check size={15} strokeWidth={2.6} />
+                  Postaviť za {cenaSpolu.toLocaleString("sk-SK")} €
+                </>
+              )}
+            </button>
+          </>
+        );
+      })()}
     </div>
   );
 }
