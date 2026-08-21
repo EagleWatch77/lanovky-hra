@@ -827,7 +827,7 @@ function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0 }) {
                           width: 64,
                           height: 64,
                           borderRadius: 10,
-                          background: "#ff0000",
+                          background: "#fff",
                           border: "1px solid rgba(120,160,205,0.20)",
                           display: "flex",
                           alignItems: "center",
