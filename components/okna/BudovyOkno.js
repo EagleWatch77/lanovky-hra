@@ -653,7 +653,7 @@ export default function BudovyOkno({
   );
 }
 
-function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0 }) {
+function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0, zona, stanica }) {
   const jeLanovka = jeLanovkovySlot(slot);
 
   // Pri lanovkách: najprv výrobca, potom jeho ponuka
