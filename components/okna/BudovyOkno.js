@@ -872,9 +872,10 @@ function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0 }) {
                         </span>
                       )}
                     </div>
-                    {t.popis && (
+                  {t.popis && (
                       <div style={{ fontSize: 10.5, color: "#aebccd", marginTop: 2, lineHeight: 1.35 }}>{t.popis}</div>
                     )}
+                    </div>
                   </div>
 
                   <div style={{ textAlign: "right", flexShrink: 0 }}>
