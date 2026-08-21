@@ -23,6 +23,7 @@ import {
   vyrobcoviaPreSlot,
   jeLanovkovySlot,
   LANOVKY_TYPY,
+  OBRAZKY_LANOVIEK,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
 import {
