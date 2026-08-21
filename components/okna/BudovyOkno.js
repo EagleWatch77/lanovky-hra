@@ -480,6 +480,7 @@ export default function BudovyOkno({
           <StavbaFormular
             slot={slot}
             kategoria={kategoria}
+            peniaze={stanica.peniaze}
             onPostavit={(typ, znacka, sBobovouDrahou) => {
               postavitBudovu(kategoria, typ, znacka, aktivnaZona, sBobovouDrahou, slot);
               setStavbaPreKluc(null);
