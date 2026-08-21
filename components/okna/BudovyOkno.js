@@ -724,7 +724,7 @@ function StavbaFormular({ slot, kategoria, onPostavit }) {
                   <span
                     style={{
                       width: 30,
-                      height: 30,,
+                      height: 30,
                       borderRadius: 8,
                       display: "flex",
                       alignItems: "center",
