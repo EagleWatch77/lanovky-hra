@@ -731,7 +731,7 @@ function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0 }) {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      background: vybraty ? "rgba(255,255,255,0.22)" : "rgba(120,160,205,0.12)",
+                      background: "transparent",
                       flexShrink: 0,
                       overflow: "hidden",
                     }}
