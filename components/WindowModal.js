@@ -3,7 +3,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 export default function WindowModal({ title, onClose, children, width }) {
-  width = 620;
+  width = "min(92vw, max(640px, 50vw))";
   const [hoverZavriet, setHoverZavriet] = useState(false);
 
   return (
