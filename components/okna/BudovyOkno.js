@@ -20,7 +20,6 @@ import {
   globalnyCenovyMultiplikator,
   znackyPreTyp,
   typyPreSlot,
-  vyrobcoviaPreSlot,
   jeLanovkovySlot,
   LANOVKY_TYPY,
 } from "../../lib/katalog";
@@ -784,213 +783,8 @@ function StavbaFormular({ slot, kategoria, onPostavit }) {
                     >
                       {cenaBudovy(kategoria, typ, znackaKluc).toLocaleString("sk-SK")} €
                     </div>
-  const jeLanovka = jeLanovkovySlot(slot);
-  const dostupneTypy = jeLanovka ? typyPreSlot(slot) : Object.keys(KATEGORIE[kategoria].katalog);
-
-  const [vyberTyp, setVyberTyp] = useState(dostupneTypy[0]);
-  const dostupneZnacky = jeLanovka ? znackyPreTyp(vyberTyp) : {};
-  const [vyberZnacka, setVyberZnacka] = useState(jeLanovka ? Object.keys(dostupneZnacky)[0] : null);
-  const [sBobovouDrahou, setSBobovouDrahou] = useState(false);
-
-  // Pri zmene typu prepni značku na prvú dostupnú
-  function zmenTyp(typ) {
-    setVyberTyp(typ);
-    const nove = znackyPreTyp(typ);
-    if (jeLanovka && !nove[vyberZnacka]) setVyberZnacka(Object.keys(nove)[0]);
-  }
-
-  const info = KATEGORIE[kategoria].katalog[vyberTyp];
-  const jeVlek = jeLanovka && vyberTyp === "vlek";
-  const znackaInfo = jeLanovka ? dostupneZnacky[vyberZnacka] : null;
-  const jePremiova = znackaInfo?.premiova;
-
-  const cenaSpolu = cenaBudovy(kategoria, vyberTyp, vyberZnacka) + (jeVlek && sBobovouDrahou ? 200000 : 0);
-
-  const parameter = { display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, color: "#5a6f88" };
-
-  return (
-    <div style={{ padding: "0 12px 12px", borderTop: "1px solid rgba(120,160,205,0.18)" }}>
-      {/* Výber typu zariadenia */}
-      {dostupneTypy.length > 1 && (
-        <>
-          <div
-            style={{
-              fontFamily: "var(--font-sora), system-ui, sans-serif",
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#8a94a3",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              margin: "10px 0 7px",
-            }}
-          >
-            Typ zariadenia
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 10 }}>
-            {dostupneTypy.map((typ) => {
-              const t = LANOVKY_TYPY[typ] || KATEGORIE[kategoria].katalog[typ];
-              const vybraty = vyberTyp === typ;
-              return (
-                <button
-                  key={typ}
-                  onClick={() => zmenTyp(typ)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "9px 11px",
-                    borderRadius: 11,
-                    cursor: "pointer",
-                    textAlign: "left",
-                    background: vybraty ? "#eaf4fd" : "#fff",
-                    border: vybraty ? "1px solid #2f92e6" : "1px solid rgba(120,160,205,0.22)",
-                    boxShadow: vybraty ? "0 4px 12px rgba(47,146,230,0.18)" : "none",
-                  }}
-                >
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-sora), system-ui, sans-serif",
-                          fontWeight: 700,
-                          fontSize: 12.5,
-                          color: "#1b2c42",
-                        }}
-                      >
-                        {t.nazov}
-                      </span>
-                      {t.celorocne && (
-                        <span
-                          style={{
-                            fontSize: 9,
-                            fontWeight: 700,
-                            letterSpacing: "0.06em",
-                            color: "#1f8a49",
-                            background: "#e3f6ea",
-                            border: "1px solid rgba(51,189,99,0.28)",
-                            padding: "2px 6px",
-                            borderRadius: 6,
-                          }}
-                        >
-                          CELOROČNE
-                        </span>
-                      )}
-                    </div>
-                    {t.popis && (
-                      <div style={{ fontSize: 10.5, color: "#aebccd", marginTop: 2, lineHeight: 1.35 }}>{t.popis}</div>
-                    )}
-                    <div style={{ display: "flex", gap: 10, marginTop: 4, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 10, color: "#8a94a3" }}>
-                        {cenaBudovy(kategoria, typ, vyberZnacka).toLocaleString("sk-SK")} €
-                      </span>
-                      <span style={{ fontSize: 10, color: "#8a94a3" }}>{t.kapacita} os./h</span>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </>
-      )}
-
-      {/* Výber značky */}
-      {jeLanovka && (
-        <div style={{ marginBottom: 10 }}>
-          <div
-            style={{
-              fontFamily: "var(--font-sora), system-ui, sans-serif",
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#8a94a3",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              marginBottom: 7,
-            }}
-          >
-            Výrobca
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-            {Object.keys(dostupneZnacky).map((kluc) => {
-              const z = dostupneZnacky[kluc];
-              const vybrata = vyberZnacka === kluc;
-              const zamknuta = z.premiova;
-
-              return (
-                <button
-                  key={kluc}
-                  onClick={() => !zamknuta && setVyberZnacka(kluc)}
-                  disabled={zamknuta}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "9px 11px",
-                    borderRadius: 11,
-                    cursor: zamknuta ? "not-allowed" : "pointer",
-                    textAlign: "left",
-                    background: zamknuta ? "rgba(120,160,205,0.06)" : vybrata ? "#eaf4fd" : "#fff",
-                    border: vybrata ? "1px solid #2f92e6" : "1px solid rgba(120,160,205,0.22)",
-                    boxShadow: vybrata ? "0 4px 12px rgba(47,146,230,0.18)" : "none",
-                    opacity: zamknuta ? 0.7 : 1,
-                  }}
-                >
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-sora), system-ui, sans-serif",
-                          fontWeight: 700,
-                          fontSize: 12.5,
-                          color: zamknuta ? "#8a94a3" : "#1b2c42",
-                        }}
-                      >
-                        {z.nazov}
-                      </span>
-                      {zamknuta && (
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 4,
-                            fontSize: 9,
-                            fontWeight: 700,
-                            letterSpacing: "0.06em",
-                            color: "#c9930f",
-                            background: "#fdf4e0",
-                            border: "1px solid rgba(201,147,15,0.3)",
-                            padding: "2px 7px",
-                            borderRadius: 7,
-                          }}
-                        >
-                          <Lock size={9} strokeWidth={2.6} />
-                          ČOSKORO
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ fontSize: 10.5, color: "#aebccd", marginTop: 2, lineHeight: 1.35 }}>{z.popis}</div>
-                    <div style={{ display: "flex", gap: 10, marginTop: 5, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 10, color: "#8a94a3" }}>
-                        cena{" "}
-                        <strong style={{ color: z.cenaMod > 1 ? "#c9830f" : z.cenaMod < 1 ? "#2ca24e" : "#5a6f88" }}>
-                          {z.cenaMod > 1 ? "+" : ""}
-                          {Math.round((z.cenaMod - 1) * 100)} %
-                        </strong>
-                      </span>
-                      <span style={{ fontSize: 10, color: "#8a94a3" }}>
-                        kapacita{" "}
-                        <strong style={{ color: z.kapacitaMod > 1 ? "#2ca24e" : z.kapacitaMod < 1 ? "#c9830f" : "#5a6f88" }}>
-                          {z.kapacitaMod > 1 ? "+" : ""}
-                          {Math.round((z.kapacitaMod - 1) * 100)} %
-                        </strong>
-                      </span>
-                      <span style={{ fontSize: 10, color: "#8a94a3" }}>
-                        údržba{" "}
-                        <strong style={{ color: z.udrzbaMod > 1 ? "#c9830f" : z.udrzbaMod < 1 ? "#2ca24e" : "#5a6f88" }}>
-                          {z.udrzbaMod > 1 ? "+" : ""}
-                          {Math.round((z.udrzbaMod - 1) * 100)} %
-                        </strong>
-                      </span>
+                    <div style={{ fontSize: 10.5, color: "#2ca24e", fontWeight: 600, marginTop: 2, whiteSpace: "nowrap" }}>
+                      {kapacitaBudovy(kategoria, typ, znackaKluc)} os./h
                     </div>
                   </div>
                 </button>
@@ -1022,35 +816,46 @@ function StavbaFormular({ slot, kategoria, onPostavit }) {
         </label>
       )}
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginBottom: 10 }}>
-        <span style={parameter}>
-          <Coins size={13} color="#c9930f" strokeWidth={2.3} />
-          {cenaSpolu.toLocaleString("sk-SK")} €
-        </span>
-        <span style={parameter}>
-          <Clock size={13} color="#5a6f88" strokeWidth={2.3} />
-          {Math.round(vystavbaVRealnychDnoch(info.vystavbaHernychMesiacov))} dní
-        </span>
-        <span style={parameter}>
-          <Star size={13} color="#2f8ae0" strokeWidth={2.3} />
-          {prestizBudovy(kategoria, vyberTyp, vyberZnacka)}
-        </span>
-        <span style={parameter}>
-          <Users size={13} color="#2ca24e" strokeWidth={2.3} />
-          {kapacitaBudovy(kategoria, vyberTyp, vyberZnacka)}/h
-        </span>
-      </div>
+      {info && (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 14,
+            marginBottom: 10,
+            paddingTop: 10,
+            borderTop: "1px solid rgba(120,160,205,0.18)",
+          }}
+        >
+          <span style={parameter}>
+            <Coins size={13} color="#c9930f" strokeWidth={2.3} />
+            {cenaSpolu.toLocaleString("sk-SK")} €
+          </span>
+          <span style={parameter}>
+            <Clock size={13} color="#5a6f88" strokeWidth={2.3} />
+            {Math.round(vystavbaVRealnychDnoch(info.vystavbaHernychMesiacov))} dní
+          </span>
+          <span style={parameter}>
+            <Star size={13} color="#2f8ae0" strokeWidth={2.3} />
+            {prestizBudovy(kategoria, vyberTyp, znackaKluc)}
+          </span>
+          <span style={parameter}>
+            <Users size={13} color="#2ca24e" strokeWidth={2.3} />
+            {kapacitaBudovy(kategoria, vyberTyp, znackaKluc)}/h
+          </span>
+        </div>
+      )}
 
       <button
-        onClick={() => onPostavit(vyberTyp, vyberZnacka, sBobovouDrahou)}
-        disabled={jePremiova}
+        onClick={() => onPostavit(vyberTyp, znackaKluc, sBobovouDrahou)}
+        disabled={jePremiova || !vyberTyp}
         style={{
           ...btnZeleny,
           width: "100%",
           padding: "11px 14px",
           fontSize: 12.5,
-          opacity: jePremiova ? 0.5 : 1,
-          cursor: jePremiova ? "not-allowed" : "pointer",
+          opacity: jePremiova || !vyberTyp ? 0.5 : 1,
+          cursor: jePremiova || !vyberTyp ? "not-allowed" : "pointer",
         }}
       >
         <Check size={15} strokeWidth={2.6} />
