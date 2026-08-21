@@ -679,7 +679,13 @@ const jeParkovisko = kategoria === "parkovisko";
   const info = KATEGORIE[kategoria].katalog[vyberTyp];
   const jeVlek = jeLanovka && vyberTyp === "vlek";
   const znackaInfo = jeLanovka ? vyrobcovia[vyberVyrobca] : null;
-  const jePremiova = znackaInfo?.premiova;
+  const typInfo = KATEGORIE[kategoria].katalog[vyberTyp];
+  const potrebnaZonaTypu = ODOMKNUTIE_PARKOVISK[vyberTyp];
+  const typZamknuty =
+    typInfo?.premiova ||
+    (potrebnaZonaTypu === "hory" && !stanica?.hory_odomknute) ||
+    (potrebnaZonaTypu === "udolie" && !stanica?.udolie_odomknute);
+  const jePremiova = znackaInfo?.premiova || typZamknuty;
   const znackaKluc = jeLanovka ? vyberVyrobca : null;
 
   const cenaSpolu = cenaBudovy(kategoria, vyberTyp, znackaKluc) + (jeVlek && sBobovouDrahou ? 200000 : 0);
