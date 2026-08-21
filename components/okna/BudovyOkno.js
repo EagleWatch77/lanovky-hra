@@ -24,6 +24,9 @@ import {
   jeLanovkovySlot,
   LANOVKY_TYPY,
   OBRAZKY_LANOVIEK,
+  OBRAZKY_PARKOVISK,
+  PARKOVISKA_PRE_ZONU,
+  ODOMKNUTIE_PARKOVISK,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
 import {
