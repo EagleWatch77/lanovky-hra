@@ -41,6 +41,11 @@ import {
   Clock,
   Star,
   Users,
+  CableCar,
+  Car,
+  BedDouble,
+  Beer,
+  Wrench,
 } from "lucide-react";
 
 const NAZVY_JEDNOTNE = {
@@ -55,6 +60,21 @@ const NAZVY_JEDNOTNE = {
   vlek: "Vlek",
   lanovka: "Lanovka",
 };
+
+// Rozdelenie slotov do sekcií
+const SEKCIE = [
+  {
+    kluc: "doprava",
+    nazov: "Lanovky a vleky",
+    Ikona: CableCar,
+    farba: "#2f8ae0",
+    sloty: ["vlek", "lanovka", "spojnica_udolie", "spojnica_hory", "spojnica_ladovec"],
+  },
+  { kluc: "parkovanie", nazov: "Parkovanie", Ikona: Car, farba: "#8a5fd6", sloty: ["parkovisko"] },
+  { kluc: "ubytovanie", nazov: "Ubytovanie", Ikona: BedDouble, farba: "#2ca24e", sloty: ["penzion", "hotel"] },
+  { kluc: "sluzby", nazov: "Služby", Ikona: Beer, farba: "#c9930f", sloty: ["bar", "servis", "pokladna"] },
+  { kluc: "technika", nazov: "Technika", Ikona: Wrench, farba: "#5a6f88", sloty: ["ratrak", "zasnezovanie"] },
+];
 
 const vstup = {
   padding: "6px 9px",
@@ -180,6 +200,296 @@ export default function BudovyOkno({
     };
   }
 
+  // Vykreslí jeden slot (hotová budova / vo výstavbe / zamknuté / voľné)
+  function vykresliSlot(slot, poradie) {
+    const riadokKluc = `${slot}-${poradie}`;
+    const budova = budovaVSlote(aktivnaZona, slot, poradie);
+    const jeLanovka = jeLanovkovySlot(slot);
+    const kategoria = jeLanovka ? "lanovka" : slot;
+    const nazovSlotu = zona.popisky?.[slot] || NAZVY_JEDNOTNE[slot] || KATEGORIE[kategoria]?.nazov || slot;
+
+    const potrebnaZona = aktivnaZona === "luka" ? ODOMKNUTIE_LANOVIEK_LUKA[slot] : null;
+    const zamknutySlot =
+      (potrebnaZona &&
+        !budova &&
+        ((potrebnaZona === "udolie" && !stanica.udolie_odomknute) ||
+          (potrebnaZona === "hory" && !stanica.hory_odomknute))) ||
+      (slot === "spojnica_ladovec" && !budova);
+
+    // --- HOTOVÁ BUDOVA ---
+    if (budova?.stav === "hotovo") {
+      const b = budova;
+      const info = KATEGORIE[b.kategoria].katalog[b.typ];
+      const maCenu = KATEGORIE[b.kategoria].maCenu;
+      const jeLanovkaB = b.kategoria === "lanovka";
+      const efektivitaB = efektivitaBudovy(b);
+      const konkurenciaMult = konkurencnyMultiplikator(b.kategoria, b.zona, pocetKonkurencie);
+      const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
+      const cenaB = jeLanovkaB ? (stanica.cena_skipasu ?? 15) : b.cena;
+      const refCenaDnes = maCenu
+        ? skutocnaReferencnaCena(b.kategoria, b.typ, hDatum, globalnyMult, maZasnezovanie)
+        : 0;
+      const odhadTuristov = maCenu
+        ? Math.round(turistiZaHodinu(b.kategoria, b.typ, cenaB, refCenaDnes, b.znacka) * efektivitaB * konkurenciaMult)
+        : null;
+      const odhadPrijem = maCenu
+        ? Math.round(prijemZaHodinu(b.kategoria, b.typ, cenaB, refCenaDnes, b.znacka) * efektivitaB * konkurenciaMult)
+        : null;
+      const rozbalene = rozbaleny === riadokKluc;
+      const znackaNazov = jeLanovkaB && b.znacka ? znackyPreTyp(b.typ)[b.znacka]?.nazov : null;
+
+      return (
+        <div
+          key={riadokKluc}
+          style={{
+            background: "#ffffff",
+            border: "1px solid rgba(120,160,205,0.22)",
+            boxShadow: "0 2px 8px rgba(60,110,160,0.07)",
+            borderRadius: 11,
+            overflow: "hidden",
+          }}
+        >
+          <div
+            onClick={() => setRozbaleny(rozbalene ? null : riadokKluc)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              padding: "9px 11px",
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#33bd63", flexShrink: 0 }} />
+              <span
+                style={{
+                  fontFamily: "var(--font-sora), system-ui, sans-serif",
+                  fontWeight: 700,
+                  fontSize: 12.5,
+                  color: "#1b2c42",
+                }}
+              >
+                {info?.nazov || b.typ}
+              </span>
+              {znackaNazov && <span style={{ fontSize: 10.5, color: "#aebccd" }}>{znackaNazov}</span>}
+              {konkurenciaMult < 1 && <AlertTriangle size={12} color="#ef9a3d" strokeWidth={2.4} />}
+            </div>
+            <span style={{ color: "#c5d2e0", display: "flex", flexShrink: 0 }}>
+              {rozbalene ? <ChevronUp size={15} strokeWidth={2.4} /> : <ChevronDown size={15} strokeWidth={2.4} />}
+            </span>
+          </div>
+
+          {rozbalene && (
+            <div style={{ padding: "0 11px 11px", borderTop: "1px solid rgba(120,160,205,0.16)" }}>
+              <div style={{ ...detailRiadok, paddingTop: 9 }}>
+                <span>Kapacita</span>
+                <span style={detailHodnota}>{kapacitaBudovy(b.kategoria, b.typ, b.znacka)} / h</span>
+              </div>
+              <div style={detailRiadok}>
+                <span>Zamestnanci</span>
+                <span style={detailHodnota}>{potrebnyB} (plný stav)</span>
+              </div>
+              {maCenu && !jeLanovkaB && (
+                <div style={detailRiadok}>
+                  <span>Cena</span>
+                  <input
+                    type="number"
+                    min="1"
+                    defaultValue={b.cena}
+                    onBlur={(e) => zmenitCenu(b, Number(e.target.value))}
+                    style={{ ...vstup, width: 74, textAlign: "right" }}
+                  />
+                </div>
+              )}
+              {jeLanovkaB && (
+                <div style={detailRiadok}>
+                  <span>Skipas</span>
+                  <span style={detailHodnota}>{cenaB} € (spoločná cena)</span>
+                </div>
+              )}
+              {maCenu && (
+                <div style={detailRiadok}>
+                  <span>Odhad príjmu</span>
+                  <span style={detailHodnota}>
+                    ~{odhadPrijem} €/h <span style={{ color: "#8a94a3", fontWeight: 500 }}>({odhadTuristov} os./h)</span>
+                  </span>
+                </div>
+              )}
+              <div style={detailRiadok}>
+                <span>Efektivita</span>
+                <span style={{ ...detailHodnota, color: efektivitaB < 1 ? "#c9830f" : "#2ca24e" }}>
+                  {Math.round(efektivitaB * 100)} %
+                </span>
+              </div>
+
+              {b.kategoria === "lanovka" && b.typ === "vlek" && !b.bobova_draha && (
+                <button onClick={() => pridatBobovuDrahu(b)} style={{ ...btnModry, marginTop: 8, width: "100%" }}>
+                  <Plus size={14} strokeWidth={2.6} />
+                  Pridať bobovú dráhu (200 000 €)
+                </button>
+              )}
+              {b.kategoria === "lanovka" && b.typ === "vlek" && b.bobova_draha && (
+                <div
+                  style={{
+                    marginTop: 8,
+                    fontSize: 11.5,
+                    color: "#1f8a49",
+                    background: "#e3f6ea",
+                    border: "1px solid rgba(51,189,99,0.28)",
+                    borderRadius: 10,
+                    padding: "8px 10px",
+                  }}
+                >
+                  Má bobovú dráhu — funguje celoročne
+                </div>
+              )}
+              {b.kategoria === "zasnezovanie" && (
+                <button
+                  onClick={() => prepnutZasnezovanie(b)}
+                  style={{
+                    ...btnZeleny,
+                    marginTop: 8,
+                    width: "100%",
+                    background: b.zasnezovanie_zapnute ? "#fff" : "linear-gradient(180deg,#4aa3ee,#2f92e6)",
+                    color: b.zasnezovanie_zapnute ? "#d64545" : "#fff",
+                    border: b.zasnezovanie_zapnute ? "1px solid rgba(214,69,69,0.35)" : "none",
+                    boxShadow: b.zasnezovanie_zapnute ? "none" : "0 6px 14px rgba(47,146,230,0.28)",
+                  }}
+                >
+                  <Snowflake size={14} strokeWidth={2.4} />
+                  {b.zasnezovanie_zapnute ? "Vypnúť zasnežovanie" : "Zapnúť zasnežovanie"}
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // --- VO VÝSTAVBE ---
+    if (budova?.stav === "vo_vystavbe") {
+      const zostava = Math.max(0, Math.ceil((new Date(budova.koniec_vystavby) - new Date()) / (1000 * 60 * 60 * 24)));
+      const infoV = KATEGORIE[budova.kategoria]?.katalog[budova.typ];
+      return (
+        <div
+          key={riadokKluc}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            padding: "9px 11px",
+            background: "#fff7ea",
+            border: "1px solid rgba(239,154,61,0.3)",
+            borderRadius: 11,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+            <HardHat size={15} color="#c9830f" strokeWidth={2.3} />
+            <span
+              style={{
+                fontFamily: "var(--font-sora), system-ui, sans-serif",
+                fontWeight: 700,
+                fontSize: 12.5,
+                color: "#1b2c42",
+              }}
+            >
+              {infoV?.nazov || nazovSlotu}
+            </span>
+          </div>
+          <span style={{ fontSize: 11.5, fontWeight: 600, color: "#c9830f", whiteSpace: "nowrap" }}>
+            {zostava} {zostava === 1 ? "deň" : zostava < 5 ? "dni" : "dní"}
+          </span>
+        </div>
+      );
+    }
+
+    // --- ZAMKNUTÝ SLOT ---
+    if (zamknutySlot) {
+      const text =
+        slot === "spojnica_ladovec"
+          ? "Zatiaľ nedostupné"
+          : `Odomkne sa s ${potrebnaZona === "udolie" ? "Údolím" : "Horami"}`;
+      return (
+        <div
+          key={riadokKluc}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            padding: "9px 11px",
+            background: "rgba(120,160,205,0.05)",
+            borderRadius: 11,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+            <Lock size={14} color="#c5d2e0" strokeWidth={2.3} />
+            <span style={{ fontSize: 12.5, color: "#aebccd", fontWeight: 600 }}>{nazovSlotu}</span>
+          </div>
+          <span style={{ fontSize: 10.5, color: "#c5d2e0", whiteSpace: "nowrap" }}>{text}</span>
+        </div>
+      );
+    }
+
+    // --- VOĽNÝ SLOT ---
+    const otvorenaStavba = stavbaPreKluc === riadokKluc;
+    return (
+      <div
+        key={riadokKluc}
+        style={{
+          background: otvorenaStavba ? "#fff" : "transparent",
+          border: otvorenaStavba ? "1px solid rgba(120,160,205,0.28)" : "1px dashed rgba(120,160,205,0.30)",
+          borderRadius: 11,
+          overflow: "hidden",
+          boxShadow: otvorenaStavba ? "0 4px 14px rgba(60,110,160,0.10)" : "none",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 10,
+            padding: "8px 11px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+            <Plus size={14} color="#aebccd" strokeWidth={2.4} />
+            <span style={{ fontSize: 12.5, color: "#8a94a3", fontWeight: 600 }}>{nazovSlotu}</span>
+          </div>
+          <button
+            onClick={() => setStavbaPreKluc(otvorenaStavba ? null : riadokKluc)}
+            style={{
+              ...btnModry,
+              padding: "6px 12px",
+              fontSize: 11.5,
+              flexShrink: 0,
+              background: otvorenaStavba ? "#fff" : btnModry.background,
+              color: otvorenaStavba ? "#5a6f88" : "#fff",
+              border: otvorenaStavba ? "1px solid rgba(120,160,205,0.28)" : "none",
+              boxShadow: otvorenaStavba ? "none" : btnModry.boxShadow,
+            }}
+          >
+            {otvorenaStavba ? "Zavrieť" : "Postaviť"}
+          </button>
+        </div>
+
+        {otvorenaStavba && (
+          <StavbaFormular
+            slot={slot}
+            kategoria={kategoria}
+            onPostavit={(typ, znacka, sBobovouDrahou) => {
+              postavitBudovu(kategoria, typ, znacka, aktivnaZona, sBobovouDrahou, slot);
+              setStavbaPreKluc(null);
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Záložky zón */}
@@ -289,297 +599,47 @@ export default function BudovyOkno({
       )}
 
       {aktivnaZona !== "ladovec" && odomknute && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-          {Object.keys(zona.limity).map((slot) =>
-            Array.from({ length: zona.limity[slot] }).map((_, poradie) => {
-              const riadokKluc = `${slot}-${poradie}`;
-              const budova = budovaVSlote(aktivnaZona, slot, poradie);
-              const jeLanovka = jeLanovkovySlot(slot);
-              const kategoria = jeLanovka ? "lanovka" : slot;
-              const nazovSlotu = zona.popisky?.[slot] || NAZVY_JEDNOTNE[slot] || KATEGORIE[kategoria]?.nazov || slot;
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {SEKCIE.map((sekcia) => {
+            // Sloty tejto sekcie, ktoré v zóne existujú
+            const sloty = sekcia.sloty.filter((s) => zona.limity[s]);
+            if (sloty.length === 0) return null;
 
-              // Spojnice v Lúke sa odomykajú s cieľovou zónou
-              const potrebnaZona = aktivnaZona === "luka" ? ODOMKNUTIE_LANOVIEK_LUKA[slot] : null;
-              const zamknutySlot =
-                (potrebnaZona &&
-                  !budova &&
-                  ((potrebnaZona === "udolie" && !stanica.udolie_odomknute) ||
-                    (potrebnaZona === "hory" && !stanica.hory_odomknute))) ||
-                (slot === "spojnica_ladovec" && !budova);
-
-              // --- HOTOVÁ BUDOVA ---
-              if (budova?.stav === "hotovo") {
-                const b = budova;
-                const info = KATEGORIE[b.kategoria].katalog[b.typ];
-                const maCenu = KATEGORIE[b.kategoria].maCenu;
-                const jeLanovkaB = b.kategoria === "lanovka";
-                const efektivitaB = efektivitaBudovy(b);
-                const konkurenciaMult = konkurencnyMultiplikator(b.kategoria, b.zona, pocetKonkurencie);
-                const potrebnyB = zamestnanciPotrebni(b.kategoria, b.typ);
-                const cenaB = jeLanovkaB ? (stanica.cena_skipasu ?? 15) : b.cena;
-                const refCenaDnes = maCenu
-                  ? skutocnaReferencnaCena(b.kategoria, b.typ, hDatum, globalnyMult, maZasnezovanie)
-                  : 0;
-                const odhadTuristov = maCenu
-                  ? Math.round(turistiZaHodinu(b.kategoria, b.typ, cenaB, refCenaDnes, b.znacka) * efektivitaB * konkurenciaMult)
-                  : null;
-                const odhadPrijem = maCenu
-                  ? Math.round(prijemZaHodinu(b.kategoria, b.typ, cenaB, refCenaDnes, b.znacka) * efektivitaB * konkurenciaMult)
-                  : null;
-                const rozbalene = rozbaleny === riadokKluc;
-                const znackaNazov = jeLanovkaB && b.znacka ? znackyPreTyp(b.typ)[b.znacka]?.nazov : null;
-
-                return (
-                  <div
-                    key={riadokKluc}
-                    style={{
-                      background: "#ffffff",
-                      border: "1px solid rgba(120,160,205,0.22)",
-                      boxShadow: "0 3px 10px rgba(60,110,160,0.08)",
-                      borderRadius: 12,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      onClick={() => setRozbaleny(rozbalene ? null : riadokKluc)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 10,
-                        padding: "11px 12px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                        <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#33bd63", flexShrink: 0 }} />
-                        <div style={{ minWidth: 0 }}>
-                          <div
-                            style={{
-                              fontFamily: "var(--font-sora), system-ui, sans-serif",
-                              fontWeight: 700,
-                              fontSize: 13,
-                              color: "#1b2c42",
-                            }}
-                          >
-                            {info?.nazov || b.typ}
-                          </div>
-                          {znackaNazov && (
-                            <div style={{ fontSize: 10.5, color: "#aebccd", marginTop: 1 }}>{znackaNazov}</div>
-                          )}
-                        </div>
-                        {konkurenciaMult < 1 && <AlertTriangle size={13} color="#ef9a3d" strokeWidth={2.4} />}
-                      </div>
-                      <span style={{ color: "#aebccd", display: "flex", flexShrink: 0 }}>
-                        {rozbalene ? <ChevronUp size={16} strokeWidth={2.4} /> : <ChevronDown size={16} strokeWidth={2.4} />}
-                      </span>
-                    </div>
-
-                    {rozbalene && (
-                      <div style={{ padding: "0 12px 12px", borderTop: "1px solid rgba(120,160,205,0.16)" }}>
-                        <div style={{ ...detailRiadok, paddingTop: 9 }}>
-                          <span>Kapacita</span>
-                          <span style={detailHodnota}>{kapacitaBudovy(b.kategoria, b.typ, b.znacka)} / h</span>
-                        </div>
-                        <div style={detailRiadok}>
-                          <span>Zamestnanci</span>
-                          <span style={detailHodnota}>{potrebnyB} (plný stav)</span>
-                        </div>
-                        {maCenu && !jeLanovkaB && (
-                          <div style={detailRiadok}>
-                            <span>Cena</span>
-                            <input
-                              type="number"
-                              min="1"
-                              defaultValue={b.cena}
-                              onBlur={(e) => zmenitCenu(b, Number(e.target.value))}
-                              style={{ ...vstup, width: 74, textAlign: "right" }}
-                            />
-                          </div>
-                        )}
-                        {jeLanovkaB && (
-                          <div style={detailRiadok}>
-                            <span>Skipas</span>
-                            <span style={detailHodnota}>{cenaB} € (spoločná cena)</span>
-                          </div>
-                        )}
-                        {maCenu && (
-                          <div style={detailRiadok}>
-                            <span>Odhad príjmu</span>
-                            <span style={detailHodnota}>
-                              ~{odhadPrijem} €/h{" "}
-                              <span style={{ color: "#8a94a3", fontWeight: 500 }}>({odhadTuristov} os./h)</span>
-                            </span>
-                          </div>
-                        )}
-                        <div style={detailRiadok}>
-                          <span>Efektivita</span>
-                          <span style={{ ...detailHodnota, color: efektivitaB < 1 ? "#c9830f" : "#2ca24e" }}>
-                            {Math.round(efektivitaB * 100)} %
-                          </span>
-                        </div>
-
-                        {b.kategoria === "lanovka" && b.typ === "vlek" && !b.bobova_draha && (
-                          <button onClick={() => pridatBobovuDrahu(b)} style={{ ...btnModry, marginTop: 8, width: "100%" }}>
-                            <Plus size={14} strokeWidth={2.6} />
-                            Pridať bobovú dráhu (200 000 €)
-                          </button>
-                        )}
-                        {b.kategoria === "lanovka" && b.typ === "vlek" && b.bobova_draha && (
-                          <div
-                            style={{
-                              marginTop: 8,
-                              fontSize: 11.5,
-                              color: "#1f8a49",
-                              background: "#e3f6ea",
-                              border: "1px solid rgba(51,189,99,0.28)",
-                              borderRadius: 10,
-                              padding: "8px 10px",
-                            }}
-                          >
-                            Má bobovú dráhu — funguje celoročne
-                          </div>
-                        )}
-                        {b.kategoria === "zasnezovanie" && (
-                          <button
-                            onClick={() => prepnutZasnezovanie(b)}
-                            style={{
-                              ...btnZeleny,
-                              marginTop: 8,
-                              width: "100%",
-                              background: b.zasnezovanie_zapnute ? "#fff" : "linear-gradient(180deg,#4aa3ee,#2f92e6)",
-                              color: b.zasnezovanie_zapnute ? "#d64545" : "#fff",
-                              border: b.zasnezovanie_zapnute ? "1px solid rgba(214,69,69,0.35)" : "none",
-                              boxShadow: b.zasnezovanie_zapnute ? "none" : "0 6px 14px rgba(47,146,230,0.28)",
-                            }}
-                          >
-                            <Snowflake size={14} strokeWidth={2.4} />
-                            {b.zasnezovanie_zapnute ? "Vypnúť zasnežovanie" : "Zapnúť zasnežovanie"}
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              // --- VO VÝSTAVBE ---
-              if (budova?.stav === "vo_vystavbe") {
-                const zostava = Math.max(
-                  0,
-                  Math.ceil((new Date(budova.koniec_vystavby) - new Date()) / (1000 * 60 * 60 * 24))
-                );
-                const infoV = KATEGORIE[budova.kategoria]?.katalog[budova.typ];
-                return (
-                  <div
-                    key={riadokKluc}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 10,
-                      padding: "11px 12px",
-                      background: "#fff7ea",
-                      border: "1px solid rgba(239,154,61,0.3)",
-                      borderRadius: 12,
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                      <HardHat size={16} color="#c9830f" strokeWidth={2.3} />
-                      <span
-                        style={{
-                          fontFamily: "var(--font-sora), system-ui, sans-serif",
-                          fontWeight: 700,
-                          fontSize: 13,
-                          color: "#1b2c42",
-                        }}
-                      >
-                        {infoV?.nazov || nazovSlotu}
-                      </span>
-                    </div>
-                    <span style={{ fontSize: 11.5, fontWeight: 600, color: "#c9830f", whiteSpace: "nowrap" }}>
-                      {zostava} {zostava === 1 ? "deň" : zostava < 5 ? "dni" : "dní"}
-                    </span>
-                  </div>
-                );
-              }
-
-              // --- ZAMKNUTÝ SLOT ---
-              if (zamknutySlot) {
-                const text =
-                  slot === "spojnica_ladovec"
-                    ? "Zatiaľ nedostupné"
-                    : `Odomkne sa s ${potrebnaZona === "udolie" ? "Údolím" : "Horami"}`;
-                return (
-                  <div
-                    key={riadokKluc}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 10,
-                      padding: "11px 12px",
-                      background: "rgba(120,160,205,0.06)",
-                      border: "1px solid rgba(120,160,205,0.16)",
-                      borderRadius: 12,
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                      <Lock size={15} color="#aebccd" strokeWidth={2.3} />
-                      <span style={{ fontSize: 13, color: "#8a94a3", fontWeight: 600 }}>{nazovSlotu}</span>
-                    </div>
-                    <span style={{ fontSize: 11, color: "#aebccd", whiteSpace: "nowrap" }}>{text}</span>
-                  </div>
-                );
-              }
-
-              // --- VOĽNÝ SLOT ---
-              const otvorenaStavba = stavbaPreKluc === riadokKluc;
-              return (
+            return (
+              <div key={sekcia.kluc}>
                 <div
-                  key={riadokKluc}
                   style={{
-                    background: "rgba(120,160,205,0.05)",
-                    border: "1px dashed rgba(120,160,205,0.32)",
-                    borderRadius: 12,
-                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 7,
+                    marginBottom: 8,
+                    paddingBottom: 6,
+                    borderBottom: "1px solid rgba(120,160,205,0.18)",
                   }}
                 >
-                  <div
+                  <sekcia.Ikona size={14} color={sekcia.farba} strokeWidth={2.4} />
+                  <span
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 10,
-                      padding: "10px 12px",
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      color: "#8a94a3",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                      <Plus size={15} color="#aebccd" strokeWidth={2.4} />
-                      <span style={{ fontSize: 13, color: "#8a94a3", fontWeight: 600 }}>{nazovSlotu}</span>
-                    </div>
-                    <button
-                      onClick={() => setStavbaPreKluc(otvorenaStavba ? null : riadokKluc)}
-                      style={{ ...btnModry, padding: "7px 13px", flexShrink: 0 }}
-                    >
-                      {otvorenaStavba ? "Zavrieť" : "Postaviť"}
-                    </button>
-                  </div>
+                    {sekcia.nazov}
+                  </span>
+                </div>
 
-                  {otvorenaStavba && (
-                    <StavbaFormular
-                      slot={slot}
-                      kategoria={kategoria}
-                      onPostavit={(typ, znacka, sBobovouDrahou) => {
-                        postavitBudovu(kategoria, typ, znacka, aktivnaZona, sBobovouDrahou, slot);
-                        setStavbaPreKluc(null);
-                      }}
-                    />
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {sloty.map((slot) =>
+                    Array.from({ length: zona.limity[slot] }).map((_, poradie) => vykresliSlot(slot, poradie))
                   )}
                 </div>
-              );
-            })
-          )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
