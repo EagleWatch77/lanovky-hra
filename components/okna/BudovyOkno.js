@@ -1,4 +1,46 @@
+"use client";
 
+import { useState } from "react";
+import {
+  KATEGORIE,
+  ZONY,
+  PORADIE_ZON,
+  ODOMKNUTIE_UDOLIA,
+  ODOMKNUTIE_HOR,
+  ODOMKNUTIE_LANOVIEK_LUKA,
+  cenaBudovy,
+  prestizBudovy,
+  kapacitaBudovy,
+  vystavbaVRealnychDnoch,
+  zamestnanciPotrebni,
+  turistiZaHodinu,
+  prijemZaHodinu,
+  konkurencnyMultiplikator,
+  skutocnaReferencnaCena,
+  globalnyCenovyMultiplikator,
+  znackyPreTyp,
+  typyPreSlot,
+  jeLanovkovySlot,
+  LANOVKY_TYPY,
+} from "../../lib/katalog";
+import { hernyDatum } from "../../lib/hernyCas";
+import {
+  Lock,
+  Unlock,
+  HardHat,
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Check,
+  Square,
+  CheckSquare,
+  AlertTriangle,
+  Snowflake,
+  Coins,
+  Clock,
+  Star,
+  Users,
+} from "lucide-react";
 
 const NAZVY_JEDNOTNE = {
   penzion: "Penzión",
