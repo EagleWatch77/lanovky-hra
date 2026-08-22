@@ -718,8 +718,7 @@ const jeParkovisko = kategoria === "parkovisko";
               return (
                 <button
                   key={kluc}
-                  onClick={() => !zamknuty && zmenVyrobcu(kluc)}
-                  disabled={zamknuty}
+                 onClick={() => zmenVyrobcu(kluc)}
                   style={{
                     display: "flex",
                     alignItems: "center",
