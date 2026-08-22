@@ -1,49 +1,50 @@
 "use client";
 
-import { CheckCircle2, CloudSun, ListTodo, Palette, Wallet } from "lucide-react";
+import { CheckCircle2, CloudSun, ListTodo, Palette, Wallet, Building2, AlertTriangle } from "lucide-react";
 
 const HOTOVE = [
   "Registrácia a prihlásenie hráčov, vlastný názov strediska",
   "Peniaze (trvalé) a Prestíž — rozdelená na pevnú časť z budov a sezónnu časť z turistov",
-  "9 kategórií budov: lanovky, parkoviská, pokladňa, penzióny/hotely, ratraky, zasnežovanie, bary, servis/požičovňa",
   "Zóny strediska (Lúka → Údolie → Hory → Ľadovec) s limitovaným počtom slotov a postupným odomykaním",
   "Výstavba na reálny čas (beží aj keď nie si online)",
   "Skipas — jedna spoločná cena pre všetky lanovky a vleky v stredisku",
   "Parkovné zvlášť pre Lúku a Údolie, jedna cena pre penzióny a jedna pre hotely",
-  "Sezónna krivka cien (Október–Máj zima, Jún–September leto) — referenčná cena sa mení podľa mesiaca",
-  "Denný model príjmu pre parkovisko a ubytovanie (paušál/deň, nie hodinový prietok ako pri lanovkách)",
+  "Sezónna krivka cien (Október–Máj zima, Jún–September leto)",
+  "Denný model príjmu pre parkovisko a ubytovanie",
   "Zamestnanci — automaticky na plný stav, súčasť nákladov na prevádzku",
   "Ročné vyjednávanie o plat (Údolie+, december–január), efektivita klesne pri odmietnutí",
-  "Konkurencia — objavuje sa po 90 dňoch, stavia rovnako dlho ako ty, znižuje dopyt, zvyšuje prestíž strediska",
+  "Konkurencia — objavuje sa po 90 dňoch, znižuje dopyt, zvyšuje prestíž strediska",
   "Spokojnosť strediska — infraštruktúra, ceny a počasie (kliknuteľné v hornom paneli)",
-  "Vlek v lete bez bobovej dráhy nezarába nič — Bobová dráha umožňuje celoročnú prevádzku",
-  "Ratrak (Údolie) — bez neho −10 % spokojnosť v zime, mzdy bežia celoročne",
+  "Vlek v lete bez bobovej dráhy nezarába — Bobová dráha umožňuje celoročnú prevádzku",
+  "Ratrak (Údolie) — bez neho −10 % spokojnosť v zime",
   "Zasnežovanie — manuálny prepínač, previazané s vetrom, elektrina 127 €/h len Nov–Feb",
-  "Medzisezóna (1.–7. október) — stredisko zatvorené, žiadny príjem, mzdy a údržba bežia ďalej",
-  "Sezónny reset prestíže — prestíž z turistov sa vynuluje raz za ročný cyklus, rovnako pre všetkých",
-  "Údržba budov — % z hodnoty rastie s vekom, každý 3. rok nárazovo vyššia, +50 % pre zónu Hory",
-  "Ligový systém — spoločný pool turistov na zónu, delený podľa prestíže; nováčikovský bonus 3× klesá na 1× za 90 dní",
-  "Úpadok prestíže pri dlhodobo nízkych peniazoch (pod 50 000 € dlhšie ako 3 týždne)",
-  "Počasie — denne sa mení, vietor a búrky ovplyvňujú dopyt (pozri tabuľku nižšie)",
+  "Medzisezóna (1.–7. október) — stredisko zatvorené, mzdy a údržba bežia ďalej",
+  "Sezónny reset prestíže — prestíž z turistov sa vynuluje raz za ročný cyklus",
+  "Údržba budov — % z hodnoty rastie s vekom, každý 3. rok vyššia, +50 % pre zónu Hory",
+  "Ligový systém — spoločný pool turistov na zónu, nováčikovský bonus 3× klesá na 1× za 90 dní",
+  "Úpadok prestíže pri dlhodobo nízkych peniazoch",
+  "Počasie — denne sa mení, vietor a búrky ovplyvňujú dopyt",
   "Herný kalendár — beží 2× rýchlejšie ako reálny čas",
   "Rebríček hráčov aj konzorcií, profil hráča s trofejami a možnosťou poslať správu",
   "Financie — denný/týždenný/mesačný/sezónny prehľad v troch záložkách",
-  "Nastavenia — zmena názvu, emailu, hesla, zmazanie dát",
-  "Mapa strediska na pozadí (mení sa zima/leto), navigácia cez okná nad mapou",
-  "Časovač na pozadí — ekonomika sa počíta pre všetkých hráčov raz za hodinu aj bez otvorenej appky",
-  "Ski konzorciá — zakladanie, žiadosti, pozvánky, spoločná nástenka, trofeje konzorcia",
+  "Časovač na pozadí — ekonomika sa počíta raz za hodinu aj bez otvorenej appky",
+  "Ski konzorciá — zakladanie, žiadosti, pozvánky, nástenka, trofeje konzorcia",
   "Správy medzi hráčmi",
 ];
 
-const LANOVKY = [
-  "10 typov zariadení: vlek, sedačky 2/4/6/8-miestne (pevné aj odpojiteľné), kabínky 8/10/15-miestne, 3S lanovka",
-  "Odpojiteľné sedačky sú rýchlejšie a pohodlnejšie, ale drahšie a náročnejšie na údržbu",
-  "Kabínky a 3S lanovka fungujú celoročne — vozia turistov aj v lete",
-  "5 výrobcov: Alpenlift (lacný), Silvretta (štandard), Apex (vysokokapacitný), Kristallis (prémiový), Solaris (za reálne peniaze)",
-  "Každý výrobca mení cenu, kapacitu, údržbu a prestíž — a vyrába len časť modelov",
-  "Solaris má ako jediný 8-sedačku; 3S lanovku vyrába len Kristallis a Solaris",
+const BUDOVY = [
   "Sloty sú oddelené od typov — v každej zóne máš daný počet miest a vyberáš si, čo tam postavíš",
-  "Spojnice medzi zónami: z Lúky do Údolia a do Hôr, z Hôr na Ľadovec (3S lanovka)",
+  "LANOVKY: 11 typov — vlek, sedačky 2/4/6/8-miestne (pevné aj odpojiteľné), kabínky 8/10/15/20, 3S, Funitel, Kyvadlová 100",
+  "5 výrobcov: Alpenlift (lacný), Silvretta (štandard), Apex (kapacita), Kristallis (prémiový), Solaris (za reálne peniaze)",
+  "Každý výrobca mení cenu, kapacitu, údržbu a prestíž — a vyrába len časť modelov",
+  "Solaris sa dá rozkliknúť a prezrieť, ale zatiaľ sa z neho nedá stavať",
+  "Spojnice medzi zónami: z Lúky do Údolia a do Hôr, z Hôr na Ľadovec (3S / Funitel / Kyvadlová)",
+  "PARKOVISKÁ: štrkové, asfaltové, centrálne (odomkne sa s Horami), parkovací dom (prémiový, len Údolie)",
+  "HOTELY: 3*, 4*, 5* a Summit Resort (prémiový)",
+  "POKLADNE: malá, veľká, s infocentrom (infocentrum len v Údolí)",
+  "SERVIS: malá požičovňa a plný ski servis",
+  "Bufet a Apréski bar rozdelené na dve samostatné kategórie — bufet je základ, apréski je zážitok",
+  "Obrázky pri každom type budovy aj zariadenia, logá výrobcov",
 ];
 
 const UI_HOTOVE = [
@@ -53,36 +54,42 @@ const UI_HOTOVE = [
   "Všetky štatistiky v lište sú kliknuteľné a rozbalia detailný panel",
   "Počasie a sezóna spojené do jedného chipu vrátane medzisezóny",
   "Peňažný tok — príjem, prevádzka, čistý tok za deň a varovanie pri strate",
-  "Logo strediska ako ikona (15 na výber), emoji nahradené ikonami v celej hre",
-  "Panel zóny — obrázok podľa sezóny, prepínanie šípkami, štatistiky, tlačidlo Spravovať zónu",
+  "Logo strediska ako ikona (15 na výber), emoji nahradené ikonami",
+  "Panel zóny — obrázok podľa sezóny, prepínanie šípkami, tlačidlo Spravovať zónu",
   "Panely rebríčka, týždenných misií a udalostí",
   "Udalosti napojené na skutočný stav hry — odbory sa zobrazia, keď naozaj žiadajú",
-  "Okno Budovy rozdelené do sekcií podľa kategórie, výber výrobcu a modelu",
+  "Okno Budovy rozdelené do sekcií (Lanovky, Parkovanie, Ubytovanie, Služby, Technika)",
+  "Výber výrobcu a potom modelu, s cenou a kapacitou už prepočítanou",
+  "Namiesto vyskakovacích hlášok sa tlačidlo vypne a ukáže, koľko peňazí chýba",
   "Jednotná veľkosť okien, prispôsobená veľkosti monitora",
+];
+
+const OPRAVIT = [
+  "Spokojnosť ešte počíta so starými kategóriami — kontroluje „bar\" v Lúke, hoci tam je teraz bufet",
+  "Spokojnosť kontroluje „hotel\" v Údolí a Horách, ale typy hotelov sa premenovali (hotel_3, hotel_4…)",
+  "Konkurencia (KONKURENCIA_ZONY_KONFIG) stále pracuje so starými kategóriami bar a hotel",
+  "Lúka má len 1 slot na parkovisko — centrálne parkovisko sa nedá postaviť, kým tam niečo stojí",
+  "Chýba búranie a nahradzovanie budov novšími",
+  "Ľadovec sa odomyká cez stĺpec v databáze, v hre nemá vlastnú podmienku",
+  "Bufet a Apréski ešte nemajú rozdielne správanie v ekonomike (sezónnosť, celoročnosť)",
 ];
 
 const PLANOVANE = [
   "Návod pre nových hráčov — manažér na okraji obrazovky, listovací sprievodca na 8 strán",
-  "Obrázky typov lanoviek a log výrobcov",
-  "Parkoviská ako typy (štrkové, asfaltové) + prémiová podzemná garáž",
-  "Hotely ako typy (3*, 4*, 5*) + prémiový rezort",
   "Ratraky od rôznych výrobcov + prémiový",
-  "Rozdelenie bufetu a apréski na dve samostatné kategórie",
-  "Centrálne parkovisko na Lúke — odomkne sa s Horami, veľká kapacita, nižšia cena",
   "Ligy s postupom a zostupom na konci herného roka",
   "Misie napojené na reálne dáta (zatiaľ zástupné)",
   "Ďalšie typy udalostí — míľniky, sezónne udalosti, novinky",
-  "Búranie a nahradzovanie budov novšími",
   "Nastavenia a Správy do svetlej témy",
   "Letné obrázky zón Údolie, Hory a Ľadovec",
   "Náhodné incidenty (poruchy, sťažnosti)",
-  "Upratanie nepoužívaných súborov v projekte",
+  "Upratanie nepoužívaných súborov (AkcieBar, AppLayout, Nav, Sidebar, PrestizRadar, SlotModal, LanovkyPanel)",
 ];
 
 const MONETIZACIA = [
   {
     nazov: "Predplatné (základ)",
-    popis: "Mesačný poplatok s trvalými výhodami — rýchlejšia výstavba, viac slotov, častejšie zmeny cien, prístup k prémiovým výrobcom, detailnejšie štatistiky. Hlavný a stabilný príjem (model Travian / Rail Nation).",
+    popis: "Mesačný poplatok s trvalými výhodami — rýchlejšia výstavba, viac slotov, častejšie zmeny cien, prístup k prémiovým výrobcom. Hlavný a stabilný príjem (model Travian / Rail Nation).",
   },
   {
     nazov: "Kozmetika",
@@ -90,11 +97,11 @@ const MONETIZACIA = [
   },
   {
     nazov: "Sezónny pas",
-    popis: "Platí sa raz za sezónu, plnením úloh získavaš odmeny. Opakuje sa každú sezónu a drží hráčov v hre.",
+    popis: "Platí sa raz za sezónu, plnením úloh získavaš odmeny. Opakuje sa a drží hráčov v hre.",
   },
   {
     nazov: "Prémiové budovy",
-    popis: "Solaris lanovky, prémiový ratrak, podzemná garáž, luxusný rezort. Jednorazové — skôr doplnok než základ príjmu.",
+    popis: "Solaris lanovky, parkovací dom, Summit Resort. Jednorazové — skôr doplnok než základ príjmu.",
   },
   {
     nazov: "Herná mena",
@@ -156,11 +163,11 @@ export default function InfoOkno() {
 
       <div style={karta}>
         <h3 style={nadpisKarty}>
-          <CheckCircle2 size={15} color="#2f8ae0" strokeWidth={2.3} />
-          Lanovky, typy a výrobcovia
+          <Building2 size={15} color="#2f8ae0" strokeWidth={2.3} />
+          Budovy, typy a výrobcovia
         </h3>
         <ul style={zoznam}>
-          {LANOVKY.map((polozka, i) => (
+          {BUDOVY.map((polozka, i) => (
             <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
           ))}
         </ul>
@@ -178,6 +185,21 @@ export default function InfoOkno() {
         </ul>
       </div>
 
+      <div style={{ ...karta, background: "#fff7ea", border: "1px solid rgba(239,154,61,0.32)" }}>
+        <h3 style={nadpisKarty}>
+          <AlertTriangle size={15} color="#c9830f" strokeWidth={2.3} />
+          Treba opraviť
+        </h3>
+        <p style={{ color: "#8a94a3", fontSize: 11.5, lineHeight: 1.5, marginTop: 0, marginBottom: 9 }}>
+          Vzniklo pri prestavbe budov na typy — ekonomika a spokojnosť ešte pracujú so starými názvami kategórií.
+        </p>
+        <ul style={{ ...zoznam, color: "#8a5f20" }}>
+          {OPRAVIT.map((polozka, i) => (
+            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
+          ))}
+        </ul>
+      </div>
+
       <div style={karta}>
         <h3 style={nadpisKarty}>
           <CloudSun size={15} color="#2f8ae0" strokeWidth={2.3} />
@@ -185,7 +207,7 @@ export default function InfoOkno() {
         </h3>
         <p style={{ color: "#8a94a3", fontSize: 12, lineHeight: 1.55, marginTop: 0 }}>
           Počasie sa mení každý deň, rovnaké pre všetkých hráčov. Silný vietor znižuje príjem lanoviek o 66 %, búrka
-          o 25 % (len júl/august). Zasnežovanie pri silnom vetre nefunguje vôbec, aj keď je zapnuté.
+          o 25 % (len júl/august). Zasnežovanie pri silnom vetre nefunguje vôbec.
         </p>
         <div style={{ overflowX: "auto", marginTop: 10 }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12.5 }}>
@@ -296,8 +318,7 @@ export default function InfoOkno() {
             padding: "9px 11px",
           }}
         >
-          Monetizácia má zmysel až keď máš hráčov, ktorí hru hrajú mesiace. Najprv hra, potom zarábanie — aj najlepší
-          model zlyhá na prázdnom serveri.
+          Monetizácia má zmysel až keď máš hráčov, ktorí hru hrajú mesiace. Najprv hra, potom zarábanie.
         </p>
       </div>
     </div>
