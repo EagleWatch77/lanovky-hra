@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabaseClient";
 import { Coins, TrendingUp, TrendingDown, AlertTriangle } from "lucide-react";
 
 const VYDAVKOVE_TYPY = ["stavba", "naklady_platy", "naklady_najatie", "zamestnanec", "naklady_udrzba", "naklady_elektrina", "naklady_palivo"];
-const PREVADZKOVE_VYDAVKY = ["naklady_platy", "naklady_udrzba", "naklady_elektrina"];
+const PREVADZKOVE_VYDAVKY = ["naklady_platy", "naklady_udrzba", "naklady_elektrina", "naklady_palivo"];
 
 // Herný deň = 12 reálnych hodín (herný čas beží 2× rýchlejšie)
 const REALNYCH_HODIN_V_HERNOM_DNI = 12;
