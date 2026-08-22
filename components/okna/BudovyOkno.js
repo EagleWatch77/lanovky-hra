@@ -77,7 +77,7 @@ const SEKCIE = [
   },
   { kluc: "parkovanie", nazov: "Parkovanie", Ikona: Car, farba: "#8a5fd6", sloty: ["parkovisko"] },
   { kluc: "ubytovanie", nazov: "Ubytovanie", Ikona: BedDouble, farba: "#2ca24e", sloty: ["penzion", "hotel"] },
-  { kluc: "sluzby", nazov: "Služby", Ikona: Beer, farba: "#c9930f", sloty: ["bar", "servis", "pokladna"] },
+  { kluc: "sluzby", nazov: "Služby", Ikona: Beer, farba: "#c9930f", sloty: ["bufet", "bar", "servis", "pokladna"] },
   { kluc: "technika", nazov: "Technika", Ikona: Wrench, farba: "#5a6f88", sloty: ["ratrak", "zasnezovanie"] },
 ];
 
