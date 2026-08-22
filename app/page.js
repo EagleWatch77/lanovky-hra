@@ -363,6 +363,9 @@ export default function PrehladPage() {
             podmienkyOdomknutiaHor={podmienkyOdomknutiaHor}
             odomknutHory={odomknutHory}
             pridatBobovuDrahu={pridatBobovuDrahu}
+            prestavatBudovu={prestavatBudovu}
+            zburatBudovu={zburatBudovu}
+            predatBudovu={predatBudovu}
           />
         </WindowModal>
       )}
