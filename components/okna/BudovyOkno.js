@@ -855,7 +855,7 @@ const jeParkovisko = kategoria === "parkovisko";
                         }}
                       >
                           <img
-                        src={OBRAZKY_LANOVIEK[typ] || OBRAZKY_PARKOVISK[typ] || OBRAZKY_UBYTOVANIA[typ]}
+                         src={OBRAZKY_LANOVIEK[typ] || OBRAZKY_PARKOVISK[typ] || OBRAZKY_UBYTOVANIA[typ] || OBRAZKY_SLUZIEB[typ]}
                           alt=""
                           style={{ width: "100%", height: "100%", objectFit: "contain" }}
                         />
