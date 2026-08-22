@@ -843,7 +843,7 @@ const jeParkovisko = kategoria === "parkovisko";
                   }}
                 >
                <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
-                 {(OBRAZKY_LANOVIEK[typ] || OBRAZKY_PARKOVISK[typ] || OBRAZKY_UBYTOVANIA[typ] || OBRAZKY_SLUZIEB[typ]) && (
+                 {{(OBRAZKY_LANOVIEK[typ] || OBRAZKY_PARKOVISK[typ] || OBRAZKY_UBYTOVANIA[typ] || OBRAZKY_SLUZIEB[typ] || OBRAZKY_POKLADNI[typ]) && (
                       <span
                         style={{
                           width: 64,
