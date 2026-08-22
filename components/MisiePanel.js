@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Target, Gift } from "lucide-react";
 
 // ZATIAĽ ZÁSTUPNÉ ÚDAJE — neskôr napojíme na reálny postup zo Supabase
