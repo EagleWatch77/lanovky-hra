@@ -169,6 +169,9 @@ export default function BudovyOkno({
   odomknutHory,
   pridatBobovuDrahu,
   prepnutZasnezovanie,
+  prestavatBudovu,
+  zburatBudovu,
+  predatBudovu,
 }) {
   const [aktivnaZona, setAktivnaZona] = useState("luka");
   const [rozbaleny, setRozbaleny] = useState(null);
