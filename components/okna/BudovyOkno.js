@@ -220,7 +220,7 @@ export default function BudovyOkno({
         !budova &&
         ((potrebnaZona === "udolie" && !stanica.udolie_odomknute) ||
           (potrebnaZona === "hory" && !stanica.hory_odomknute))) ||
-      (slot === "spojnica_ladovec" && !budova);
+     (slot === "spojnica_ladovec" && !budova && !stanica?.ladovec_odomknuty);
 
     // --- HOTOVÁ BUDOVA ---
     if (budova?.stav === "hotovo") {
