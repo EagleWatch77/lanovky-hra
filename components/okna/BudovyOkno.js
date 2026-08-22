@@ -666,10 +666,13 @@ function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0, zona, stanic
   const [vyberVyrobca, setVyberVyrobca] = useState(jeLanovka ? klucVyrobcov[0] : null);
 
 const jeParkovisko = kategoria === "parkovisko";
+  const jePokladna = kategoria === "pokladna";
   const ponuka = jeLanovka
     ? vyrobcovia[vyberVyrobca]?.ponuka || []
     : jeParkovisko
     ? PARKOVISKA_PRE_ZONU[zona] || Object.keys(KATEGORIE[kategoria].katalog)
+    : jePokladna
+    ? POKLADNE_PRE_ZONU[zona] || Object.keys(KATEGORIE[kategoria].katalog)
     : Object.keys(KATEGORIE[kategoria].katalog);
   const [vyberTyp, setVyberTyp] = useState(ponuka[0]);
   const [sBobovouDrahou, setSBobovouDrahou] = useState(false);
