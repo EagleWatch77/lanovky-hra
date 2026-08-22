@@ -380,6 +380,138 @@ export default function BudovyOkno({
                   {b.zasnezovanie_zapnute ? "Vypnúť zasnežovanie" : "Zapnúť zasnežovanie"}
                 </button>
               )}
+
+              {/* Prestavba na vyšší typ */}
+              {(() => {
+                const moznosti = moznostiPrestavby(b.kategoria, b.typ);
+                if (moznosti.length === 0) return null;
+                return (
+                  <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(120,160,205,0.16)" }}>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-sora), system-ui, sans-serif",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: "#8a94a3",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        marginBottom: 7,
+                      }}
+                    >
+                      Prestavať na vyšší typ
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                      {moznosti.map((novyTyp) => {
+                        const t = KATEGORIE[b.kategoria].katalog[novyTyp];
+                        const cena = cenaBudovy(b.kategoria, novyTyp, b.znacka);
+                        const maNa = stanica.peniaze >= cena;
+                        const zamknuty = t?.premiova;
+                        return (
+                          <button
+                            key={novyTyp}
+                            onClick={() => !zamknuty && maNa && prestavatBudovu(b, novyTyp)}
+                            disabled={zamknuty || !maNa}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              gap: 10,
+                              padding: "9px 11px",
+                              borderRadius: 10,
+                              cursor: zamknuty || !maNa ? "not-allowed" : "pointer",
+                              textAlign: "left",
+                              background: "#fff",
+                              border: "1px solid rgba(120,160,205,0.24)",
+                              opacity: zamknuty || !maNa ? 0.55 : 1,
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontFamily: "var(--font-sora), system-ui, sans-serif",
+                                fontWeight: 700,
+                                fontSize: 12,
+                                color: "#1b2c42",
+                              }}
+                            >
+                              {t?.nazov}
+                              {zamknuty && " (čoskoro)"}
+                            </span>
+                            <span
+                              style={{
+                                fontFamily: "var(--font-sora), system-ui, sans-serif",
+                                fontWeight: 700,
+                                fontSize: 11.5,
+                                color: maNa ? "#2ca24e" : "#d64545",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {cena.toLocaleString("sk-SK")} €
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Búranie */}
+              {BURATELNE_KATEGORIE.includes(b.kategoria) && (
+                <button
+                  onClick={() => {
+                    const cena = cenaBurania(b.kategoria, b.typ, b.znacka);
+                    if (confirm(`Naozaj zbúrať? Búranie stojí ${cena.toLocaleString("sk-SK")} € a slot sa uvoľní.`)) {
+                      zburatBudovu(b);
+                    }
+                  }}
+                  style={{
+                    marginTop: 10,
+                    width: "100%",
+                    padding: "9px 12px",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    fontFamily: "var(--font-inter), system-ui, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 12,
+                    color: "#d64545",
+                    background: "#fff",
+                    border: "1px solid rgba(214,69,69,0.35)",
+                  }}
+                >
+                  Zbúrať za {cenaBurania(b.kategoria, b.typ, b.znacka).toLocaleString("sk-SK")} €
+                </button>
+              )}
+
+              {/* Predaj */}
+              {PREDAJNE_KATEGORIE.includes(b.kategoria) && (() => {
+                const povodna = cenaBudovy(b.kategoria, b.typ, b.znacka);
+                const vekDni = (new Date() - new Date(b.created_at)) / (1000 * 60 * 60 * 24);
+                const vratene = zostatkovaCena(povodna, vekDni);
+                return (
+                  <button
+                    onClick={() => {
+                      if (confirm(`Naozaj predať? Dostaneš späť ${vratene.toLocaleString("sk-SK")} €.`)) {
+                        predatBudovu(b);
+                      }
+                    }}
+                    style={{
+                      marginTop: 10,
+                      width: "100%",
+                      padding: "9px 12px",
+                      borderRadius: 10,
+                      cursor: "pointer",
+                      fontFamily: "var(--font-inter), system-ui, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 12,
+                      color: "#c9830f",
+                      background: "#fff",
+                      border: "1px solid rgba(201,131,15,0.35)",
+                    }}
+                  >
+                    Predať za {vratene.toLocaleString("sk-SK")} €
+                  </button>
+                );
+              })()}
             </div>
           )}
         </div>
