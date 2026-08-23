@@ -1,5 +1,5 @@
 "use client";
-import { HardHat, Euro, CloudSun, Smile } from "lucide-react";
+import { HardHat, Euro, CloudSun, Smile, Users } from "lucide-react";
 
 export default function SpokojnostRozpis({ spokojnostRozpis }) {
   const r = spokojnostRozpis || { infrastruktura: 0, sluzby: 0, ceny: 0, pocasie: 0, spolu: 100 };
