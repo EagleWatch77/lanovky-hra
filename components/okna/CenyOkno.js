@@ -133,6 +133,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
     const hodnoty = {
       cena_skipasu: Number(skipas),
+      cena_skipasu_leto: Number(skipasLeto),
       cena_parkovne_luka: Number(parkLuka),
       cena_parkovne_udolie: Number(parkUdolie),
       cena_penzion: Number(cenaPenzion),
