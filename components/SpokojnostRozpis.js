@@ -5,7 +5,7 @@ export default function SpokojnostRozpis({ spokojnostRozpis }) {
   const r = spokojnostRozpis || { infrastruktura: 0, sluzby: 0, ceny: 0, pocasie: 0, spolu: 100 };
   const riadky = [
     { nazov: "Infraštruktúra", Ikona: HardHat, farba: "#2f8ae0", hodnota: r.infrastruktura },
-   
+    { nazov: "Služby a rady", Ikona: Users, farba: "#2ca24e", hodnota: r.sluzby ?? 0 },
     { nazov: "Ceny", Ikona: Euro, farba: "#c9930f", hodnota: r.ceny },
     { nazov: "Počasie", Ikona: CloudSun, farba: "#8a5fd6", hodnota: r.pocasie },
   ];
