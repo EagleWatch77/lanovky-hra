@@ -224,9 +224,9 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
               jedna cena pre všetky lanovky a vleky
             </div>
 
-            <div style={{ ...poleRiadok, borderBottom: "none", paddingTop: 0 }}>
+                     <div style={{ ...poleRiadok, paddingTop: 0 }}>
               <div>
-                <div style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>Cena skipasu</div>
+                <div style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>Zimný skipas (celý deň)</div>
                 {pocetLanoviek > 0 ? (
                   <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>odhad ~{odhadSkipas} €</div>
                 ) : (
