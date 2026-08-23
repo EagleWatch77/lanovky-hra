@@ -43,8 +43,8 @@ export default function PocasiePanel({ kompaktne = false }) {
   let indexUseku = 2;
   if (aktualnaHodina < 10) indexUseku = 0;
   else if (aktualnaHodina < 14) indexUseku = 1;
-  const pocasie = kompaktne ? [pocasieVsetko[indexUseku]] : pocasieVsetko;
-
+  const pocasie = (kompaktne ? [pocasieVsetko[indexUseku]] : pocasieVsetko).filter(Boolean);
+  
   // Krátky dátum, aby sa zmestil na jeden riadok
   const kratkyDatum = zobrazovanyDatum.toLocaleDateString("sk-SK", { weekday: "short", day: "numeric", month: "numeric" });
 
