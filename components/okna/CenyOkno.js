@@ -84,6 +84,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
   const [dobaUlozena, setDobaUlozena] = useState(false);
 
   const [skipas, setSkipas] = useState(stanica.cena_skipasu ?? 15);
+  const [skipasLeto, setSkipasLeto] = useState(stanica.cena_skipasu_leto ?? 8);
   const [parkLuka, setParkLuka] = useState(stanica.cena_parkovne_luka ?? 5);
   const [parkUdolie, setParkUdolie] = useState(stanica.cena_parkovne_udolie ?? 5);
   const [cenaPenzion, setCenaPenzion] = useState(stanica.cena_penzion ?? 25);
