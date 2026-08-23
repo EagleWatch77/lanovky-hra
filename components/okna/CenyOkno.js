@@ -10,9 +10,10 @@ import {
   globalnyCenovyMultiplikator,
   sezonaIndex,
   idealnaPrevadzkaHodin,
+  jeZimnyMesiac,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
-import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check, Car, BedDouble, Beer, Lock } from "lucide-react";
+import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check, Car, BedDouble, Beer, Lock, Snowflake, Sun } from "lucide-react";
 
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
@@ -92,6 +93,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
   const [cenyUlozene, setCenyUlozene] = useState(false);
 
   const hDatum = hernyDatum(new Date());
+  const jeZima = jeZimnyMesiac(hDatum.getMonth());
   const hotoveBudovy = budovy.filter((b) => b.stav === "hotovo");
   const globalnyMult = globalnyCenovyMultiplikator(stanica, hotoveBudovy);
   const sezIndex = sezonaIndex(hDatum);
@@ -104,12 +106,12 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
   const refSkipas = referencnaCenaSkipasu(hotoveBudovy, hDatum, globalnyMult);
   const odhadSkipas = odhadovanaCena(stanica.id, "lanovka", "skipas", sezIndex, refSkipas);
 
-  const refParkovne = skutocnaReferencnaCena("parkovisko", "parkovisko", hDatum, globalnyMult);
-  const odhadParkovne = odhadovanaCena(stanica.id, "parkovisko", "parkovisko", sezIndex, refParkovne);
+  const refParkovne = skutocnaReferencnaCena("parkovisko", "parkovisko_asfaltove", hDatum, globalnyMult);
+  const odhadParkovne = odhadovanaCena(stanica.id, "parkovisko", "parkovisko_asfaltove", sezIndex, refParkovne);
   const refPenzion = skutocnaReferencnaCena("penzion", "penzion", hDatum, globalnyMult);
   const odhadPenzion = odhadovanaCena(stanica.id, "penzion", "penzion", sezIndex, refPenzion);
-  const refHotel = skutocnaReferencnaCena("hotel", "hotel", hDatum, globalnyMult);
-  const odhadHotel = odhadovanaCena(stanica.id, "hotel", "hotel", sezIndex, refHotel);
+  const refHotel = skutocnaReferencnaCena("hotel", "hotel_3", hDatum, globalnyMult);
+  const odhadHotel = odhadovanaCena(stanica.id, "hotel", "hotel_3", sezIndex, refHotel);
 
   const maParkLuka = hotoveBudovy.some((b) => b.kategoria === "parkovisko" && b.zona === "luka");
   const maParkUdolie = hotoveBudovy.some((b) => b.kategoria === "parkovisko" && b.zona === "udolie");
@@ -117,13 +119,13 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
   const maHotel = hotoveBudovy.some((b) => b.kategoria === "hotel");
 
   const ostatneBudovy = hotoveBudovy
-    .filter((b) => b.kategoria === "bar" || b.kategoria === "servis")
+    .filter((b) => b.kategoria === "bar" || b.kategoria === "bufet" || b.kategoria === "servis")
     .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
   const [ceny, setCeny] = useState(() => {
     const zaciatocne = {};
     for (const b of hotoveBudovy) {
-      if (b.kategoria === "bar" || b.kategoria === "servis") zaciatocne[b.id] = b.cena;
+      if (b.kategoria === "bar" || b.kategoria === "bufet" || b.kategoria === "servis") zaciatocne[b.id] = b.cena;
     }
     return zaciatocne;
   });
@@ -148,7 +150,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
     zmenitCenyStrediska(hodnoty);
 
-    // Bary a servis majú vlastnú cenu na budovu
+    // Bary, bufety a servis majú vlastnú cenu na budovu
     for (const b of ostatneBudovy) {
       const nova = Number(ceny[b.id]);
       if (!Number.isNaN(nova) && nova >= 1 && nova !== b.cena) {
@@ -180,6 +182,19 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
   }
 
   const poleStyl = { ...vstup, width: 82, textAlign: "right", opacity: mozeMenit ? 1 : 0.55 };
+
+  // Zvýraznenie toho skipasu, ktorý práve platí
+  const aktivnyStyl = {
+    fontFamily: "var(--font-sora), system-ui, sans-serif",
+    fontSize: 9,
+    fontWeight: 700,
+    letterSpacing: "0.06em",
+    color: "#1f8a49",
+    background: "#e3f6ea",
+    border: "1px solid rgba(51,189,99,0.28)",
+    padding: "2px 7px",
+    borderRadius: 6,
+  };
 
   return (
     <div>
@@ -224,15 +239,20 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
               jedna cena pre všetky lanovky a vleky
             </div>
 
-                     <div style={{ ...poleRiadok, paddingTop: 0 }}>
+            {/* Zimný skipas */}
+            <div style={{ ...poleRiadok, paddingTop: 0 }}>
               <div>
-                <div style={{ fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>Zimný skipas (celý deň)</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>
+                    <Snowflake size={13} color="#2a9fd6" strokeWidth={2.3} />
+                    Zimný skipas (celý deň)
+                  </span>
+                  {jeZima && <span style={aktivnyStyl}>PLATÍ TERAZ</span>}
+                </div>
                 {pocetLanoviek > 0 ? (
                   <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>odhad ~{odhadSkipas} €</div>
                 ) : (
-                  <div style={{ fontSize: 11, color: "#aebccd", marginTop: 2 }}>
-                    postav prvú lanovku
-                  </div>
+                  <div style={{ fontSize: 11, color: "#aebccd", marginTop: 2 }}>postav prvú lanovku</div>
                 )}
               </div>
               <input
@@ -241,6 +261,30 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
                 value={skipas}
                 disabled={!mozeMenit}
                 onChange={(e) => setSkipas(e.target.value)}
+                style={poleStyl}
+              />
+            </div>
+
+            {/* Letný skipas */}
+            <div style={{ ...poleRiadok, borderBottom: "none" }}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12.5, color: "#1b2c42", fontWeight: 600 }}>
+                    <Sun size={13} color="#e0a021" strokeWidth={2.3} />
+                    Letný skipas (jedna jazda)
+                  </span>
+                  {!jeZima && <span style={aktivnyStyl}>PLATÍ TERAZ</span>}
+                </div>
+                <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>
+                  V lete sa predávajú jednotlivé jazdy, nie celodenné lístky
+                </div>
+              </div>
+              <input
+                type="number"
+                min="1"
+                value={skipasLeto}
+                disabled={!mozeMenit}
+                onChange={(e) => setSkipasLeto(e.target.value)}
                 style={poleStyl}
               />
             </div>
@@ -336,7 +380,7 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
               {ostatneBudovy.map((b, i) => {
                 const zona = ZONY[b.zona];
                 const nazov =
-                  zona?.popisky?.[b.kategoria] || KATEGORIE[b.kategoria]?.katalog[b.typ]?.nazov || KATEGORIE[b.kategoria]?.nazov;
+                  KATEGORIE[b.kategoria]?.katalog[b.typ]?.nazov || KATEGORIE[b.kategoria]?.nazov || b.typ;
                 const refCena = skutocnaReferencnaCena(b.kategoria, b.typ, hDatum, globalnyMult);
                 const odhad = odhadovanaCena(stanica.id, b.kategoria, b.typ, sezIndex, refCena);
 
