@@ -38,7 +38,7 @@ export default function PocasiePanel({ kompaktne = false }) {
   const efektivnyOffset = kompaktne ? 0 : offsetDni;
   const zobrazovanyDatum = hernyDatum(new Date());
   zobrazovanyDatum.setDate(zobrazovanyDatum.getDate() + efektivnyOffset);
-  const pocasieVsetko = vypocitajDenoePocasie(zobrazovanyDatum);
+  const pocasieVsetko = vypocitajDenoePocasie(zobrazovanyDatum) || [];
   const aktualnaHodina = new Date().getHours();
   let indexUseku = 2;
   if (aktualnaHodina < 10) indexUseku = 0;
