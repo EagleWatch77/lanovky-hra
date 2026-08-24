@@ -63,6 +63,7 @@ import {
   BedDouble,
   Beer,
   Wrench,
+  Truck,
 } from "lucide-react";
 
 const NAZVY_JEDNOTNE = {
