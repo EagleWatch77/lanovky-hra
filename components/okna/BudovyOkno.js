@@ -835,7 +835,8 @@ function StavbaFormular({ slot, kategoria, onPostavit, peniaze = 0, zona, stanic
 
 const jeParkovisko = kategoria === "parkovisko";
  const jePokladna = kategoria === "pokladna";
-  const jeRatrak = kategoria === "ratrak";
+const jeRatrak = kategoria === "ratrak";
+  const jeHotel = kategoria === "hotel";
   const ponuka = jeLanovka
     ? vyrobcovia[vyberVyrobca]?.ponuka || []
     : jeParkovisko
@@ -844,6 +845,8 @@ const jeParkovisko = kategoria === "parkovisko";
     ? POKLADNE_PRE_ZONU[zona] || Object.keys(KATEGORIE[kategoria].katalog)
     : jeRatrak
     ? RATRAKY_PRE_ZONU[zona] || Object.keys(KATEGORIE[kategoria].katalog)
+    : jeHotel
+    ? HOTELY_PRE_ZONU[zona] || Object.keys(KATEGORIE[kategoria].katalog)
     : Object.keys(KATEGORIE[kategoria].katalog);
   const [vyberTyp, setVyberTyp] = useState(ponuka[0]);
   const [sBobovouDrahou, setSBobovouDrahou] = useState(false);
