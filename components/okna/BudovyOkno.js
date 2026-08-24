@@ -1029,22 +1029,7 @@ const jeParkovisko = kategoria === "parkovisko";
                       >
                         {t.nazov}
                       </span>
-                      {t.celorocne && (
-                        <span
-                          style={{
-                            fontSize: 9,
-                            fontWeight: 700,
-                            letterSpacing: "0.06em",
-                            color: "#1f8a49",
-                            background: "#e3f6ea",
-                            border: "1px solid rgba(51,189,99,0.28)",
-                            padding: "2px 6px",
-                            borderRadius: 6,
-                          }}
-                        >
-                          CELOROČNE
-                        </span>
-                      )}
+                    
                     </div>
                   {t.popis && (
                       <div style={{ fontSize: 10.5, color: "#aebccd", marginTop: 2, lineHeight: 1.35 }}>{t.popis}</div>
