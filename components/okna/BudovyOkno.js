@@ -538,7 +538,11 @@ export default function BudovyOkno({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-            <HardHat size={15} color="#c9830f" strokeWidth={2.3} />
+         {budova.kategoria === "ratrak" ? (
+              <Truck size={15} color="#c9830f" strokeWidth={2.3} />
+            ) : (
+              <HardHat size={15} color="#c9830f" strokeWidth={2.3} />
+            )}
             <span
               style={{
                 fontFamily: "var(--font-sora), system-ui, sans-serif",
