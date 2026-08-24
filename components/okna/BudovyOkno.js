@@ -1148,7 +1148,7 @@ const jeParkovisko = kategoria === "parkovisko";
               ) : (
                 <>
                   <Check size={15} strokeWidth={2.6} />
-                  Postaviť za {cenaSpolu.toLocaleString("sk-SK")} €
+                  {kategoria === "ratrak" ? "Kúpiť" : "Postaviť"} za {cenaSpolu.toLocaleString("sk-SK")} €
                 </>
               )}
             </button>
