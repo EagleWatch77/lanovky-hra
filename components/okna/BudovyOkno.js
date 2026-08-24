@@ -22,6 +22,7 @@ import {
   typyPreSlot,
   vyrobcoviaPreSlot,
   jeLanovkovySlot,
+  LETNE_SLOTY,
   LANOVKY_TYPY,
   OBRAZKY_LANOVIEK,
   OBRAZKY_PARKOVISK,
