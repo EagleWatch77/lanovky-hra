@@ -614,7 +614,24 @@ export default function BudovyOkno({
         >
           <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
             <Plus size={14} color="#aebccd" strokeWidth={2.4} />
-            <span style={{ fontSize: 12.5, color: "#8a94a3", fontWeight: 600 }}>{nazovSlotu}</span>
+       <span style={{ fontSize: 12.5, color: "#8a94a3", fontWeight: 600 }}>{nazovSlotu}</span>
+            {LETNE_SLOTY.includes(`${aktivnaZona}:${slot}:${poradie}`) && (
+              <span
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  color: "#1f8a49",
+                  background: "#e3f6ea",
+                  border: "1px solid rgba(51,189,99,0.28)",
+                  padding: "2px 6px",
+                  borderRadius: 6,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                JAZDÍ AJ V LETE
+              </span>
+            )}
           </div>
           <button
             onClick={() => setStavbaPreKluc(otvorenaStavba ? null : riadokKluc)}
