@@ -624,7 +624,7 @@ export default function BudovyOkno({
               boxShadow: otvorenaStavba ? "none" : btnModry.boxShadow,
             }}
           >
-            {otvorenaStavba ? "Zavrieť" : "Postaviť"}
+           {otvorenaStavba ? "Zavrieť" : kategoria === "ratrak" ? "Kúpiť" : "Postaviť"}
           </button>
         </div>
 
