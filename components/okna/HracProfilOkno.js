@@ -169,7 +169,7 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
 
   return (
     <div style={{ position: "relative" }}>
-    {{/* Postava riaditeľa na pozadí */}
+    {/* Postava riaditeľa na pozadí */}
       <img
         src={postava}
         alt=""
