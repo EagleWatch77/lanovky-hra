@@ -305,9 +305,10 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         {zalozka === "prehlad" && (
           <div style={{ maxWidth: "76%" }}>
             {/* Štatistiky */}
-            <div style={{ ...karta("stredna"), display: "flex", gap: 8 }}>
+         <div style={{ ...karta("stredna"), display: "flex", gap: 8 }}>
             </div>
 
+              <div style={{ width: 1, background: "rgba(120,160,205,0.24)" }} />
               <div style={{ width: 1, background: "rgba(120,160,205,0.24)" }} />
 
               <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
