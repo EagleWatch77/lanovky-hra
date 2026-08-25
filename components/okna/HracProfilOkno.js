@@ -306,24 +306,7 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
           <div style={{ maxWidth: "76%" }}>
             {/* Štatistiky */}
             <div style={{ ...karta("stredna"), display: "flex", gap: 8 }}>
-              <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 5,
-                    fontFamily: "var(--font-sora), system-ui, sans-serif",
-                    fontWeight: 800,
-                    fontSize: 18,
-                    color: "#1b2c42",
-                  }}
-                >
-                  <Star size={15} color="#2f8ae0" strokeWidth={2.4} fill="#2f8ae0" />
-                  {profil.prestiz.toLocaleString("sk-SK")}
-                </div>
-                <div style={{ fontSize: 10.5, color: "#5a6f88", marginTop: 3 }}>prestíž</div>
-              </div>
+            </div>
 
               <div style={{ width: 1, background: "rgba(120,160,205,0.24)" }} />
 
