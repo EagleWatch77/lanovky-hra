@@ -178,7 +178,7 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
           right: 0,
           bottom: 0,
           width: "62%",
-          height: "108%",          // vyššie ako obsah → väčší, hlava ide za lištu
+          height: "80%",          // vyššie ako obsah → väčší, hlava ide za lištu
           objectFit: "contain",
           objectPosition: "bottom right",
           opacity: 0.95,
