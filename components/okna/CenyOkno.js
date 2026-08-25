@@ -209,6 +209,104 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
 
       {zalozka === "ceny" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {/* Automatické ceny */}
+          {(() => {
+            const autoDo = stanica.auto_ceny_do ? new Date(stanica.auto_ceny_do) : null;
+            const autoAktivne = autoDo && autoDo > new Date();
+            const krystaly = stanica.krystaly ?? 0;
+
+            if (autoAktivne) {
+              return (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "11px 13px",
+                    borderRadius: 12,
+                    background: "#e3f6ea",
+                    border: "1px solid rgba(51,189,99,0.3)",
+                  }}
+                >
+                  <Wand2 size={16} color="#1f8a49" strokeWidth={2.3} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 700, color: "#1f8a49" }}>Automatické ceny sú zapnuté</div>
+                    <div style={{ fontSize: 11, color: "#5a6f88", marginTop: 2 }}>
+                      Ceny sa nastavujú samy každý herný týždeň. Platné do{" "}
+                      {autoDo.toLocaleDateString("sk-SK", { day: "numeric", month: "numeric", year: "numeric" })}.
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div
+                style={{
+                  padding: "12px 13px",
+                  borderRadius: 12,
+                  background: "linear-gradient(180deg,#eaf4fd,#dceefb)",
+                  border: "1px solid rgba(120,160,205,0.3)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 4 }}>
+                  <Wand2 size={16} color="#2f8ae0" strokeWidth={2.3} />
+                  <span
+                    style={{
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      color: "#1b2c42",
+                    }}
+                  >
+                    Automatické ceny
+                  </span>
+                </div>
+                <div style={{ fontSize: 11.5, color: "#5a6f88", lineHeight: 1.5, marginBottom: 11 }}>
+                  Nemusíš chodiť každý týždeň prestavovať ceny — hra to spraví za teba. Kedykoľvek môžeš zasiahnuť ručne.
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {[
+                    { obdobie: "sezona", cena: 300, popis: "Sezóna" },
+                    { obdobie: "rok", cena: 500, popis: "Herný rok" },
+                  ].map((v) => {
+                    const maNa = krystaly >= v.cena;
+                    return (
+                      <button
+                        key={v.obdobie}
+                        onClick={() => maNa && kupitAutoCeny(v.obdobie)}
+                        disabled={!maNa}
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 7,
+                          padding: "10px 12px",
+                          borderRadius: 11,
+                          border: "none",
+                          cursor: maNa ? "pointer" : "not-allowed",
+                          fontFamily: "var(--font-sora), system-ui, sans-serif",
+                          fontWeight: 700,
+                          fontSize: 12.5,
+                          color: "#fff",
+                          background: maNa ? "linear-gradient(180deg,#4aa3ee,#2f92e6)" : "#c5d2e0",
+                          boxShadow: maNa ? "0 6px 14px rgba(47,146,230,0.26)" : "none",
+                        }}
+                      >
+                        {v.popis}
+                        <span style={{ display: "flex", alignItems: "center", gap: 4, opacity: 0.95 }}>
+                          <img src={OBRAZOK_KRYSTAL} alt="" style={{ width: 14, height: 14, objectFit: "contain" }} />
+                          {v.cena}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
+
           {!mozeMenit && (
             <div
               style={{
