@@ -7,10 +7,22 @@ import { Building2, HardHat, CircleSlash, TrendingDown } from "lucide-react";
 const NAZVY_JEDNOTNE = {
   penzion: "Penzión",
   parkovisko: "Parkovisko",
-  bar: "Apréski",
+  bufet: "Bufet",
+  bar: "Apréski bar",
   hotel: "Hotel",
   servis: "Ski servis",
 };
+
+// Ako sa konkurenčná budova volá podľa svojej úrovne
+const NAZVY_PODLA_UROVNE = {
+  hotel: { 1: "Hotel ★★★", 2: "Hotel ★★★★", 3: "Hotel ★★★★★" },
+  parkovisko: { 1: "Štrkové parkovisko", 2: "Asfaltové parkovisko", 3: "Parkovací dom" },
+  bufet: { 1: "Malý bufet", 2: "Bufet s terasou", 3: "Veľký bufet" },
+};
+
+function nazovKonkurencie(kategoria, uroven) {
+  return NAZVY_PODLA_UROVNE[kategoria]?.[uroven || 1] || NAZVY_JEDNOTNE[kategoria] || KATEGORIE[kategoria]?.nazov;
+}
 
 function zostavaCasu(koniecVystavby) {
   const zostava = new Date(koniecVystavby) - new Date();
