@@ -260,9 +260,12 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravov
             <div style={{ ...riadok, borderBottom: "none" }}>
               <span style={ikonaBox}><Star size={14} /></span>
               <span style={{ flex: 1, fontSize: 12.5, color: "#5a6f88" }}>Hodnotenie zóny</span>
-              <span style={{ fontSize: 13, letterSpacing: 1 }}>
-                <span style={{ color: "#efb23c" }}>{"★".repeat(hviezdy)}</span>
-                <span style={{ color: "#d3ddea" }}>{"★".repeat(5 - hviezdy)}</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, letterSpacing: 1 }}>
+                <span>
+                  <span style={{ color: "#efb23c" }}>{"★".repeat(hviezdy)}</span>
+                  <span style={{ color: "#d3ddea" }}>{"★".repeat(5 - hviezdy)}</span>
+                </span>
+                {maKorunu && <Crown size={15} color="#efb23c" strokeWidth={2.4} fill="#efb23c" />}
               </span>
             </div>
           </>
