@@ -120,7 +120,7 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
                       <span style={ikonaBox("rgba(214,69,69,0.14)", "#d64545")}>
                         <Building2 size={15} strokeWidth={2.2} />
                       </span>
-                      <span style={nazovStyl}>{nazov}</span>
+                    <span style={nazovStyl}>{nazovKonkurencie(kat, k.uroven)}</span>
                     </div>
                     <span
                       style={{
@@ -133,7 +133,8 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <TrendingDown size={13} strokeWidth={2.4} />−{Math.round(cfg.stratapenazi * 100)} % dopytu
+                      <TrendingDown size={13} strokeWidth={2.4} />
+                      −{Math.round((KONKURENCIA_UROVNE[k.uroven || 1]?.stratapenazi ?? cfg.stratapenazi) * 100)} % dopytu
                     </span>
                   </div>
                 );
