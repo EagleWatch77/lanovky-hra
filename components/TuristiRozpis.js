@@ -34,9 +34,8 @@ function Riadok({ r }) {
 
 export default function TuristiRozpis({ dennyPocetTuristov, rozpisTuristovPodBudov }) {
   const rozpis = rozpisTuristovPodBudov || [];
-  const lanovky = rozpis.filter((r) => LANOVKOVE_NAZVY.includes(r.nazov));
-  const sluzby = rozpis.filter((r) => !LANOVKOVE_NAZVY.includes(r.nazov));
-
+const lanovky = rozpis.filter((r) => r.kategoria === "lanovka");
+  const sluzby = rozpis.filter((r) => r.kategoria !== "lanovka");
   return (
     <div
       style={{
