@@ -10,7 +10,7 @@ import {
   CENY_V_KRYSTALOCH,
   KATEGORIE,
 } from "../../lib/katalog";
-import { ShoppingCart, Sparkles, UserPlus, Wand2, Building2, Lock } from "lucide-react";
+import { ShoppingCart, Sparkles, UserPlus, Wand2, Building2, Copy, Check } from "lucide-react";
 
 // Farebné odlíšenie balíčkov
 const VZHLAD = {
