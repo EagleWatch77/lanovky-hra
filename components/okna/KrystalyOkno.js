@@ -47,9 +47,13 @@ const nadpisKarty = {
   color: "#1b2c42",
 };
 
-export default function KrystalyOkno({ stanica, kupitAutoCeny }) {
+  export default function KrystalyOkno({ stanica, kupitAutoCeny }) {
   const [zalozka, setZalozka] = useState("kupit");
+  const [skopirovane, setSkopirovane] = useState(false);
   const krystaly = stanica.krystaly ?? 0;
+
+  const zaklad = typeof window !== "undefined" ? window.location.origin : "";
+  const odkaz = `${zaklad}/?pozvanka=${stanica.pozvanka_kod || ""}`;
 
   const autoDo = stanica.auto_ceny_do ? new Date(stanica.auto_ceny_do) : null;
   const autoAktivne = autoDo && autoDo > new Date();
