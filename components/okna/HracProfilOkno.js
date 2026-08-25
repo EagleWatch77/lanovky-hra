@@ -322,31 +322,6 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
                 </div>
                 <div style={{ fontSize: 10.5, color: "#5a6f88", marginTop: 3 }}>najvyššia zóna</div>
               </div>
-
-              <div style={{ width: 1, background: "rgba(120,160,205,0.24)" }} />
-
-              <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 5,
-                    fontFamily: "var(--font-sora), system-ui, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    color: profil.alianciaNazov ? "#1b2c42" : "#aebccd",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                  title={profil.alianciaNazov || "Bez konzorcia"}
-                >
-                  <Handshake size={14} color={profil.alianciaNazov ? "#2f8ae0" : "#c5d2e0"} strokeWidth={2.3} />
-                  {profil.alianciaNazov || "—"}
-                </div>
-                <div style={{ fontSize: 10.5, color: "#5a6f88", marginTop: 3 }}>konzorcium</div>
-              </div>
             </div>
 
             {/* O hráčovi — bez kartičky */}
