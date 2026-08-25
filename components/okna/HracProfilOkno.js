@@ -359,6 +359,10 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
                   <Mountain size={13} color="#8a94a3" strokeWidth={2.2} />
                   Zóna: <strong style={{ color: najvyssiaZona.farba, fontWeight: 700 }}>{najvyssiaZona.nazov}</strong>
                 </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
+                  <Mountain size={13} color="#8a94a3" strokeWidth={2.2} />
+                  Zóna: <strong style={{ color: najvyssiaZona.farba, fontWeight: 700 }}>{najvyssiaZona.nazov}</strong>
+                </div>
               </div>
             </div>
 
