@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY, KONKURENCIA_UROVNE } from "../../lib/katalog";
-import { Building2, HardHat, CircleSlash, TrendingDown } from "lucide-react";
+import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY, OBRAZKY_KONKURENCIE } from "../../lib/katalog";
+import { HardHat, CircleSlash, Building2 } from "lucide-react";
 
 const NAZVY_JEDNOTNE = {
   penzion: "Penzión",
@@ -24,8 +24,14 @@ function nazovKonkurencie(kategoria, uroven) {
   return NAZVY_PODLA_UROVNE[kategoria]?.[uroven || 1] || NAZVY_JEDNOTNE[kategoria] || KATEGORIE[kategoria]?.nazov;
 }
 
-function zostavaCasu(koniecVystavby) {
-  const zostava = new Date(koniecVystavby) - new Date();
+function obrazokKonkurencie(kategoria, uroven) {
+  const sada = OBRAZKY_KONKURENCIE[kategoria];
+  if (!sada) return null;
+  return sada[uroven || 1] || sada[1] || null;
+}
+
+function zostavaCasu(datum) {
+  const zostava = new Date(datum) - new Date();
   if (zostava <= 0) return "Dokončuje sa…";
   const dni = Math.ceil(zostava / (1000 * 60 * 60 * 24));
   return `${dni} ${dni === 1 ? "deň" : dni < 5 ? "dni" : "dní"}`;
@@ -59,22 +65,21 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
     alignItems: "center",
     justifyContent: "space-between",
     gap: 10,
-    padding: "11px 12px",
+    padding: "10px 12px",
     borderRadius: 12,
     marginBottom: 7,
   };
 
-  const ikonaBox = (pozadie, farba) => ({
-    width: 28,
-    height: 28,
-    borderRadius: 9,
+  const obrazokBox = {
+    width: 52,
+    height: 52,
+    borderRadius: 10,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: pozadie,
-    color: farba,
     flexShrink: 0,
-  });
+    overflow: "hidden",
+  };
 
   const nazovStyl = {
     fontFamily: "var(--font-sora), system-ui, sans-serif",
@@ -94,52 +99,75 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
       </div>
 
       <p style={{ color: "#8a94a3", fontSize: 12, marginTop: 0, marginBottom: 14, lineHeight: 1.5 }}>
-        Konkurenčné prevádzky v zóne {ZONY[aktivnaZona].nazov}. Každá aktívna ti uberá časť dopytu.
+        Konkurenčné prevádzky v zóne {ZONY[aktivnaZona].nazov}. Časom rastú spolu so strediskom.
       </p>
 
       {Object.keys(zonaConfig).map((kat) => {
         const jednotky = konkurenciaJednotky.filter((k) => k.kategoria === kat && k.zona === aktivnaZona);
         const cfg = zonaConfig[kat];
         const sloty = Array.from({ length: cfg.max }, (_, i) => jednotky[i] || null);
-        const nazov = NAZVY_JEDNOTNE[kat] || KATEGORIE[kat].nazov;
 
         return (
           <div key={kat}>
             {sloty.map((k, i) => {
-              if (k?.stav === "hotovo") {
+              // --- Hotová budova ---
+              if (k?.stav === "hotovo" && !k.prestavba_koniec) {
+                const obrazok = obrazokKonkurencie(kat, k.uroven);
                 return (
                   <div
                     key={k.id}
                     style={{
                       ...riadok,
-                      background: "#fdeeee",
-                      border: "1px solid rgba(214,69,69,0.25)",
+                      background: "#ffffff",
+                      border: "1px solid rgba(120,160,205,0.22)",
+                      boxShadow: "0 2px 8px rgba(60,110,160,0.07)",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                      <span style={ikonaBox("rgba(214,69,69,0.14)", "#d64545")}>
-                        <Building2 size={15} strokeWidth={2.2} />
-                      </span>
-                    <span style={nazovStyl}>{nazovKonkurencie(kat, k.uroven)}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+                      {obrazok ? (
+                        <span style={obrazokBox}>
+                          <img src={obrazok} alt="" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                        </span>
+                      ) : (
+                        <span style={{ ...obrazokBox, background: "rgba(120,160,205,0.10)", color: "#8a94a3" }}>
+                          <Building2 size={20} strokeWidth={2} />
+                        </span>
+                      )}
+                      <span style={nazovStyl}>{nazovKonkurencie(kat, k.uroven)}</span>
                     </div>
-                    <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 5,
-                        fontSize: 11.5,
-                        fontWeight: 600,
-                        color: "#c0392b",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      <TrendingDown size={13} strokeWidth={2.4} />
-                      −{Math.round((KONKURENCIA_UROVNE[k.uroven || 1]?.stratapenazi ?? cfg.stratapenazi) * 100)} % dopytu
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#d64545", flexShrink: 0 }} />
+                  </div>
+                );
+              }
+
+              // --- Prestavuje sa na vyššiu úroveň ---
+              if (k?.prestavba_koniec) {
+                return (
+                  <div
+                    key={k.id}
+                    style={{
+                      ...riadok,
+                      background: "#fff7ea",
+                      border: "1px solid rgba(239,154,61,0.3)",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+                      <span style={{ ...obrazokBox, background: "rgba(239,154,61,0.16)", color: "#c9830f" }}>
+                        <HardHat size={20} strokeWidth={2.2} />
+                      </span>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={nazovStyl}>{nazovKonkurencie(kat, (k.uroven || 1) + 1)}</div>
+                        <div style={{ fontSize: 11, color: "#c9830f", marginTop: 2 }}>Prestavuje sa</div>
+                      </div>
+                    </div>
+                    <span style={{ fontSize: 11.5, fontWeight: 600, color: "#c9830f", whiteSpace: "nowrap" }}>
+                      {zostavaCasu(k.prestavba_koniec)}
                     </span>
                   </div>
                 );
               }
 
+              // --- Vo výstavbe (prvýkrát) ---
               if (k?.stav === "vo_vystavbe") {
                 return (
                   <div
@@ -150,37 +178,39 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
                       border: "1px solid rgba(239,154,61,0.3)",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                      <span style={ikonaBox("rgba(239,154,61,0.16)", "#c9830f")}>
-                        <HardHat size={15} strokeWidth={2.2} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+                      <span style={{ ...obrazokBox, background: "rgba(239,154,61,0.16)", color: "#c9830f" }}>
+                        <HardHat size={20} strokeWidth={2.2} />
                       </span>
-                      <span style={nazovStyl}>{nazov}</span>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={nazovStyl}>{nazovKonkurencie(kat, 1)}</div>
+                        <div style={{ fontSize: 11, color: "#c9830f", marginTop: 2 }}>Stavia sa</div>
+                      </div>
                     </div>
                     <span style={{ fontSize: 11.5, fontWeight: 600, color: "#c9830f", whiteSpace: "nowrap" }}>
-                      Stavia sa · {zostavaCasu(k.koniec_vystavby)}
+                      {zostavaCasu(k.koniec_vystavby)}
                     </span>
                   </div>
                 );
               }
 
+              // --- Zatiaľ nič ---
               return (
                 <div
                   key={i}
                   style={{
                     ...riadok,
-                    background: "rgba(120,160,205,0.06)",
-                    border: "1px solid rgba(120,160,205,0.16)",
+                    background: "rgba(120,160,205,0.05)",
+                    border: "1px dashed rgba(120,160,205,0.24)",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                    <span style={ikonaBox("rgba(120,160,205,0.12)", "#aebccd")}>
-                      <CircleSlash size={15} strokeWidth={2.2} />
+                  <div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+                    <span style={{ ...obrazokBox, background: "rgba(120,160,205,0.10)", color: "#c5d2e0" }}>
+                      <CircleSlash size={20} strokeWidth={2} />
                     </span>
-                    <span style={{ ...nazovStyl, color: "#8a94a3" }}>{nazov}</span>
+                    <span style={{ ...nazovStyl, color: "#8a94a3" }}>{NAZVY_JEDNOTNE[kat] || KATEGORIE[kat]?.nazov}</span>
                   </div>
-                  <span style={{ fontSize: 11.5, color: "#aebccd", whiteSpace: "nowrap" }}>
-                    Ešte sa neobjavila
-                  </span>
+                  <span style={{ fontSize: 11.5, color: "#aebccd", whiteSpace: "nowrap" }}>Ešte sa neobjavila</span>
                 </div>
               );
             })}
