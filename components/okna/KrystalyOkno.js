@@ -372,25 +372,126 @@ export default function KrystalyOkno({ stanica, kupitAutoCeny }) {
         </div>
       )}
 
-      {/* --- POZVI KAMARÁTA --- */}
+   {/* --- POZVI KAMARÁTA --- */}
       {zalozka === "kamarat" && (
-        <div style={{ ...karta, textAlign: "center", padding: "28px 20px" }}>
-          <UserPlus size={34} color="#c5d2e0" strokeWidth={1.8} />
-          <div
-            style={{
-              fontFamily: "var(--font-sora), system-ui, sans-serif",
-              fontWeight: 700,
-              fontSize: 14,
-              color: "#1b2c42",
-              marginTop: 12,
-              marginBottom: 6,
-            }}
-          >
-            Pripravujeme
+        <div>
+          <div style={karta}>
+            <h3 style={nadpisKarty}>
+              <UserPlus size={15} color="#2ca24e" strokeWidth={2.3} />
+              Tvoj odkaz na pozvanie
+            </h3>
+            <p style={{ fontSize: 11.5, color: "#5a6f88", lineHeight: 1.5, marginTop: 0, marginBottom: 11 }}>
+              Pošli ho kamarátovi. Keď si založí stredisko a bude ho hrať aspoň {POZVANKA_PODMIENKA_DNI} dní, dostanete
+              obaja kryštály.
+            </p>
+
+            <div style={{ display: "flex", gap: 8 }}>
+              <input
+                type="text"
+                readOnly
+                value={odkaz}
+                onFocus={(e) => e.target.select()}
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  padding: "10px 12px",
+                  borderRadius: 11,
+                  border: "1px solid rgba(120,160,205,0.28)",
+                  background: "rgba(120,160,205,0.06)",
+                  color: "#5a6f88",
+                  fontSize: 12,
+                  fontFamily: "var(--font-inter), system-ui, sans-serif",
+                  outline: "none",
+                }}
+              />
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(odkaz);
+                  setSkopirovane(true);
+                  setTimeout(() => setSkopirovane(false), 2000);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "10px 15px",
+                  borderRadius: 11,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "var(--font-inter), system-ui, sans-serif",
+                  fontWeight: 700,
+                  fontSize: 12.5,
+                  color: "#fff",
+                  background: skopirovane
+                    ? "linear-gradient(180deg,#42d675,#33bd63)"
+                    : "linear-gradient(180deg,#4aa3ee,#2f92e6)",
+                  boxShadow: "0 6px 14px rgba(47,146,230,0.26)",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                {skopirovane ? (
+                  <>
+                    <Check size={14} strokeWidth={2.6} />
+                    Skopírované
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} strokeWidth={2.4} />
+                    Kopírovať
+                  </>
+                )}
+              </button>
+            </div>
           </div>
-          <p style={{ fontSize: 12, color: "#8a94a3", lineHeight: 1.55, margin: 0 }}>
-            Čoskoro budeš môcť pozvať kamaráta do hry a získať za to kryštály.
-          </p>
+
+          <div style={karta}>
+            <h3 style={nadpisKarty}>
+              <Sparkles size={15} color="#c9930f" strokeWidth={2.3} />
+              Čo z toho máte
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+              {[
+                { text: "Ty za každého pozvaného", odmena: POZVANKA_ODMENA_POZYVAJUCI },
+                { text: "Tvoj kamarát na štart", odmena: POZVANKA_ODMENA_POZVANY },
+              ].map((r) => (
+                <div
+                  key={r.text}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 10,
+                    padding: "9px 11px",
+                    borderRadius: 10,
+                    background: "rgba(120,160,205,0.06)",
+                    fontSize: 12,
+                    color: "#5a6f88",
+                  }}
+                >
+                  <span>{r.text}</span>
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 700,
+                      color: "#2ca24e",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <img src={OBRAZOK_KRYSTAL} alt="" style={{ width: 13, height: 13, objectFit: "contain" }} />+
+                    {r.odmena}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: 10.5, color: "#aebccd", marginTop: 10, marginBottom: 0, lineHeight: 1.45 }}>
+              Odmena sa vyplatí, keď má pozvaný aspoň {POZVANKA_PODMIENKA_PRESTIZ_BUDOVY} prestíže z budov a hrá aspoň{" "}
+              {POZVANKA_PODMIENKA_DNI} dní.
+            </p>
+          </div>
         </div>
       )}
     </div>
