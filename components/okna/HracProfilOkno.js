@@ -307,23 +307,6 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         {/* --- PREHĽAD --- */}
         {zalozka === "prehlad" && (
           <div style={{ maxWidth: "76%" }}>
-            {/* Štatistiky */}
-            <div style={{ ...karta("stredna"), display: "flex", gap: 8 }}>
-              <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
-                <div
-                  style={{
-                    fontFamily: "var(--font-sora), system-ui, sans-serif",
-                    fontWeight: 800,
-                    fontSize: 17,
-                    color: najvyssiaZona.farba,
-                  }}
-                >
-                  {najvyssiaZona.nazov}
-                </div>
-                <div style={{ fontSize: 10.5, color: "#5a6f88", marginTop: 3 }}>najvyššia zóna</div>
-              </div>
-            </div>
-
             {/* O hráčovi — bez kartičky */}
             <div style={{ marginBottom: 14, paddingLeft: 2 }}>
               <h3 style={{ ...nadpisKarty, marginBottom: 6 }}>
