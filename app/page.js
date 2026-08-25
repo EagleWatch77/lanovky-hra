@@ -406,6 +406,8 @@ export default function PrehladPage() {
 
         <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
           <TopBarPrava
+            krystaly={stanica.krystaly ?? 0}
+            onOtvorKrystaly={() => setOkno("krystaly")}
             notifikacie={notifikacie}
             onOtvorNastavenia={() => setOkno("nastavenia")}
             onOtvorSpravy={() => setOkno("spravy")}
