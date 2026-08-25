@@ -13,7 +13,7 @@ import {
   jeZimnyMesiac,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
-import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check, Car, BedDouble, Beer, Lock, Snowflake, Sun } from "lucide-react";
+import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check, Car, BedDouble, Beer, Lock, Snowflake, Sun, Wand2 } from "lucide-react";
 
 const NAZVY_MESIACOV = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
 
