@@ -9,6 +9,10 @@ import {
   AUTO_CENY_ROK_KRYSTALOV,
   CENY_V_KRYSTALOCH,
   KATEGORIE,
+  POZVANKA_ODMENA_POZYVAJUCI,
+  POZVANKA_ODMENA_POZVANY,
+  POZVANKA_PODMIENKA_PRESTIZ_BUDOVY,
+  POZVANKA_PODMIENKA_DNI,
 } from "../../lib/katalog";
 import { ShoppingCart, Sparkles, UserPlus, Wand2, Building2, Copy, Check } from "lucide-react";
 
