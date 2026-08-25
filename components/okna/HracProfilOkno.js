@@ -269,9 +269,14 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
           <button onClick={() => setZalozka("prehlad")} style={zalozkaStyl("prehlad")}>
             <LayoutDashboard size={14} strokeWidth={2.2} /> Prehľad
           </button>
-          <button onClick={() => setZalozka("trofeje")} style={zalozkaStyl("trofeje")}>
+<button onClick={() => setZalozka("trofeje")} style={zalozkaStyl("trofeje")}>
             <Award size={14} strokeWidth={2.2} /> Trofeje
           </button>
+          {!jaSam && (
+            <button onClick={() => setZalozka("sprava")} style={zalozkaStyl("sprava")}>
+              <Send size={14} strokeWidth={2.2} /> Správa
+            </button>
+          )}
         </div>
 
         {/* --- PREHĽAD --- */}
