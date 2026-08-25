@@ -78,7 +78,7 @@ function Odhad({ odhad, postavene }) {
   return <div style={{ fontSize: 11, color: "#8a94a3", marginTop: 2 }}>odhad ~{odhad} €</div>;
 }
 
-export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu, zmenitCenyStrediska }) {
+export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkovuDobu, zmenitCenyStrediska, kupitAutoCeny }) {
   const [zalozka, setZalozka] = useState("ceny");
   const [zaciatok, setZaciatok] = useState(stanica.prevadzka_zaciatok || "08:30");
   const [koniec, setKoniec] = useState(stanica.prevadzka_koniec || "16:00");
