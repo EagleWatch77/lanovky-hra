@@ -247,8 +247,7 @@ export default function KrystalyOkno({ stanica, kupitAutoCeny }) {
               Automatické ceny
             </h3>
             <p style={{ fontSize: 11.5, color: "#5a6f88", lineHeight: 1.5, marginTop: 0, marginBottom: 11 }}>
-              Nemusíš chodiť každý týždeň prestavovať ceny — hra ich nastaví za teba, presnejšie než bežný odhad.
-              Kedykoľvek môžeš zasiahnuť ručne.
+              Nastavovanie cien je automatické. Kedykoľvek môžeš zasiahnuť ručne.
             </p>
 
             {autoAktivne ? (
