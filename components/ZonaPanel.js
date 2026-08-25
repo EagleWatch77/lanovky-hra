@@ -55,7 +55,7 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravov
 
   const kapacita = hotove
     .filter((b) => b.kategoria === "lanovka")
-    .reduce((s, b) => s + (LANOVKY_TYPY[b.typ]?.kapacita || 0), 0);
+   .reduce((s, b) => s + kapacitaBudovy(b.kategoria, b.typ, b.znacka), 0);
 
   const priemEfekt = hotove.length
     ? Math.round((hotove.reduce((s, b) => s + efektivitaBudovy(b), 0) / hotove.length) * 100)
