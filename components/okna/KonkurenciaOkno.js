@@ -135,7 +135,6 @@ export default function KonkurenciaOkno({ konkurenciaJednotky }) {
                       )}
                       <span style={nazovStyl}>{nazovKonkurencie(kat, k.uroven)}</span>
                     </div>
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#d64545", flexShrink: 0 }} />
                   </div>
                 );
               }
