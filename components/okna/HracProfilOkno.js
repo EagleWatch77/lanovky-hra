@@ -169,15 +169,16 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
 
   return (
     <div style={{ position: "relative" }}>
+      {/* Postava riaditeľa na pozadí */}
       <img
         src={postava}
         alt=""
         style={{
           position: "absolute",
           right: -30,
-          top: 0,
+          top: 86,
           bottom: 0,
-          height: "100%",
+          height: "calc(100% - 86px)",
           objectFit: "contain",
           objectPosition: "bottom right",
           opacity: 0.95,
@@ -228,24 +229,12 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
             >
               {profil.nazov}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
-              {profil.meno_hraca && (
-                <span
-                  style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "rgba(255,255,255,0.88)" }}
-                >
-                  <User size={12} strokeWidth={2.3} />
-                  {profil.meno_hraca}
-                </span>
-              )}
-              {vek && (
-                <span
-                  style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "rgba(255,255,255,0.88)" }}
-                >
-                  <CalendarDays size={12} strokeWidth={2.3} />
-                  {vek}
-                </span>
-              )}
-            </div>
+            {profil.alianciaNazov && (
+              <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "rgba(255,255,255,0.88)", marginTop: 4 }}>
+                <Handshake size={12} strokeWidth={2.3} />
+                {profil.alianciaNazov}
+              </div>
+            )}
           </div>
 
           {poradie && (
@@ -351,9 +340,9 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
               </div>
             </div>
 
-            {/* O hráčovi */}
-            <div style={karta("svetla")}>
-              <h3 style={nadpisKarty}>
+            {/* O hráčovi — bez kartičky */}
+            <div style={{ marginBottom: 14, paddingLeft: 2 }}>
+              <h3 style={{ ...nadpisKarty, marginBottom: 6 }}>
                 <User size={15} color="#2f8ae0" strokeWidth={2.3} />
                 O hráčovi
               </h3>
@@ -363,11 +352,26 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
                   fontSize: 12.5,
                   whiteSpace: "pre-wrap",
                   lineHeight: 1.55,
-                  margin: 0,
+                  margin: "0 0 10px 0",
                 }}
               >
                 {profil.popis || "Hráč zatiaľ nenapísal nič o sebe."}
               </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                {profil.meno_hraca && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
+                    <User size={13} color="#8a94a3" strokeWidth={2.2} />
+                    {profil.meno_hraca}
+                  </div>
+                )}
+                {vek && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
+                    <CalendarDays size={13} color="#8a94a3" strokeWidth={2.2} />
+                    {vek}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Správa */}
