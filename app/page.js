@@ -324,6 +324,12 @@ export default function PrehladPage() {
         </WindowModal>
       )}
 
+     {okno === "krystaly" && (
+        <WindowModal title="Kryštály" onClose={() => setOkno(null)}>
+          <KrystalyOkno stanica={stanica} />
+        </WindowModal>
+      )}
+
       {okno === "financie" && (
         <WindowModal title="💰 Financie" onClose={() => setOkno(null)} width={640}>
           <FinancieOkno stanica={stanica} />
