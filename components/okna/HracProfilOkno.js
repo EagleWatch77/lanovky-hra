@@ -175,7 +175,7 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         alt=""
         style={{
           position: "absolute",
-          right: -50,
+          right: 50,
           top: 86,
           bottom: 0,
           height: "calc(100% - 86px)",
