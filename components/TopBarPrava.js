@@ -55,6 +55,8 @@ function IkonaTlacidlo({ onClick, title, children, badge = 0, badgeColor = "#e54
 }
 
 export default function TopBarPrava({
+  krystaly = 0,
+  onOtvorKrystaly,
   notifikacie = [],
   onOtvorNastavenia,
   onOtvorSpravy,
