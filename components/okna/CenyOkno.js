@@ -263,8 +263,8 @@ export default function CenyOkno({ stanica, budovy, zmenitCenu, zmenitPrevadzkov
                     Automatické ceny
                   </span>
                 </div>
-                <div style={{ fontSize: 11.5, color: "#5a6f88", lineHeight: 1.5, marginBottom: 11 }}>
-                  Nemusíš chodiť každý týždeň prestavovať ceny — hra to spraví za teba. Kedykoľvek môžeš zasiahnuť ručne.
+             <div style={{ fontSize: 11.5, color: "#5a6f88", lineHeight: 1.5, marginBottom: 11 }}>
+                  Nastavovanie cien je automatické. Kedykoľvek môžeš zasiahnuť ručne.
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   {[
