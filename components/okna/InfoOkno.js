@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, CloudSun, ListTodo, Palette, Wallet, Building2, AlertTriangle, Hammer, Users } from "lucide-react";
+import { CheckCircle2, CloudSun, ListTodo, Palette, Wallet, Building2, AlertTriangle, Hammer, Users, ShieldAlert, Sparkles } from "lucide-react";
 
 const HOTOVE = [
   "Registrácia a prihlásenie hráčov, vlastný názov strediska",
@@ -12,10 +12,8 @@ const HOTOVE = [
   "Skipas — zvlášť zimná cena (celý deň) a letná (jedna jazda)",
   "Parkovné zvlášť pre Lúku a Údolie, jedna cena pre penzióny a jedna pre hotely",
   "Sezónna krivka cien (Október–Máj zima, Jún–September leto)",
-  "Denný model príjmu pre parkovisko a ubytovanie",
   "Zamestnanci — automaticky na plný stav, súčasť nákladov na prevádzku",
   "Ročné vyjednávanie o plat (Údolie+, december–január), efektivita klesne pri odmietnutí",
-  "Konkurencia — objavuje sa po 90 dňoch, znižuje dopyt, ale zvyšuje prestíž strediska",
   "Spokojnosť strediska — infraštruktúra, služby, ceny a počasie (kliknuteľné v hornom paneli)",
   "Medzisezóna (1.–7. október) — stredisko zatvorené, mzdy a údržba bežia ďalej",
   "Sezónny reset prestíže — prestíž z turistov sa vynuluje raz za ročný cyklus",
@@ -44,88 +42,105 @@ const EKONOMIKA = [
   "Kapacita parkovania — autom príde 70 % turistov, 1 miesto = 2 osoby",
 ];
 
+const KONKURENCIA = [
+  "Konkurencia sa objaví po 90 dňoch od založenia strediska",
+  "Má tri úrovne — berie 25 %, 32 % alebo 40 % dopytu, ale zároveň dvíha prestíž celej oblasti",
+  "Vyvíjajú sa hotel, bufet a parkovisko. Penzión a servis ostávajú na jednej úrovni",
+  "Prestaví sa, keď stredisko priláka viac ľudí (800 a 2 500 turistov denne) alebo keď ju hráč predbehne kvalitou",
+  "Prestavuje sa vždy len o jeden stupeň a najviac raz za herný rok",
+  "Prestavba trvá rovnako dlho ako pôvodná stavba — hráč vidí, koľko dní zostáva",
+  "V okne Konkurencia vidno obrázok aj názov podľa úrovne (Hotel ★★★ → ★★★★ → ★★★★★)",
+];
+
+const KRYSTALY = [
+  "Kryštály — prémiová mena, kurz 1 € = 50 kryštálov",
+  "Zostatok je vidno v hornej lište vpravo, kliknutím sa otvorí okno",
+  "Balíčky: 250 (5 €), 550 (10 €), 1 200 (20 €), 3 250 (50 €), 7 000 (100 €) — väčšie majú bonus",
+  "Nákup zatiaľ nie je spustený — chýba platobná brána",
+  "AUTOMATICKÉ CENY: hra nastaví všetky ceny raz za herný týždeň, presnejšie než bežný odhad (±10 %)",
+  "Automatika stojí 300 kryštálov na sezónu alebo 500 na herný rok, hráč môže kedykoľvek zasiahnuť ručne",
+  "POZVÁNKY: každý hráč má vlastný odkaz, pozvaný sa zachytí automaticky pri registrácii",
+  "Odmena 100 kryštálov pozývajúcemu a 50 pozvanému — až keď má pozvaný 300 prestíže z budov a hrá 30 dní",
+  "Prémiové budovy majú ceny v kryštáloch: ratrak 250, parkovací dom 350, vodná nádrž 400, Solaris 700–1 000, hotely 800–900",
+];
+
 const BUDOVY = [
   "Sloty sú oddelené od typov — v každej zóne máš daný počet miest a vyberáš si, čo tam postavíš",
-  "LANOVKY: 13 typov — vlek, sedačky 2/4/6/8-miestne (pevné aj odpojiteľné), kabínky 8/10/15/20, 3S, Funitel, Kyvadlová",
-  "5 výrobcov: Alpenlift (lacný), Silvretta (štandard), Apex (kapacita), Kristallis (prémiový), Solaris (za reálne peniaze)",
-  "Každý výrobca mení cenu, kapacitu, údržbu a prestíž — a vyrába len časť modelov",
-  "Spojnice medzi zónami: z Lúky do Údolia a do Hôr, z Hôr na Ľadovec",
+  "LANOVKY: 13 typov — vlek, sedačky 2/4/6/8-miestne, kabínky 8/10/15/20, 3S, Funitel, Kyvadlová",
+  "5 výrobcov: Alpenlift, Silvretta, Apex, Kristallis, Solaris (za kryštály)",
   "LETNÁ PREVÁDZKA: v lete jazdia len určené sloty — spojnica do Hôr, prvá lanovka v Horách, spojnica na Ľadovec, prvá lanovka na Ľadovci",
   "O letnej prevádzke rozhoduje slot, nie typ — aj sedačka bude jazdiť, len s vlastnou kapacitou",
-  "Vleky jazdia v lete len s bobovou dráhou",
   "PARKOVISKÁ: štrkové, asfaltové, centrálne (s Horami), parkovací dom (prémiový, len Údolie)",
   "HOTELY v Údolí: 3*, 4*, 5* a Summit Resort (prémiový)",
   "HOTELY v Horách a na Ľadovci: Horská chata a Panoramatický rezort (prémiový)",
   "POKLADNE: malá (30 os./h), veľká (120), s infocentrom (150, len v Údolí)",
-  "SERVIS: malá požičovňa a plný ski servis",
-  "RATRAKY: starší (mierne svahy), s navijakom (aj strmé), prémiový — spotrebúvajú palivo v zime",
+  "RATRAKY: starší, s navijakom, prémiový — spotrebúvajú palivo v zime, kupujú sa (nestavajú)",
   "ZASNEŽOVANIE: potok (chráni október), jazero (október a máj), vodná nádrž (aj september a jún, prémiová)",
   "Bufet a Apréski bar sú dve samostatné kategórie",
-  "Obrázky pri každom type budovy aj zariadenia, logá výrobcov",
 ];
 
 const PRESTAVBA = [
   "PRESTAVBA (pokladňa, zasnežovanie, servis, hotel, parkovisko) — budova sa nebúra, len prestavia na vyšší typ",
   "Pri prestavbe platíš plnú cenu novej budovy a stavba trvá rovnako dlho ako bežná výstavba",
-  "Prestavať sa dá len na drahší typ, nie späť na lacnejší",
   "BÚRANIE (lanovky a vleky) — stojí 10 % z ceny budovy, slot sa uvoľní",
   "PREDAJ (ratraky) — dostaneš späť zostatkovú cenu: 50 % nový, −10 % za každý herný rok, minimum 20 %",
 ];
 
 const UI_HOTOVE = [
   "Svetlá „ľadová\" téma naprieč hrou — biele frostové panely, jednotné farby a tiene",
-  "Fonty Sora (nadpisy a čísla) a Inter (text)",
-  "Horná lišta cez celú šírku — logo strediska, názov, štatistiky, notifikácie a nastavenia",
-  "Všetky štatistiky v lište sú kliknuteľné a rozbalia detailný panel",
+  "Horná lišta cez celú šírku — všetky štatistiky sú kliknuteľné a rozbalia detailný panel",
   "Počasie a sezóna spojené do jedného chipu vrátane medzisezóny",
   "Peňažný tok — príjem, prevádzka, čistý tok za deň a varovanie pri strate",
-  "Panel zóny — obrázok podľa sezóny, prepínanie šípkami, tlačidlo Spravovať zónu",
-  "Panely rebríčka, týždenných misií a udalostí",
-  "Okno Budovy rozdelené do sekcií (Lanovky, Parkovanie, Ubytovanie, Služby, Technika)",
-  "Výber výrobcu a potom modelu, s cenou a kapacitou už prepočítanou",
+  "Panel zóny — obrázok podľa sezóny, kapacita so značkou, hodnotenie hviezdičkami podľa kvality budov",
+  "Hodnotenie zóny meria kvalitu, nie počet — päť hviezdičiek si vyžaduje drahšie zariadenia",
+  "Okno Budovy rozdelené do sekcií, výber výrobcu a potom modelu",
   "Letné sloty označené štítkom JAZDÍ AJ V LETE",
   "Namiesto vyskakovacích hlášok sa tlačidlo vypne a ukáže, koľko peňazí chýba",
-  "Ratrak sa kupuje, nie stavia — vlastné tlačidlá aj ikona",
 ];
 
 const OPRAVIT = [
-  "Konkurencia sa zatiaľ nevyvíja — postaví a stojí, nemá úrovne",
-  "Kryštály (mena za reálne peniaze) — ikony sú hotové, chýba stĺpec v databáze a napojenie",
-  "Ľadovec je rozostavaný — má sloty, ale zóna sa v okne nedá otvoriť a nemá pool turistov",
-  "Prémiové budovy majú ceny v eurách, majú byť v kryštáloch",
+  "Ľadovec je rozostavaný — podmienky sú dohodnuté (25 000 prestíže, 15 mil. €, konzorcium 5 členov), ale nie sú v kóde",
+  "Ľadovec sa v okne Budovy nedá otvoriť a nemá pool turistov",
+  "Prémiové budovy majú v okne Budovy stále ceny v eurách, majú byť v kryštáloch",
   "Chyba pri prestavbe parkoviska na centrálne — treba preveriť",
+  "Míľniky za kryštály (prvá lanovka, odomknutie zón) sa zatiaľ nevyplácajú",
 ];
 
 const PLANOVANE = [
   "Návod pre nových hráčov — manažér na okraji obrazovky, listovací sprievodca",
-  "Vývoj konkurencie — hotel sa prestaví na vyšší podľa počtu turistov a podľa toho, čo postavíš ty",
-  "Zónové počasie — na vrchole môže fúkať, kým v údolí sa lyžuje (a viac typov počasia)",
+  "Bonus na turistov za kryštály (+20 % nad kvótu) a za reklamu (+10 % na 8 hodín) — až keď budú hráči",
   "Ligy s postupom a zostupom na konci herného roka",
   "Misie napojené na reálne dáta (zatiaľ zástupné)",
-  "Ďalšie typy udalostí — míľniky, sezónne udalosti, novinky",
-  "Nastavenia a Správy do svetlej témy",
-  "Letné obrázky zón Údolie, Hory a Ľadovec",
-  "Náhodné incidenty (poruchy, sťažnosti)",
+  "Zónové počasie — na vrchole môže fúkať, kým v údolí sa lyžuje (a viac typov počasia)",
   "Sezónky — hráč pred sezónou nastaví počet a cenu, rozdelia sa cez celú sezónu",
-  "Upratanie nepoužívaných súborov (AkcieBar, AppLayout, Nav, Sidebar, PrestizRadar, SlotModal, LanovkyPanel)",
+  "Nastavenia a Správy do svetlej témy",
+  "Ako motivovať silných hráčov brať do konzorcia aj slabších",
+  "Svetový pohár ako samostatná mechanika",
+  "Ochrana proti viacnásobným účtom",
+  "Letné obrázky zón Údolie, Hory a Ľadovec",
+  "Upratanie nepoužívaných súborov",
 ];
 
 const MONETIZACIA = [
   {
-    nazov: "Predplatné (základ)",
-    popis: "Mesačný poplatok s trvalými výhodami — rýchlejšia výstavba, viac slotov, častejšie zmeny cien. Hlavný a stabilný príjem (model Travian / Rail Nation).",
+    nazov: "Kryštály (hotové)",
+    popis: "Prémiová mena. Kupujú sa za ne prémiové budovy a automatické ceny. Nákup čaká na platobnú bránu.",
   },
   {
-    nazov: "Kryštály",
-    popis: "Herná mena za reálne peniaze. Kupujú sa za ne prémiové budovy — Solaris lanovky, parkovací dom, Summit Resort, prémiový ratrak, vodná nádrž, Panoramatický rezort.",
+    nazov: "Automatické ceny (hotové)",
+    popis: "Hráč nemusí chodiť každý týždeň prestavovať ceny. Predáva sa pohodlie, nie výhoda — kto neplatí, dosiahne to isté, len musí klikať.",
+  },
+  {
+    nazov: "Pozvánky (hotové)",
+    popis: "Hráč pozve kamaráta a obaja dostanú kryštály. Prináša nových hráčov a nestojí nič okrem hernej meny.",
+  },
+  {
+    nazov: "Predplatné",
+    popis: "Mesačný poplatok s trvalými výhodami — rýchlejšia výstavba, viac slotov. Hlavný a stabilný príjem.",
   },
   {
     nazov: "Kozmetika",
-    popis: "Vzhľad strediska, farby kabín, špeciálne logá, rám okolo mena v rebríčku. Neovplyvňuje hru, takže bez pay-to-win.",
-  },
-  {
-    nazov: "Sezónny pas",
-    popis: "Platí sa raz za sezónu, plnením úloh získavaš odmeny. Opakuje sa a drží hráčov v hre.",
+    popis: "Vzhľad strediska, farby kabín, rám okolo mena v rebríčku. Neovplyvňuje hru, takže bez pay-to-win.",
   },
 ];
 
@@ -166,68 +181,32 @@ const zoznam = {
   margin: 0,
 };
 
+function Sekcia({ Ikona, farba, nadpis, polozky }) {
+  return (
+    <div style={karta}>
+      <h3 style={nadpisKarty}>
+        <Ikona size={15} color={farba} strokeWidth={2.3} />
+        {nadpis}
+      </h3>
+      <ul style={zoznam}>
+        {polozky.map((p, i) => (
+          <li key={i} style={{ marginBottom: 3 }}>{p}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function InfoOkno() {
   return (
     <div>
-      <div style={karta}>
-        <h3 style={nadpisKarty}>
-          <CheckCircle2 size={15} color="#2ca24e" strokeWidth={2.3} />
-          Čo už funguje
-        </h3>
-        <ul style={zoznam}>
-          {HOTOVE.map((polozka, i) => (
-            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div style={karta}>
-        <h3 style={nadpisKarty}>
-          <Users size={15} color="#2ca24e" strokeWidth={2.3} />
-          Ekonomika a turisti
-        </h3>
-        <ul style={zoznam}>
-          {EKONOMIKA.map((polozka, i) => (
-            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div style={karta}>
-        <h3 style={nadpisKarty}>
-          <Building2 size={15} color="#2f8ae0" strokeWidth={2.3} />
-          Budovy, typy a výrobcovia
-        </h3>
-        <ul style={zoznam}>
-          {BUDOVY.map((polozka, i) => (
-            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div style={karta}>
-        <h3 style={nadpisKarty}>
-          <Hammer size={15} color="#c9930f" strokeWidth={2.3} />
-          Prestavba, búranie a predaj
-        </h3>
-        <ul style={zoznam}>
-          {PRESTAVBA.map((polozka, i) => (
-            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div style={karta}>
-        <h3 style={nadpisKarty}>
-          <Palette size={15} color="#8a5fd6" strokeWidth={2.3} />
-          Rozhranie a vzhľad
-        </h3>
-        <ul style={zoznam}>
-          {UI_HOTOVE.map((polozka, i) => (
-            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
-          ))}
-        </ul>
-      </div>
+      <Sekcia Ikona={CheckCircle2} farba="#2ca24e" nadpis="Čo už funguje" polozky={HOTOVE} />
+      <Sekcia Ikona={Users} farba="#2ca24e" nadpis="Ekonomika a turisti" polozky={EKONOMIKA} />
+      <Sekcia Ikona={Building2} farba="#2f8ae0" nadpis="Budovy, typy a výrobcovia" polozky={BUDOVY} />
+      <Sekcia Ikona={ShieldAlert} farba="#d64545" nadpis="Konkurencia" polozky={KONKURENCIA} />
+      <Sekcia Ikona={Sparkles} farba="#2f8ae0" nadpis="Kryštály a prémiové funkcie" polozky={KRYSTALY} />
+      <Sekcia Ikona={Hammer} farba="#c9930f" nadpis="Prestavba, búranie a predaj" polozky={PRESTAVBA} />
+      <Sekcia Ikona={Palette} farba="#8a5fd6" nadpis="Rozhranie a vzhľad" polozky={UI_HOTOVE} />
 
       <div style={{ ...karta, background: "#fff7ea", border: "1px solid rgba(239,154,61,0.32)" }}>
         <h3 style={nadpisKarty}>
@@ -235,8 +214,8 @@ export default function InfoOkno() {
           Treba dokončiť
         </h3>
         <ul style={{ ...zoznam, color: "#8a5f20" }}>
-          {OPRAVIT.map((polozka, i) => (
-            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
+          {OPRAVIT.map((p, i) => (
+            <li key={i} style={{ marginBottom: 3 }}>{p}</li>
           ))}
         </ul>
       </div>
@@ -298,26 +277,13 @@ export default function InfoOkno() {
         </div>
       </div>
 
-      <div style={karta}>
-        <h3 style={nadpisKarty}>
-          <ListTodo size={15} color="#ef9a3d" strokeWidth={2.3} />
-          Čo je v pláne
-        </h3>
-        <ul style={zoznam}>
-          {PLANOVANE.map((polozka, i) => (
-            <li key={i} style={{ marginBottom: 3 }}>{polozka}</li>
-          ))}
-        </ul>
-      </div>
+      <Sekcia Ikona={ListTodo} farba="#ef9a3d" nadpis="Čo je v pláne" polozky={PLANOVANE} />
 
       <div style={karta}>
         <h3 style={nadpisKarty}>
           <Wallet size={15} color="#c9930f" strokeWidth={2.3} />
-          Monetizácia — plán do budúcna
+          Monetizácia
         </h3>
-        <p style={{ color: "#8a94a3", fontSize: 12, lineHeight: 1.55, marginTop: 0, marginBottom: 12 }}>
-          Poradie podľa toho, čo prináša stabilný opakovaný príjem. Jednorazové nákupy sú slabý základ.
-        </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
           {MONETIZACIA.map((m, i) => (
             <div
@@ -358,7 +324,7 @@ export default function InfoOkno() {
             padding: "9px 11px",
           }}
         >
-          Monetizácia má zmysel až keď máš hráčov, ktorí hru hrajú mesiace. Najprv hra, potom zarábanie.
+          Bonusy, ktoré berú turistov z poolu, sa pridajú až keď bude dosť hráčov. Zatiaľ sa predáva len pohodlie.
         </p>
       </div>
     </div>
