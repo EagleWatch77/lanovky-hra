@@ -236,19 +236,17 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
               </div>
             )}
           </div>
-
-          {poradie && (
+<div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
             <div
               style={{
                 textAlign: "center",
                 padding: "6px 12px",
                 borderRadius: 11,
                 background: "rgba(255,255,255,0.22)",
-                flexShrink: 0,
               }}
             >
               <div style={{ fontSize: 9, color: "rgba(255,255,255,0.85)", fontWeight: 700, letterSpacing: "0.06em" }}>
-                PORADIE
+                PRESTÍŽ
               </div>
               <div
                 style={{
@@ -256,14 +254,38 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
                   fontWeight: 800,
                   fontSize: 17,
                   color: "#fff",
+                  whiteSpace: "nowrap",
                 }}
               >
-                #{poradie}
+                {profil.prestiz.toLocaleString("sk-SK")}
               </div>
             </div>
-          )}
-        </div>
 
+            {poradie && (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "6px 12px",
+                  borderRadius: 11,
+                  background: "rgba(255,255,255,0.22)",
+                }}
+              >
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,0.85)", fontWeight: 700, letterSpacing: "0.06em" }}>
+                  PORADIE
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-sora), system-ui, sans-serif",
+                    fontWeight: 800,
+                    fontSize: 17,
+                    color: "#fff",
+                  }}
+                >
+                  #{poradie}
+                </div>
+              </div>
+            )}
+          </div>
         {/* Záložky */}
         <div style={{ display: "flex", gap: 6, marginBottom: 12 }}>
           <button onClick={() => setZalozka("prehlad")} style={zalozkaStyl("prehlad")}>
