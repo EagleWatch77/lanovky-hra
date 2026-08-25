@@ -66,8 +66,41 @@ export default function TopBarPrava({
   onOtvorForum,
   pocetNeprecitanychVoFore = 0,
 }) {
+ const [hoverKrystaly, setHoverKrystaly] = useState(false);
+
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+      <button
+        onClick={onOtvorKrystaly}
+        title="Kryštály"
+        onMouseEnter={() => setHoverKrystaly(true)}
+        onMouseLeave={() => setHoverKrystaly(false)}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "5px 11px 5px 6px",
+          marginRight: 4,
+          borderRadius: 10,
+          border: "1px solid rgba(120,160,205,0.22)",
+          background: hoverKrystaly ? "rgba(120,175,235,0.16)" : "rgba(255,255,255,0.7)",
+          cursor: "pointer",
+          transition: "background 0.15s",
+        }}
+      >
+        <img src={OBRAZOK_KRYSTAL} alt="" style={{ width: 20, height: 20, objectFit: "contain" }} />
+        <span
+          style={{
+            fontFamily: "var(--font-sora), system-ui, sans-serif",
+            fontWeight: 700,
+            fontSize: 13,
+            color: "#1b2c42",
+          }}
+        >
+          {krystaly.toLocaleString("sk-SK")}
+        </span>
+      </button>
+
       {notifikacie.length > 0 && (
         <div
           style={{
