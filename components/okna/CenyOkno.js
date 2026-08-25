@@ -11,6 +11,7 @@ import {
   sezonaIndex,
   idealnaPrevadzkaHodin,
   jeZimnyMesiac,
+  OBRAZOK_KRYSTAL,
 } from "../../lib/katalog";
 import { hernyDatum } from "../../lib/hernyCas";
 import { Euro, Clock, TrendingUp, TrendingDown, Ticket, Check, Car, BedDouble, Beer, Lock, Snowflake, Sun, Wand2 } from "lucide-react";
