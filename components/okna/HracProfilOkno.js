@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { ikonaPodlaKluca } from "../../lib/loga";
+import { obrazokRiaditela } from "../../lib/katalog";
 import { Star, Handshake, Send, Check, Trophy, Medal, Mountain, Flame, Snowflake, Lock, CalendarDays, User } from "lucide-react";
 
 // ZATIAĽ ZÁSTUPNÉ TROFEJE HRÁČA — neskôr napojíme na reálne úspechy
@@ -87,7 +88,9 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
     async function nacitaj() {
       const { data } = await supabase
         .from("stanice")
-        .select("id, nazov, meno_hraca, logo, prestiz, popis, created_at, aliancia_id, udolie_odomknute, hory_odomknute")
+        .select(
+          "id, nazov, meno_hraca, logo, prestiz, popis, created_at, aliancia_id, pohlavie, udolie_odomknute, hory_odomknute, ladovec_odomknuty"
+        )
         .eq("id", hracId)
         .single();
 
@@ -123,255 +126,283 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
   const LogoIkona = ikonaPodlaKluca(profil.logo);
   const jaSam = vlastnaStanica && profil.id === vlastnaStanica.id;
   const vek = vekTextu(profil.created_at);
+  const postava = obrazokRiaditela(profil);
 
   return (
-    <div>
-      {/* Hlavička profilu */}
-      <div style={{ ...karta, display: "flex", alignItems: "center", gap: 13 }}>
-        <div
-          style={{
-            width: 52,
-            height: 52,
-            borderRadius: 15,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "linear-gradient(160deg,#4aa3ee,#2f92e6)",
-            boxShadow: "0 8px 18px rgba(47,146,230,0.32)",
-            flexShrink: 0,
-          }}
-        >
-          <LogoIkona size={26} strokeWidth={2} color="#ffffff" />
-        </div>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
+    <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+      {/* Ľavý stĺpec — údaje */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Hlavička */}
+        <div style={{ ...karta, display: "flex", alignItems: "center", gap: 13 }}>
           <div
             style={{
-              fontFamily: "var(--font-sora), system-ui, sans-serif",
-              fontWeight: 800,
-              fontSize: 18,
-              color: "#1b2c42",
-              lineHeight: 1.2,
-            }}
-          >
-            {profil.nazov}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
-            {profil.meno_hraca && (
-              <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#8a94a3" }}>
-                <User size={12} strokeWidth={2.3} />
-                {profil.meno_hraca}
-              </span>
-            )}
-            {vek && (
-              <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#8a94a3" }}>
-                <CalendarDays size={12} strokeWidth={2.3} />
-                {vek}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {poradie && (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "6px 12px",
-              borderRadius: 11,
-              background: "rgba(120,160,205,0.10)",
+              width: 52,
+              height: 52,
+              borderRadius: 15,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "linear-gradient(160deg,#4aa3ee,#2f92e6)",
+              boxShadow: "0 8px 18px rgba(47,146,230,0.32)",
               flexShrink: 0,
             }}
           >
-            <div style={{ fontSize: 9.5, color: "#8a94a3", fontWeight: 600, letterSpacing: "0.06em" }}>PORADIE</div>
+            <LogoIkona size={26} strokeWidth={2} color="#ffffff" />
+          </div>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
+                fontFamily: "var(--font-sora), system-ui, sans-serif",
+                fontWeight: 800,
+                fontSize: 18,
+                color: "#1b2c42",
+                lineHeight: 1.2,
+              }}
+            >
+              {profil.nazov}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 4 }}>
+              {profil.meno_hraca && (
+                <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#8a94a3" }}>
+                  <User size={12} strokeWidth={2.3} />
+                  {profil.meno_hraca}
+                </span>
+              )}
+              {vek && (
+                <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#8a94a3" }}>
+                  <CalendarDays size={12} strokeWidth={2.3} />
+                  {vek}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {poradie && (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "6px 12px",
+                borderRadius: 11,
+                background: "rgba(120,160,205,0.10)",
+                flexShrink: 0,
+              }}
+            >
+              <div style={{ fontSize: 9.5, color: "#8a94a3", fontWeight: 600, letterSpacing: "0.06em" }}>PORADIE</div>
+              <div
+                style={{
+                  fontFamily: "var(--font-sora), system-ui, sans-serif",
+                  fontWeight: 800,
+                  fontSize: 17,
+                  color: "#1b2c42",
+                }}
+              >
+                #{poradie}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Štatistiky */}
+        <div style={{ ...karta, display: "flex", gap: 8 }}>
+          <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 5,
                 fontFamily: "var(--font-sora), system-ui, sans-serif",
                 fontWeight: 800,
                 fontSize: 17,
                 color: "#1b2c42",
               }}
             >
-              #{poradie}
+              <Star size={15} color="#2f8ae0" strokeWidth={2.4} />
+              {profil.prestiz.toLocaleString("sk-SK")}
             </div>
+            <div style={{ fontSize: 10.5, color: "#8a94a3", marginTop: 3 }}>prestíž</div>
+          </div>
+
+          <div style={{ width: 1, background: "rgba(120,160,205,0.18)" }} />
+
+          <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: "var(--font-sora), system-ui, sans-serif",
+                fontWeight: 800,
+                fontSize: 17,
+                color: profil.ladovec_odomknuty
+                  ? "#2a9fd6"
+                  : profil.hory_odomknute
+                  ? "#2ca24e"
+                  : profil.udolie_odomknute
+                  ? "#c9930f"
+                  : "#8a94a3",
+              }}
+            >
+              {profil.ladovec_odomknuty
+                ? "Ľadovec"
+                : profil.hory_odomknute
+                ? "Hory"
+                : profil.udolie_odomknute
+                ? "Údolie"
+                : "Lúka"}
+            </div>
+            <div style={{ fontSize: 10.5, color: "#8a94a3", marginTop: 3 }}>najvyššia zóna</div>
+          </div>
+
+          <div style={{ width: 1, background: "rgba(120,160,205,0.18)" }} />
+
+          <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 5,
+                fontFamily: "var(--font-sora), system-ui, sans-serif",
+                fontWeight: 700,
+                fontSize: 13,
+                color: profil.alianciaNazov ? "#1b2c42" : "#c5d2e0",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              title={profil.alianciaNazov || "Bez konzorcia"}
+            >
+              <Handshake size={14} color={profil.alianciaNazov ? "#2f8ae0" : "#c5d2e0"} strokeWidth={2.3} />
+              {profil.alianciaNazov || "—"}
+            </div>
+            <div style={{ fontSize: 10.5, color: "#8a94a3", marginTop: 3 }}>konzorcium</div>
+          </div>
+        </div>
+
+        {/* O hráčovi */}
+        <div style={karta}>
+          <h3 style={nadpisKarty}>O hráčovi</h3>
+          <p
+            style={{
+              color: profil.popis ? "#5a6f88" : "#aebccd",
+              fontSize: 12.5,
+              whiteSpace: "pre-wrap",
+              lineHeight: 1.55,
+              margin: 0,
+            }}
+          >
+            {profil.popis || "Hráč zatiaľ nenapísal nič o sebe."}
+          </p>
+        </div>
+
+        {/* Trofeje */}
+        <div style={karta}>
+          <h3 style={nadpisKarty}>Trofeje</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {TROFEJE.map((t) => (
+              <div
+                key={t.nazov}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "9px 10px",
+                  borderRadius: 11,
+                  background: "rgba(120,160,205,0.06)",
+                  border: "1px solid rgba(120,160,205,0.16)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 10,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "rgba(120,160,205,0.12)",
+                    color: "#c5d2e0",
+                    flexShrink: 0,
+                  }}
+                >
+                  <t.Ikona size={16} strokeWidth={2.2} />
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 12.5,
+                      color: "#8a94a3",
+                    }}
+                  >
+                    {t.nazov}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#aebccd", marginTop: 1, lineHeight: 1.35 }}>{t.popis}</div>
+                </div>
+                <Lock size={13} color="#c5d2e0" strokeWidth={2.3} style={{ flexShrink: 0 }} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Správa */}
+        {!jaSam && (
+          <div style={karta}>
+            <h3 style={nadpisKarty}>Poslať správu</h3>
+            {odoslane ? (
+              <p style={{ display: "flex", alignItems: "center", gap: 6, color: "#1f8a49", fontSize: 12.5, margin: 0 }}>
+                <Check size={14} strokeWidth={2.6} />
+                Správa odoslaná
+              </p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                <input
+                  type="text"
+                  placeholder="Predmet…"
+                  value={predmetSpravy}
+                  onChange={(e) => setPredmetSpravy(e.target.value)}
+                  style={{ ...vstup, width: "100%", boxSizing: "border-box" }}
+                />
+                <textarea
+                  placeholder="Napíš správu…"
+                  value={textSpravy}
+                  onChange={(e) => setTextSpravy(e.target.value)}
+                  rows={3}
+                  style={{ ...vstup, width: "100%", boxSizing: "border-box", resize: "vertical", lineHeight: 1.5 }}
+                />
+                <button onClick={odoslat} style={{ ...btn, alignSelf: "flex-start" }}>
+                  <Send size={14} strokeWidth={2.4} />
+                  Odoslať
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Štatistiky */}
-      <div style={{ ...karta, display: "flex", gap: 8 }}>
-        <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 5,
-              fontFamily: "var(--font-sora), system-ui, sans-serif",
-              fontWeight: 800,
-              fontSize: 17,
-              color: "#1b2c42",
-            }}
-          >
-            <Star size={15} color="#2f8ae0" strokeWidth={2.4} />
-            {profil.prestiz.toLocaleString("sk-SK")}
-          </div>
-          <div style={{ fontSize: 10.5, color: "#8a94a3", marginTop: 3 }}>prestíž</div>
-        </div>
-
-        <div style={{ width: 1, background: "rgba(120,160,205,0.18)" }} />
-
-        <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
-          <div
-            style={{
-              fontFamily: "var(--font-sora), system-ui, sans-serif",
-              fontWeight: 800,
-              fontSize: 17,
-              color: profil.hory_odomknute ? "#2ca24e" : profil.udolie_odomknute ? "#c9930f" : "#8a94a3",
-            }}
-          >
-            {profil.hory_odomknute ? "Hory" : profil.udolie_odomknute ? "Údolie" : "Lúka"}
-          </div>
-          <div style={{ fontSize: 10.5, color: "#8a94a3", marginTop: 3 }}>najvyššia zóna</div>
-        </div>
-
-        <div style={{ width: 1, background: "rgba(120,160,205,0.18)" }} />
-
-        <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 5,
-              fontFamily: "var(--font-sora), system-ui, sans-serif",
-              fontWeight: 700,
-              fontSize: 13,
-              color: profil.alianciaNazov ? "#1b2c42" : "#c5d2e0",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={profil.alianciaNazov || "Bez konzorcia"}
-          >
-            <Handshake size={14} color={profil.alianciaNazov ? "#2f8ae0" : "#c5d2e0"} strokeWidth={2.3} />
-            {profil.alianciaNazov || "—"}
-          </div>
-          <div style={{ fontSize: 10.5, color: "#8a94a3", marginTop: 3 }}>konzorcium</div>
-        </div>
-      </div>
-
-      {/* O hráčovi */}
-      <div style={karta}>
-        <h3 style={nadpisKarty}>O hráčovi</h3>
-        <p
+      {/* Pravý stĺpec — postava riaditeľa */}
+      <div
+        style={{
+          width: 200,
+          flexShrink: 0,
+          position: "sticky",
+          top: 0,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src={postava}
+          alt=""
           style={{
-            color: profil.popis ? "#5a6f88" : "#aebccd",
-            fontSize: 12.5,
-            whiteSpace: "pre-wrap",
-            lineHeight: 1.55,
-            margin: 0,
+            width: "100%",
+            height: "auto",
+            objectFit: "contain",
+            filter: "drop-shadow(0 12px 24px rgba(40,90,145,0.22))",
           }}
-        >
-          {profil.popis || "Hráč zatiaľ nenapísal nič o sebe."}
-        </p>
+        />
       </div>
-
-      {/* Trofeje */}
-      <div style={karta}>
-        <h3 style={nadpisKarty}>Trofeje</h3>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {TROFEJE.map((t) => (
-            <div
-              key={t.nazov}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "9px 10px",
-                borderRadius: 11,
-                background: "rgba(120,160,205,0.06)",
-                border: "1px solid rgba(120,160,205,0.16)",
-              }}
-            >
-              <span
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 10,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "rgba(120,160,205,0.12)",
-                  color: "#c5d2e0",
-                  flexShrink: 0,
-                }}
-              >
-                <t.Ikona size={16} strokeWidth={2.2} />
-              </span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    fontFamily: "var(--font-sora), system-ui, sans-serif",
-                    fontWeight: 700,
-                    fontSize: 12.5,
-                    color: "#8a94a3",
-                  }}
-                >
-                  {t.nazov}
-                </div>
-                <div style={{ fontSize: 11, color: "#aebccd", marginTop: 1, lineHeight: 1.35 }}>{t.popis}</div>
-              </div>
-              <Lock size={13} color="#c5d2e0" strokeWidth={2.3} style={{ flexShrink: 0 }} />
-            </div>
-          ))}
-        </div>
-        <p style={{ color: "#aebccd", fontSize: 10.5, marginTop: 10, marginBottom: 0, lineHeight: 1.4 }}>
-          Trofeje zatiaľ nie sú napojené na reálne dáta.
-        </p>
-      </div>
-
-      {/* Správa */}
-      {!jaSam && (
-        <div style={karta}>
-          <h3 style={nadpisKarty}>Poslať správu</h3>
-          {odoslane ? (
-            <p
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                color: "#1f8a49",
-                fontSize: 12.5,
-                margin: 0,
-              }}
-            >
-              <Check size={14} strokeWidth={2.6} />
-              Správa odoslaná
-            </p>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              <input
-                type="text"
-                placeholder="Predmet…"
-                value={predmetSpravy}
-                onChange={(e) => setPredmetSpravy(e.target.value)}
-                style={{ ...vstup, width: "100%", boxSizing: "border-box" }}
-              />
-              <textarea
-                placeholder="Napíš správu…"
-                value={textSpravy}
-                onChange={(e) => setTextSpravy(e.target.value)}
-                rows={3}
-                style={{ ...vstup, width: "100%", boxSizing: "border-box", resize: "vertical", lineHeight: 1.5 }}
-              />
-              <button onClick={odoslat} style={{ ...btn, alignSelf: "flex-start" }}>
-                <Send size={14} strokeWidth={2.4} />
-                Odoslať
-              </button>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
