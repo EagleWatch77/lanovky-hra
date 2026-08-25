@@ -199,7 +199,6 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
             boxShadow: "0 8px 22px rgba(47,146,230,0.30)",
             padding: 14,
             marginBottom: 12,
-            maxWidth: "76%",
           }}
         >
           <div
