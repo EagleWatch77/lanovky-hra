@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ZONY, PORADIE_ZON, LANOVKY_TYPY, jeZimnyMesiac, kapacitaBudovy, jeLanovkovySlot, prestizBudovy, KATEGORIE } from "../lib/katalog";
 import { hernyDatum } from "../lib/hernyCas";
-import { CableCar, Building2, Users, Star, Lock, Image as ImageIcon, ArrowRight } from "lucide-react";
+import { CableCar, Building2, Users, Star, Lock, Image as ImageIcon, ArrowRight, Crown } from "lucide-react";
 
 // Obrázky zón
 // Obrázky zón podľa sezóny. Ak letný chýba, použije sa zimný.
