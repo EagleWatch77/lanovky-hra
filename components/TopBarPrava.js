@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Bell, Mail, MessageCircle, Settings, Power } from "lucide-react";
+import { OBRAZOK_KRYSTAL } from "../lib/katalog";
 
 function IkonaTlacidlo({ onClick, title, children, badge = 0, badgeColor = "#e5484d" }) {
   const [hover, setHover] = useState(false);
