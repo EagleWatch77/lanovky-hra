@@ -57,12 +57,22 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravov
     .filter((b) => b.kategoria === "lanovka")
    .reduce((s, b) => s + kapacitaBudovy(b.kategoria, b.typ, b.znacka), 0);
 
-  const priemEfekt = hotove.length
-    ? Math.round((hotove.reduce((s, b) => s + efektivitaBudovy(b), 0) / hotove.length) * 100)
-    : 0;
+// --- Hodnotenie zóny ---
+  // Skóre = priemerná prestíž budov × ako veľmi je zóna zastavaná.
+  const skoreZony = (() => {
+    if (hotove.length === 0) return 0;
+    const sucetPrestize = hotove.reduce((s, b) => s + prestizBudovy(b.kategoria, b.typ, b.znacka), 0);
+    const priemer = sucetPrestize / hotove.length;
+    const naplnenost = Math.min(1, hotove.length / Math.max(1, vsetkySloty));
+    return priemer * (0.4 + 0.6 * naplnenost);
+  })();
 
-  const hviezdy = Math.max(0, Math.min(5, Math.round(priemEfekt / 20)));
+  const hviezdy =
+    skoreZony >= 220 ? 5 : skoreZony >= 120 ? 4 : skoreZony >= 60 ? 3 : skoreZony >= 25 ? 2 : hotove.length > 0 ? 1 : 0;
 
+  // Koruna — len na Ľadovci, pri piatich hviezdičkách a aspoň dvoch prémiových budovách
+  const pocetPremiovych = hotove.filter((b) => KATEGORIE[b.kategoria]?.katalog[b.typ]?.premiova).length;
+  const maKorunu = aktivnaZona === "ladovec" && hviezdy === 5 && pocetPremiovych >= 2;
   const karta = {
     background: "rgba(255,255,255,0.74)",
     backdropFilter: "blur(14px)",
