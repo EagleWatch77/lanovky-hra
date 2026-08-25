@@ -332,7 +332,7 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
                     {profil.meno_hraca}
                   </div>
                 )}
-                {{vek && (
+                {vek && (
                   <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
                     <CalendarDays size={13} color="#8a94a3" strokeWidth={2.2} />
                     {vek}
