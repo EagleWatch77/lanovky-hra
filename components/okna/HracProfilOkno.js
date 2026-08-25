@@ -272,6 +272,11 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
           <button onClick={() => setZalozka("trofeje")} style={zalozkaStyl("trofeje")}>
             <Award size={14} strokeWidth={2.2} /> Trofeje
           </button>
+          {!jaSam && (
+            <button onClick={() => setZalozka("sprava")} style={zalozkaStyl("sprava")}>
+              <Send size={14} strokeWidth={2.2} /> Správa
+            </button>
+          )}
         </div>
 
         {/* --- PREHĽAD --- */}
@@ -374,44 +379,45 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
               </div>
             </div>
 
-            {/* Správa */}
-            {!jaSam && (
-              <div style={karta("biela")}>
-                <h3 style={nadpisKarty}>
-                  <Send size={15} color="#2ca24e" strokeWidth={2.3} />
-                  Poslať správu
-                </h3>
-                {odoslane ? (
-                  <p
-                    style={{ display: "flex", alignItems: "center", gap: 6, color: "#1f8a49", fontSize: 12.5, margin: 0 }}
-                  >
-                    <Check size={14} strokeWidth={2.6} />
-                    Správa odoslaná
-                  </p>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-                    <input
-                      type="text"
-                      placeholder="Predmet…"
-                      value={predmetSpravy}
-                      onChange={(e) => setPredmetSpravy(e.target.value)}
-                      style={{ ...vstup, width: "100%", boxSizing: "border-box" }}
-                    />
-                    <textarea
-                      placeholder="Napíš správu…"
-                      value={textSpravy}
-                      onChange={(e) => setTextSpravy(e.target.value)}
-                      rows={3}
-                      style={{ ...vstup, width: "100%", boxSizing: "border-box", resize: "vertical", lineHeight: 1.5 }}
-                    />
-                    <button onClick={odoslat} style={{ ...btn, alignSelf: "flex-start" }}>
-                      <Send size={14} strokeWidth={2.4} />
-                      Odoslať
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+          </div>
+        )}
+
+        {/* --- SPRÁVA --- */}
+        {zalozka === "sprava" && !jaSam && (
+          <div style={{ maxWidth: "76%" }}>
+            <div style={karta("biela")}>
+              <h3 style={nadpisKarty}>
+                <Send size={15} color="#2ca24e" strokeWidth={2.3} />
+                Poslať správu
+              </h3>
+              {odoslane ? (
+                <p style={{ display: "flex", alignItems: "center", gap: 6, color: "#1f8a49", fontSize: 12.5, margin: 0 }}>
+                  <Check size={14} strokeWidth={2.6} />
+                  Správa odoslaná
+                </p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                  <input
+                    type="text"
+                    placeholder="Predmet…"
+                    value={predmetSpravy}
+                    onChange={(e) => setPredmetSpravy(e.target.value)}
+                    style={{ ...vstup, width: "100%", boxSizing: "border-box" }}
+                  />
+                  <textarea
+                    placeholder="Napíš správu…"
+                    value={textSpravy}
+                    onChange={(e) => setTextSpravy(e.target.value)}
+                    rows={4}
+                    style={{ ...vstup, width: "100%", boxSizing: "border-box", resize: "vertical", lineHeight: 1.5 }}
+                  />
+                  <button onClick={odoslat} style={{ ...btn, alignSelf: "flex-start" }}>
+                    <Send size={14} strokeWidth={2.4} />
+                    Odoslať
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
