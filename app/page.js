@@ -59,6 +59,7 @@ export default function PrehladPage() {
     zmenitCenu,
     zmenitPrevadzkovuDobu,
     zmenitCenyStrediska,
+    kupitAutoCeny,
     prestavatBudovu,
     zburatBudovu,
     predatBudovu,
