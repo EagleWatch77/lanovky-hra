@@ -1,16 +1,6 @@
 "use client";
 import { Users, CableCar, Building2 } from "lucide-react";
 
-const LANOVKOVE_NAZVY = [
-  "Vlek",
-  "Lanovka (Lúka)",
-  "Lanovka do Hôr",
-  "Lanovka (Údolie)",
-  "Lanovka na vrchol",
-  "Lanovka na Ľadovec",
-  "Lanovka (Ľadovec)",
-];
-
 const nadpisSkupiny = {
   display: "flex",
   alignItems: "center",
