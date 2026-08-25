@@ -47,7 +47,7 @@ export default function ZonaPanel({ stanica, budovy, efektivitaBudovy, onSpravov
   const vZone = budovy.filter((b) => b.zona === aktivnaZona && b.stav !== "zrusene");
   const hotove = vZone.filter((b) => b.stav === "hotovo");
 
-  const lanovkoveKluce = Object.keys(limity).filter((k) => LANOVKY_TYPY[k]);
+  const lanovkoveKluce = Object.keys(limity).filter((k) => jeLanovkovySlot(k));
   const lanovkySloty = lanovkoveKluce.reduce((s, k) => s + limity[k], 0);
   const lanovkyPostavene = vZone.filter((b) => b.kategoria === "lanovka").length;
 
