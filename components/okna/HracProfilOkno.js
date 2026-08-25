@@ -169,23 +169,21 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
 
   return (
     <div style={{ position: "relative" }}>
-      {/* Postava riaditeľa na pozadí */}
+    {/* Postava riaditeľa na pozadí */}
       <img
         src={postava}
         alt=""
         style={{
-        position: "absolute",
+          position: "absolute",
           right: 0,
-          left: 0,
-          top: 96,
           bottom: 0,
-          width: "100%",
-          height: "calc(100% - 96px)",
+          width: "62%",
+          height: "108%",          // vyššie ako obsah → väčší, hlava ide za lištu
           objectFit: "contain",
           objectPosition: "bottom right",
           opacity: 0.95,
           pointerEvents: "none",
-          zIndex: 0,
+          zIndex: 0,               // lišta (zIndex 1) ho prekrýva → peek efekt
         }}
       />
 
