@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY } from "../../lib/katalog";
+import { KATEGORIE, KONKURENCIA_ZONY_KONFIG, ZONY, KONKURENCIA_UROVNE } from "../../lib/katalog";
 import { Building2, HardHat, CircleSlash, TrendingDown } from "lucide-react";
 
 const NAZVY_JEDNOTNE = {
