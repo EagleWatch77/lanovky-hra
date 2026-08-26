@@ -326,7 +326,7 @@ export default function PrehladPage() {
       )}
 
      {okno === "krystaly" && (
-  <WindowModal title="Kryštály" onClose={() => setOkno(null)} width="min(94vw, 900px)">
+  <WindowModal title="Kryštály" onClose={() => setOkno(null)}>
          <KrystalyOkno stanica={stanica} kupitAutoCeny={kupitAutoCeny} />
         </WindowModal>
       )}
