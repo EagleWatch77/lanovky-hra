@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { ikonaPodlaKluca } from "../../lib/loga";
-import { obrazokRiaditela } from "../../lib/katalog";
+import { obrazokRiaditela } from from "../lib/katalog"
 import { Handshake, Send, Check, Trophy, Medal, Mountain, Flame, Snowflake, Lock, CalendarDays, User, Award, LayoutDashboard } from "lucide-react";
 
 const TROFEJE = [
