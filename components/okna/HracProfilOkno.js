@@ -101,7 +101,7 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
       const { data } = await supabase
         .from("stanice")
         .select(
-          "id, nazov, meno_hraca, logo, prestiz, popis, created_at, aliancia_id, pohlavie, udolie_odomknute, hory_odomknute, ladovec_odomknuty"
+                    "id, nazov, meno_hraca, logo, prestiz, popis, created_at, aliancia_id, pohlavie, vek, bydlisko, udolie_odomknute, hory_odomknute, ladovec_odomknuty"
         )
         .eq("id", hracId)
         .single();
