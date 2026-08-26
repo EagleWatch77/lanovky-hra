@@ -176,11 +176,11 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         style={{
           position: "absolute",
           right: 0,
-          top: 50,                 // ako hlboko hlava zapadá za modrú lištu
+          top: 100,
+          bottom: 0,
           width: "62%",
-          height: 540,             // celková výška postavy (pevná → vždy celá vidno)
           objectFit: "contain",
-          objectPosition: "top right",
+          objectPosition: "bottom right",
           opacity: 0.95,
           pointerEvents: "none",
           zIndex: 0,
