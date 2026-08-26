@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 export default function WindowModal({ title, onClose, children, width }) {
-  const sirka = width || "min(92vw, max(640px, 50vw))";
+  const sirka = width || "min(94vw, 880px)";
   const [hoverZavriet, setHoverZavriet] = useState(false);
 
   return (
