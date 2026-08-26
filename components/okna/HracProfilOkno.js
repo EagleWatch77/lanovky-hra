@@ -349,8 +349,8 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         )}
 
         {/* --- SPRÁVA --- */}
-        {zalozka === "sprava" && !jaSam && (
-          <div style={{ maxWidth: "76%" }}>
+               {zalozka === "sprava" && !jaSam && (
+          <div style={{ maxWidth: "50%" }}>
             <div style={karta("biela")}>
               <h3 style={nadpisKarty}>
                 <Send size={15} color="#2ca24e" strokeWidth={2.3} />
