@@ -308,42 +308,53 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         {/* --- PREHĽAD --- */}
         {zalozka === "prehlad" && (
           <div style={{ maxWidth: "76%" }}>
-            {/* O hráčovi — bez kartičky */}
-            <div style={{ marginBottom: 14, paddingLeft: 2 }}>
-              <h3 style={{ ...nadpisKarty, marginBottom: 6 }}>
-                <User size={15} color="#2f8ae0" strokeWidth={2.3} />
-                O hráčovi
-              </h3>
-              <p
-                style={{
-                  color: profil.popis ? "#5a6f88" : "#aebccd",
-                  fontSize: 12.5,
-                  whiteSpace: "pre-wrap",
-                  lineHeight: 1.55,
-                  margin: "0 0 10px 0",
-                }}
-              >
-                {profil.popis || "Hráč zatiaľ nenapísal nič o sebe."}
-              </p>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                {profil.meno_hraca && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
-                    <User size={13} color="#8a94a3" strokeWidth={2.2} />
-                    {profil.meno_hraca}
-                  </div>
-                )}
-                {vek && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
-                    <CalendarDays size={13} color="#8a94a3" strokeWidth={2.2} />
-                    {vek}
-                  </div>
-                )}
-                <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
-                  <Mountain size={13} color="#8a94a3" strokeWidth={2.2} />
-                  Zóna: <strong style={{ color: najvyssiaZona.farba, fontWeight: 700 }}>{najvyssiaZona.nazov}</strong>
+                     {/* Údaje o hráčovi */}
+            <div style={{ paddingLeft: 2 }}>
+              {[
+                { Ikona: User, popis: "Meno", hodnota: profil.meno_hraca || "—" },
+                { Ikona: Cake, popis: "Vek", hodnota: profil.vek ? `${profil.vek} rokov` : "—" },
+                { Ikona: MapPin, popis: "Bydlisko", hodnota: profil.bydlisko || "—" },
+                { Ikona: CalendarDays, popis: "V hre", hodnota: vek || "—" },
+                { Ikona: Mountain, popis: "Zóna", hodnota: najvyssiaZona.nazov, farba: najvyssiaZona.farba },
+              ].map((r) => (
+                <div
+                  key={r.popis}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "10px 2px",
+                    borderBottom: "1px solid rgba(120,160,205,0.16)",
+                  }}
+                >
+                  <r.Ikona size={16} color="#8a94a3" strokeWidth={2.2} style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: "#8a94a3", width: 78, flexShrink: 0 }}>{r.popis}</span>
+                  <span
+                    style={{
+                      fontFamily: "var(--font-sora), system-ui, sans-serif",
+                      fontWeight: 700,
+                      fontSize: 14,
+                      color: r.farba || "#1b2c42",
+                    }}
+                  >
+                    {r.hodnota}
+                  </span>
                 </div>
-              </div>
+              ))}
+
+              {profil.popis && (
+                <p
+                  style={{
+                    color: "#5a6f88",
+                    fontSize: 13,
+                    whiteSpace: "pre-wrap",
+                    lineHeight: 1.6,
+                    margin: "14px 0 0 0",
+                  }}
+                >
+                  {profil.popis}
+                </p>
+              )}
             </div>
 
           </div>
