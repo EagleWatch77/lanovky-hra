@@ -291,6 +291,7 @@ export default function PrehladPage() {
             zmenitEmail={zmenitEmail}
             zmenitHeslo={zmenitHeslo}
             zmazatMojeData={zmazatMojeData}
+            ulozitProfil={ulozitProfil}
           />
         </WindowModal>
       )}
