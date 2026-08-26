@@ -176,9 +176,10 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         style={{
           position: "absolute",
           right: 0,
-          top: 100,
+                   top: 100,
           bottom: 0,
-          width: "62%",
+          width: "50%",
+          height: "calc(100% - 100px)",
           objectFit: "contain",
           objectPosition: "bottom right",
           opacity: 0.95,
