@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { ikonaPodlaKluca } from "../../lib/loga";
-import { obrazokRiaditela } from "../lib/katalog";
+import { obrazokRiaditela } from "../../lib/katalog";
 import { Handshake, Send, Check, Trophy, Medal, Mountain, Flame, Snowflake, Lock, CalendarDays, User, Award, LayoutDashboard } from "lucide-react";
 
 const TROFEJE = [
@@ -168,19 +168,19 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
   }
 
   return (
-    <div style={{ position: "relative", minHeight: "calc(70vh - 92px)" }}>
-      {/* Postava riaditeľa na pozadí — ukotvená hore, celá viditeľná bez rolovania */}
+    <div style={{ position: "relative" }}>
+      {/* Postava riaditeľa na pozadí */}
       <img
         src={postava}
         alt=""
         style={{
           position: "absolute",
-          right: 0,
-          top: 55,                         // hlava tesne za modrú lištu
-          width: "58%",
-          height: "calc(70vh - 150px)",    // zmestí sa do plochy okna → žiadny scroll
+          right: -30,
+          top: 86,
+          bottom: 0,
+          height: "calc(100% - 86px)",
           objectFit: "contain",
-          objectPosition: "top right",
+          objectPosition: "bottom right",
           opacity: 0.95,
           pointerEvents: "none",
           zIndex: 0,
@@ -199,6 +199,7 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
             boxShadow: "0 8px 22px rgba(47,146,230,0.30)",
             padding: 14,
             marginBottom: 12,
+            maxWidth: "76%",
           }}
         >
           <div
@@ -306,6 +307,48 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
         {/* --- PREHĽAD --- */}
         {zalozka === "prehlad" && (
           <div style={{ maxWidth: "76%" }}>
+            {/* Štatistiky */}
+            <div style={{ ...karta("stredna"), display: "flex", gap: 8 }}>
+              <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
+                <div
+                  style={{
+                    fontFamily: "var(--font-sora), system-ui, sans-serif",
+                    fontWeight: 800,
+                    fontSize: 17,
+                    color: najvyssiaZona.farba,
+                  }}
+                >
+                  {najvyssiaZona.nazov}
+                </div>
+                <div style={{ fontSize: 10.5, color: "#5a6f88", marginTop: 3 }}>najvyššia zóna</div>
+              </div>
+
+              <div style={{ width: 1, background: "rgba(120,160,205,0.24)" }} />
+
+              <div style={{ flex: 1, textAlign: "center", padding: "8px 4px", minWidth: 0 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 5,
+                    fontFamily: "var(--font-sora), system-ui, sans-serif",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    color: profil.alianciaNazov ? "#1b2c42" : "#aebccd",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                  title={profil.alianciaNazov || "Bez konzorcia"}
+                >
+                  <Handshake size={14} color={profil.alianciaNazov ? "#2f8ae0" : "#c5d2e0"} strokeWidth={2.3} />
+                  {profil.alianciaNazov || "—"}
+                </div>
+                <div style={{ fontSize: 10.5, color: "#5a6f88", marginTop: 3 }}>konzorcium</div>
+              </div>
+            </div>
+
             {/* O hráčovi — bez kartičky */}
             <div style={{ marginBottom: 14, paddingLeft: 2 }}>
               <h3 style={{ ...nadpisKarty, marginBottom: 6 }}>
@@ -337,10 +380,6 @@ export default function HracProfilOkno({ hracId, poradie, vlastnaStanica, poslat
                     {vek}
                   </div>
                 )}
-                <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 12, color: "#5a6f88" }}>
-                  <Mountain size={13} color="#8a94a3" strokeWidth={2.2} />
-                  Zóna: <strong style={{ color: najvyssiaZona.farba, fontWeight: 700 }}>{najvyssiaZona.nazov}</strong>
-                </div>
               </div>
             </div>
 
