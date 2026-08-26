@@ -100,6 +100,7 @@ export default function PrehladPage() {
     premenovatStanicu,
     zmenitMenoHraca,
     zmenitLogo,
+    ulozitProfil,
     zmenitEmail,
     zmenitHeslo,
     zmazatMojeData,
