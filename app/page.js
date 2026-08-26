@@ -315,7 +315,7 @@ export default function PrehladPage() {
       )}
 
      {okno === "profil" && profilHraca && (
-       <WindowModal title="Profil hráča" onClose={() => setOkno("rebricek")} width="min(94vw, 820px)">
+       <WindowModal title="Profil hráča" onClose={() => setOkno("rebricek")}>
           <HracProfilOkno
             hracId={profilHraca.id}
             poradie={profilHraca.poradie}
