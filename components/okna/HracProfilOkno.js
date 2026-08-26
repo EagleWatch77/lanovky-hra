@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
 import { ikonaPodlaKluca } from "../../lib/loga";
 import { obrazokRiaditela } from "../../lib/katalog";
-import { Handshake, Send, Check, Trophy, Medal, Mountain, Flame, Snowflake, Lock, CalendarDays, User, Award, LayoutDashboard } from "lucide-react";
+import { Handshake, Send, Check, Trophy, Medal, Mountain, Flame, Snowflake, Lock, CalendarDays, User, Award, LayoutDashboard, Cake, MapPin } from "lucide-react";
 
 const TROFEJE = [
   { Ikona: Trophy, nazov: "Víťaz ligy", popis: "Vyhrať ligu na konci herného roka", farba: "#efb23c" },
