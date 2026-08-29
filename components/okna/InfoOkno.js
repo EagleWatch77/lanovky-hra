@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, CloudSun, ListTodo, Palette, Wallet, Building2, AlertTriangle, Hammer, Users, ShieldAlert, Sparkles } from "lucide-react";
+import { CheckCircle2, CloudSun, ListTodo, Palette, Wallet, Building2, AlertTriangle, Hammer, Users, ShieldAlert, Sparkles, UserCircle } from "lucide-react";
 
 const HOTOVE = [
   "Registrácia a prihlásenie hráčov, vlastný názov strediska",
@@ -22,11 +22,24 @@ const HOTOVE = [
   "Úpadok prestíže pri dlhodobo nízkych peniazoch",
   "Počasie — denne sa mení, vietor a búrky ovplyvňujú dopyt aj toleranciu rád",
   "Herný kalendár — beží 2× rýchlejšie ako reálny čas",
-  "Rebríček hráčov aj konzorcií, profil hráča s trofejami a možnosťou poslať správu",
+  "Rebríček hráčov aj konzorcií",
   "Financie — denný/týždenný/mesačný/sezónny prehľad v troch záložkách",
   "Časovač na pozadí — ekonomika sa počíta raz za hodinu aj bez otvorenej appky",
   "Ski konzorciá — zakladanie, žiadosti, pozvánky, nástenka, trofeje konzorcia",
   "Správy medzi hráčmi",
+];
+
+const PROFIL = [
+  "Postava riaditeľa na pozadí profilu — mení sa podľa najvyššej odomknutej zóny",
+  "Štyri úrovne postavy: Lúka, Údolie, Hory, Ľadovec — a to zvlášť pre muža aj ženu",
+  "Farebná hlavička s logom, názvom strediska, konzorciom, prestížou a poradím",
+  "Tri záložky — Prehľad, Trofeje, Správa",
+  "V prehľade: meno, vek, bydlisko, ako dlho hrá a najvyššia zóna",
+  "Vlastný popis hráča (max 500 znakov), zobrazí sa len keď si ho vyplní",
+  "NASTAVENIA v svetlej téme, rozdelené na Profil, Logo a Účet",
+  "Výber riaditeľa (muž/žena) priamo obrázkom",
+  "Logo strediska — 15 ikon na výber (predtým emoji, ktoré profil nevedel zobraziť)",
+  "Všetky okná majú jednotnú šírku",
 ];
 
 const EKONOMIKA = [
@@ -93,8 +106,9 @@ const UI_HOTOVE = [
   "Peňažný tok — príjem, prevádzka, čistý tok za deň a varovanie pri strate",
   "Panel zóny — obrázok podľa sezóny, kapacita so značkou, hodnotenie hviezdičkami podľa kvality budov",
   "Hodnotenie zóny meria kvalitu, nie počet — päť hviezdičiek si vyžaduje drahšie zariadenia",
-  "Okno Budovy rozdelené do sekcií, výber výrobcu a potom modelu",
+  "Okno Budovy rozdelené do sekcií, po stavbe ostane otvorené v tej istej zóne",
   "Letné sloty označené štítkom JAZDÍ AJ V LETE",
+  "Panel Turisti triedi lanovky a služby podľa kategórie",
   "Namiesto vyskakovacích hlášok sa tlačidlo vypne a ukáže, koľko peňazí chýba",
 ];
 
@@ -104,6 +118,7 @@ const OPRAVIT = [
   "Prémiové budovy majú v okne Budovy stále ceny v eurách, majú byť v kryštáloch",
   "Chyba pri prestavbe parkoviska na centrálne — treba preveriť",
   "Míľniky za kryštály (prvá lanovka, odomknutie zón) sa zatiaľ nevyplácajú",
+  "Trofeje v profile sú zástupné — nie sú napojené na reálne úspechy",
 ];
 
 const PLANOVANE = [
@@ -113,7 +128,6 @@ const PLANOVANE = [
   "Misie napojené na reálne dáta (zatiaľ zástupné)",
   "Zónové počasie — na vrchole môže fúkať, kým v údolí sa lyžuje (a viac typov počasia)",
   "Sezónky — hráč pred sezónou nastaví počet a cenu, rozdelia sa cez celú sezónu",
-  "Nastavenia a Správy do svetlej témy",
   "Ako motivovať silných hráčov brať do konzorcia aj slabších",
   "Svetový pohár ako samostatná mechanika",
   "Ochrana proti viacnásobným účtom",
@@ -201,6 +215,7 @@ export default function InfoOkno() {
   return (
     <div>
       <Sekcia Ikona={CheckCircle2} farba="#2ca24e" nadpis="Čo už funguje" polozky={HOTOVE} />
+      <Sekcia Ikona={UserCircle} farba="#8a5fd6" nadpis="Profil hráča a nastavenia" polozky={PROFIL} />
       <Sekcia Ikona={Users} farba="#2ca24e" nadpis="Ekonomika a turisti" polozky={EKONOMIKA} />
       <Sekcia Ikona={Building2} farba="#2f8ae0" nadpis="Budovy, typy a výrobcovia" polozky={BUDOVY} />
       <Sekcia Ikona={ShieldAlert} farba="#d64545" nadpis="Konkurencia" polozky={KONKURENCIA} />
